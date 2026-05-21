@@ -31,16 +31,16 @@
 
     <!-- Tutorial -->
     <!-- Tutorial steps -->
-    <string name="tut_intro">Benvenuto in Tiramisù! Obiettivo: sposta tutte le carte sulle 4 basi in alto, per seme dall\'Asso al 10. Tocca Avanti.</string>
-    <string name="tut_deal">Tocca il Tallone in basso per distribuire le prime carte.</string>
-    <string name="tut_deal_confirm">✓ Carte distribuite. L\'Asso è andato automaticamente alla base!</string>
-    <string name="tut_same_suit">Le carte dello stesso seme si possono spostare liberamente tra i mazzetti. Sposta la carta evidenziata sul mazzetto vicino.</string>
+    <string name="tut_intro">Benvenuto in Tiramisù! Obiettivo: porta tutte le carte alle 4 basi, per seme dall\'Asso al 10.</string>
+    <string name="tut_deal">Tocca il Tallone in basso per distribuire le carte.</string>
+    <string name="tut_deal_confirm">✓ Distribuito! L\'Asso è andato automaticamente alla base bastoni.</string>
+    <string name="tut_same_suit">Carte dello stesso seme si spostano liberamente tra mazzetti. Sposta la carta evidenziata sul mazzetto vicino.</string>
     <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, qualsiasi valore.</string>
-    <string name="tut_foundation">Tocca un mazzetto per selezionarlo, poi tocca la base per portarci la carta giusta.</string>
-    <string name="tut_foundation_confirm">✓ Perfetto! La carta è a casa.</string>
-    <string name="tut_empty_pile">Un mazzetto vuoto accetta qualsiasi carta. Sposta una carta in uno slot libero.</string>
-    <string name="tut_redeal">Quando il tallone finisce, puoi ridistribuire raccogliendo i mazzetti. Tocca Ridistribuisci.</string>
-    <string name="tut_finish">Bravo! Ora conosci le regole di Tiramisù. Buon gioco!</string>
+    <string name="tut_foundation">Quella carta può andare alla base! Toccala per selezionarla, poi tocca la base in alto.</string>
+    <string name="tut_foundation_confirm">✓ Perfetto! Porta tutte le carte alle basi per vincere.</string>
+    <string name="tut_redeal">Lo stock è vuoto. Tocca il pulsante Ridistribuisci per raccogliere i mazzetti e continuare!</string>
+    <string name="tut_redeal_confirm">✓ Puoi ridistribuire un numero limitato di volte, in base alla difficoltà.</string>
+    <string name="tut_finish">Bravo! Ora conosci le regole di Tiramisù. Buon gioco! 🎉</string>
 
     <string name="tutorial_corner_label">🎓 Tutorial</string>
     <string name="tutorial_prompt_title">First time?</string>
