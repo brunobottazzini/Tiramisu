@@ -49,6 +49,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_pause"
+            android:tint="@color/casino_gold"
             android:background="@android:color/transparent"
             android:contentDescription="@string/pause_menu_desc" />
     </LinearLayout>
@@ -198,6 +199,8 @@
             android:layout_height="48dp"
             android:layout_gravity="end"
             android:text="@string/tutorial_next"
+            android:textColor="@color/casino_gold"
+            android:backgroundTint="@color/casino_bordeaux_dark"
             android:minWidth="48dp"
             android:minHeight="48dp" />
     </LinearLayout>
