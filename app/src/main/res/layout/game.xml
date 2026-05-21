@@ -28,6 +28,7 @@
             android:layout_weight="1"
             android:text="00:00"
             android:textSize="18sp"
+            android:textColor="@color/casino_gold"
             android:fontFamily="monospace"
             android:contentDescription="Timer di gioco"
             tools:ignore="HardcodedText" />
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:text="🟡 Normale"
             android:textSize="14sp"
+            android:textColor="@color/casino_gold_light"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
             tools:ignore="HardcodedText" />
@@ -46,9 +48,9 @@
             android:id="@+id/btnMenu"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_more"
+            android:src="@drawable/ic_pause"
             android:background="@android:color/transparent"
-            android:contentDescription="Menu" />
+            android:contentDescription="@string/pause_menu_desc" />
     </LinearLayout>
 
     <!-- Foundations row (4 slots) -->
