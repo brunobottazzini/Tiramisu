@@ -27,7 +27,29 @@
       "Bash(./gradlew :app:testDebugUnitTest --no-build-cache)",
       "Bash(./gradlew :app:testDebugUnitTest --info)",
       "Bash(./gradlew :app:assembleDebug :app:testDebugUnitTest)",
-      "Bash(./gradlew :app:testDebugUnitTest --rerun-tasks)"
+      "Bash(./gradlew :app:testDebugUnitTest --rerun-tasks)",
+      "Bash(xargs cat)",
+      "Bash(git commit -m 'docs: add tutorial fix & completamento design spec *)",
+      "Bash(./gradlew testDebugUnitTest --tests \"com.bottazzini.tiramisu.TiramisuDeckSetupTest\")",
+      "Bash(git commit -m 'docs: add tutorial fix implementation plan *)",
+      "Bash(git commit -m 'feat\\(tutorial\\): tutorial deck ridotto a 8 carte \\(4 deal + 4 stock\\) *)",
+      "Bash(./gradlew testDebugUnitTest --tests \"com.bottazzini.tiramisu.TiramisuTutorialEngineTest\")",
+      "Bash(git commit -m 'feat\\(tutorial\\): semplifica TiramisuTutorialEngine, aggiunge isRedealStep/isCorrectPileMove/isCorrectFoundationMove *)",
+      "Bash(./gradlew compileDebugKotlin)",
+      "Bash(git commit -m 'feat\\(tutorial\\): nuova sequenza 10 passi con fondazione e ridistribuzione *)",
+      "Bash(./gradlew testDebugUnitTest)",
+      "Bash(./gradlew testDebugUnitTest --rerun)",
+      "Bash(git commit -m 'fix\\(tutorial\\): correggi avanzamento step stock/redeal, validazione drag, evidenziazione pile *)",
+      "Bash(git commit -m 'feat\\(tutorial\\): sostituisci step fondazione con step colonna vuota *)",
+      "Bash(git commit -m 'fix\\(tutorial\\): correggi tap destinazione bloccato nel same-suit step *)",
+      "Bash(xargs cat -n)",
+      "Bash(git commit -m 'fix\\(tutorial\\): do initial deal silently on startup *)",
+      "Bash(git commit -m 'fix\\(tutorial\\): 3 follow-up issues after same-suit fix *)",
+      "Bash(git commit -m 'fix\\(orientation\\): crash on landscape rotation *)",
+      "Bash(git commit -m 'fix\\(state\\): saved game leaks back after win / loss / abandon *)",
+      "Bash(git commit -m 'fix\\(tutorial\\): freeze, wrong-card confusion, ambiguous highlight *)",
+      "Bash(./gradlew testDebugUnitTest --quiet)",
+      "Bash(git commit -m 'fix\\(tutorial\\): show ace animation + fix empty-pile green highlight *)"
     ]
   }
 }

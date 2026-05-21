@@ -192,10 +192,8 @@ class GameActivity : AppCompatActivity() {
 
     private fun startTutorial() {
         vm.newTutorialGame()
-        // Initial deal: b1→auto-ace to foundation, b2/c3/d8 distributed to piles 1-3.
-        // After this, stock = [c7, c5, d3, s4] — exactly one deal left to teach in step 1.
-        vm.dealFromStock()
-        vm.consumeAutoAceMoves() // discard animation data — no animation at startup
+        // Do NOT pre-deal here: step 1 asks the user to tap the tallone so they see
+        // the ace (b1) animate to the foundation. Step 3 covers the second deal.
         val steps = TiramisuTutorialSteps.steps(resources)
         tutorialEngine = TiramisuTutorialEngine(steps)
         hintsUsedThisGame = 0
@@ -492,16 +490,17 @@ class GameActivity : AppCompatActivity() {
             placeholder.setImageResource(R.drawable.zero)
             placeholder.scaleType = ImageView.ScaleType.FIT_CENTER
             placeholder.contentDescription = getString(R.string.pile_empty_desc, pileIdx + 1)
-            // Green highlight on empty target pile so the user can see where to drop
-            if (isTutorialTarget) {
-                placeholder.alpha = 1f
-                placeholder.setColorFilter(0xCC00AA50.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
-            } else {
-                placeholder.alpha = 0.4f
-            }
+            placeholder.alpha = 0.4f
+            // Green highlight: zero.png is mostly transparent so color-filter won't show.
+            // Set a semi-transparent green background on the container instead.
+            container.setBackgroundColor(
+                if (isTutorialTarget) 0x5500AA50.toInt() else android.graphics.Color.TRANSPARENT
+            )
             container.addView(placeholder)
             return
         }
+        // Non-empty piles: always clear any tutorial background left from a previous render.
+        container.setBackgroundColor(android.graphics.Color.TRANSPARENT)
 
         val isSelected  = vm.selectedPileIndex == pileIdx
         val isObbligato = vm.obbligatoTargets().contains(pileIdx)

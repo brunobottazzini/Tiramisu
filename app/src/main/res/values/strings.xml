@@ -32,8 +32,10 @@
     <!-- Tutorial -->
     <!-- Tutorial steps -->
     <string name="tut_intro">Benvenuto in Tiramisù! Obiettivo: porta tutte le carte alle 4 basi, per seme dall\'Asso al 10.</string>
-    <string name="tut_deal">Tocca il Tallone in basso per distribuire le carte.</string>
-    <string name="tut_deal_confirm">✓ Distribuito! L\'Asso è andato automaticamente alla base bastoni.</string>
+    <string name="tut_deal">Tocca il Tallone in basso per distribuire le carte. Guarda bene cosa succede con l\'Asso! 👀</string>
+    <string name="tut_deal_confirm">✓ L\'Asso di bastoni è andato in automatico alla base! Solo gli Assi si muovono da soli — le altre carte le gestisci tu.</string>
+    <string name="tut_deal2">Il Tallone ha ancora carte. Toccalo di nuovo per distribuirle tutte!</string>
+    <string name="tut_deal2_confirm">✓ Ora tutte le colonne hanno carte e il Tallone è vuoto.</string>
     <string name="tut_same_suit">Carte dello stesso seme si spostano liberamente. Trascina la carta 🟠 sul mazzetto 🟢.</string>
     <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, qualsiasi valore. Il mazzetto ora è vuoto!</string>
     <string name="tut_empty_pile">Un mazzetto vuoto 🟢 accetta qualsiasi carta! Trascina la carta 🟠 sullo slot vuoto.</string>
