@@ -192,6 +192,10 @@ class GameActivity : AppCompatActivity() {
 
     private fun startTutorial() {
         vm.newTutorialGame()
+        // Initial deal: b1→auto-ace to foundation, b2/c3/d8 distributed to piles 1-3.
+        // After this, stock = [c7, c5, d3, s4] — exactly one deal left to teach in step 1.
+        vm.dealFromStock()
+        vm.consumeAutoAceMoves() // discard animation data — no animation at startup
         val steps = TiramisuTutorialSteps.steps(resources)
         tutorialEngine = TiramisuTutorialEngine(steps)
         hintsUsedThisGame = 0
