@@ -740,6 +740,7 @@ class GameActivity : AppCompatActivity() {
         if (!vm.isWon()) return
         stopTimer()
         val s = vm.state!!
+        s.hasActiveGame = false  // prevent onPause() from re-saving after clear()
         val durationMs = System.currentTimeMillis() - s.gameStartTimeMillis
         gameLogRepo.insert(GameLog(
             timestamp   = System.currentTimeMillis(),
@@ -763,6 +764,7 @@ class GameActivity : AppCompatActivity() {
         if (!vm.isLost()) return
         stopTimer()
         val s = vm.state ?: return
+        s.hasActiveGame = false  // prevent onPause() from re-saving after clear()
         val durationMs = System.currentTimeMillis() - s.gameStartTimeMillis - s.timerPausedMs
         gameLogRepo.insert(GameLog(
             timestamp   = System.currentTimeMillis(),
@@ -812,6 +814,7 @@ class GameActivity : AppCompatActivity() {
         tutorialOverlay.visibility = View.GONE
         tutorialEngine             = null
         isTutorialMode             = false
+        vm.state?.hasActiveGame    = false  // isTutorialMode is now false, prevent onPause() save
         stopTimer()
 
         // Unlock "tutorial_done" achievement
@@ -861,6 +864,7 @@ class GameActivity : AppCompatActivity() {
     private fun abandonGame() {
         val s = vm.state
         if (s != null) {
+            s.hasActiveGame = false  // prevent onPause() from re-saving after clear()
             val durationMs = System.currentTimeMillis() - s.gameStartTimeMillis
             gameLogRepo.insert(GameLog(
                 timestamp   = System.currentTimeMillis(),
