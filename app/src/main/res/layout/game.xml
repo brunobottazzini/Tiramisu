@@ -129,7 +129,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer0"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="12dp" />
         </ScrollView>
 
         <ScrollView android:id="@+id/pileScroll1"
@@ -139,7 +141,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer1"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="12dp" />
         </ScrollView>
 
         <ScrollView android:id="@+id/pileScroll2"
@@ -149,7 +153,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer2"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="12dp" />
         </ScrollView>
 
         <ScrollView android:id="@+id/pileScroll3"
@@ -159,7 +165,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer3"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="12dp" />
         </ScrollView>
     </LinearLayout>
 
