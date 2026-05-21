@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Landscape variant of the game layout.
+  IMPORTANT: every view ID must match layout/game.xml exactly —
+  GameActivity.bindViews() casts by type (e.g. foundation* must be ImageView,
+  btnUndo must be present) and crashes with ClassCastException / NPE otherwise.
+  Changes from portrait: card height 72dp, stockArea 46×72dp.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,8 +21,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="2dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="00:00"
-            android:textSize="18sp"
+            android:textSize="16sp"
+            android:textColor="@color/casino_gold"
             android:fontFamily="monospace"
             android:contentDescription="Timer di gioco"
             tools:ignore="HardcodedText" />
@@ -37,67 +45,81 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🟡 Normale"
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:textColor="@color/casino_gold_light"
             android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
+            android:paddingVertical="2dp"
             tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/btnMenu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_more"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_pause"
+            android:tint="@color/casino_gold"
             android:background="@android:color/transparent"
-            android:contentDescription="Menu" />
+            android:contentDescription="@string/pause_menu_desc" />
     </LinearLayout>
 
-    <!-- Foundations row (4 slots) -->
+    <!-- Foundations row (4 slots) — must be ImageView, not FrameLayout -->
     <LinearLayout
         android:id="@+id/foundationsRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
-        android:paddingVertical="6dp"
+        android:paddingVertical="4dp"
         android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <FrameLayout android:id="@+id/foundation0"
+        <ImageView android:id="@+id/foundation0"
             android:layout_width="0dp" android:layout_weight="1"
             android:layout_height="72dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/casino_slot_frame"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
 
-        <FrameLayout android:id="@+id/foundation1"
+        <ImageView android:id="@+id/foundation1"
             android:layout_width="0dp" android:layout_weight="1"
             android:layout_height="72dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/casino_slot_frame"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
 
-        <FrameLayout android:id="@+id/foundation2"
+        <ImageView android:id="@+id/foundation2"
             android:layout_width="0dp" android:layout_weight="1"
             android:layout_height="72dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/casino_slot_frame"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
 
-        <FrameLayout android:id="@+id/foundation3"
+        <ImageView android:id="@+id/foundation3"
             android:layout_width="0dp" android:layout_weight="1"
             android:layout_height="72dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/casino_slot_frame"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
     </LinearLayout>
 
-    <!-- 4 pile columns (scrollable, fill remaining space) -->
+    <!-- 4 pile columns -->
     <LinearLayout
         android:id="@+id/pilesArea"
         android:layout_width="0dp"
@@ -115,7 +137,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer0"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="8dp" />
         </ScrollView>
 
         <ScrollView android:id="@+id/pileScroll1"
@@ -125,7 +149,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer1"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="8dp" />
         </ScrollView>
 
         <ScrollView android:id="@+id/pileScroll2"
@@ -135,7 +161,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer2"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="8dp" />
         </ScrollView>
 
         <ScrollView android:id="@+id/pileScroll3"
@@ -145,7 +173,9 @@
             android:scrollbars="none">
             <LinearLayout android:id="@+id/pileContainer3"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="4dp" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="8dp" />
         </ScrollView>
     </LinearLayout>
 
@@ -167,27 +197,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:paddingBottom="8dp" />
+            android:textSize="14sp"
+            android:paddingBottom="6dp" />
 
         <Button
             android:id="@+id/btnTutorialNext"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:layout_gravity="end"
             android:text="@string/tutorial_next"
+            android:textColor="@color/casino_gold"
+            android:backgroundTint="@color/casino_bordeaux_dark"
             android:minWidth="48dp"
             android:minHeight="48dp" />
     </LinearLayout>
 
-    <!-- Bottom bar: stock + redeal + hint -->
+    <!-- Bottom bar: stock + redeal + hint + undo -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
-        android:paddingVertical="8dp"
+        android:paddingVertical="4dp"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -196,12 +228,9 @@
         <!-- Stock (tallone) -->
         <FrameLayout
             android:id="@+id/stockArea"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="46dp"
             android:layout_height="72dp"
             android:layout_marginEnd="8dp"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Tallone — tocca per distribuire">
@@ -218,19 +247,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:padding="2dp"
                 android:background="#88000000"
                 android:textColor="#FFFFFF" />
         </FrameLayout>
 
-        <!-- Redeal button (shown only when eligible) -->
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <!-- Redeal button -->
         <Button
             android:id="@+id/btnRedeal"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:text="@string/redeal_button"
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:textColor="@color/casino_gold"
+            android:backgroundTint="@color/casino_bordeaux_dark"
             android:visibility="gone"
             android:minWidth="48dp"
             android:minHeight="48dp"
@@ -241,16 +277,32 @@
             android:id="@+id/tvRedealsLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="12sp"
+            android:textColor="@color/casino_gold_light"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Undo button — required by GameActivity.renderBottomBar() -->
+        <Button
+            android:id="@+id/btnUndo"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/undo_button"
+            android:textSize="18sp"
+            android:textColor="@color/casino_gold"
+            android:backgroundTint="@color/casino_bordeaux_dark"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
             android:layout_marginEnd="8dp" />
 
         <!-- Hint button -->
         <Button
             android:id="@+id/btnHint"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:text="@string/hint_button"
             android:textSize="18sp"
+            android:textColor="@color/casino_gold"
+            android:backgroundTint="@color/casino_bordeaux_dark"
             android:minWidth="48dp"
             android:minHeight="48dp" />
     </LinearLayout>
