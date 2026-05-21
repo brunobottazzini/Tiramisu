@@ -89,7 +89,7 @@ class TiramisuViewModelTest {
     }
 
     @Test fun `moving same-suit card succeeds`() {
-        stateWith(piles = listOf(listOf("c5"), listOf("c3"), emptyList(), emptyList()))
+        stateWith(piles = listOf(listOf("c5"), listOf("c3"), emptyList(), emptyList()), difficulty = Difficulty.FACILE)
         vm.onPileTapped(0)
         val result = vm.onPileTapped(1)
         assertEquals(TapResult.MOVED, result)
@@ -156,7 +156,7 @@ class TiramisuViewModelTest {
         stateWith(
             piles = listOf(listOf("b2"), listOf("b3"), emptyList(), emptyList()),
             foundations = listOf("b1", "zero", "zero", "zero"),
-            difficulty = Difficulty.NORMALE
+            difficulty = Difficulty.FACILE
         )
         vm.onPileTapped(1)
         val result = vm.onPileTapped(0)

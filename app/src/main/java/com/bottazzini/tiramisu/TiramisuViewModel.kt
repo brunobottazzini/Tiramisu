@@ -227,7 +227,7 @@ class TiramisuViewModel : ViewModel() {
         val moving = s.topOfPile(srcPileIdx)
         if (moving == "zero") return false
         val dest = s.topOfPile(dstPileIdx)
-        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest)) return false
+        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest, strict = s.difficulty.strictTableau)) return false
         if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) return false
         return true
     }
@@ -258,7 +258,7 @@ class TiramisuViewModel : ViewModel() {
         val s = state ?: return false
         val moving = s.topOfPile(srcIdx)
         val dest   = s.topOfPile(dstIdx)
-        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest)) return false
+        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest, strict = s.difficulty.strictTableau)) return false
         // In DIFFICILE, block non-foundation moves when obbligato targets exist
         if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) return false
         s.piles[dstIdx].add(s.piles[srcIdx].removeAt(s.piles[srcIdx].size - 1))
