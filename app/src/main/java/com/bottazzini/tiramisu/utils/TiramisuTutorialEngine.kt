@@ -3,37 +3,35 @@ package com.bottazzini.tiramisu.utils
 /**
  * Manages tutorial step progression for Tiramisù.
  *
- * The engine enforces that required moves are performed before "Next" is available.
+ * The engine advances via [advanceToNext]; guards against wrong moves live in GameActivity.
  * Info steps (requiredMove == null) show the "Next" button immediately.
  */
 class TiramisuTutorialEngine(private val steps: List<TiramisuTutorialStep>) {
 
-    private var index           = 0
-    private var moveExecuted    = false
+    private var index = 0
 
     fun currentStep(): TiramisuTutorialStep = steps[index.coerceAtMost(steps.lastIndex)]
 
     fun isComplete(): Boolean = index >= steps.size
 
-    /**
-     * Advance to the next step.
-     * For steps with requiredMove, only advances if the move has been executed.
-     */
+    /** Advance to the next step unconditionally. */
     fun advanceToNext() {
         if (isComplete()) return
-        val step = currentStep()
-        if (step.requiredMove != null && !moveExecuted) return   // not done yet
         index++
-        moveExecuted = false
     }
 
-    /**
-     * Returns true if the current step expects a stock tap.
-     */
+    /** True if the current step expects a tap on the stock (tallone). */
     fun isStockDealStep(): Boolean {
         if (isComplete()) return false
         val move = currentStep().requiredMove ?: return false
-        return move.sourcePile == -1
+        return move.sourcePile == -1 && move.targetPile == -1
+    }
+
+    /** True if the current step expects a tap on the Ridistribuisci button. */
+    fun isRedealStep(): Boolean {
+        if (isComplete()) return false
+        val move = currentStep().requiredMove ?: return false
+        return move.sourcePile == -1 && move.targetPile == -2
     }
 
     /**
@@ -43,19 +41,27 @@ class TiramisuTutorialEngine(private val steps: List<TiramisuTutorialStep>) {
     fun isPileTapAllowed(pileIdx: Int, card: String): Boolean {
         if (isComplete()) return false
         val move = currentStep().requiredMove ?: return true   // no restriction
-        if (move.sourcePile == -1) return false                // stock step, pile tap not expected
+        if (move.sourcePile == -1) return false                // stock or redeal step
         return move.sourcePile == pileIdx
     }
 
     /**
-     * Call after a pile-to-pile or pile-to-foundation move is executed.
-     * Marks the current required move as done if it matches.
+     * True if moving [srcPile] → [dstPile] is the correct move for the current step.
+     * Returns true if the current step has no restriction (info step).
      */
-    fun onMoveExecuted(srcPile: Int, dstPile: Int) {
-        if (isComplete()) return
-        val required = currentStep().requiredMove ?: return
-        if (required.sourcePile == srcPile && required.targetPile == dstPile) {
-            moveExecuted = true
-        }
+    fun isCorrectPileMove(srcPile: Int, dstPile: Int): Boolean {
+        if (isComplete()) return false
+        val move = currentStep().requiredMove ?: return true
+        return move.sourcePile == srcPile && move.targetPile == dstPile
+    }
+
+    /**
+     * True if moving [srcPile] to the foundation is the correct move for the current step.
+     * Returns true if the current step has no restriction (info step).
+     */
+    fun isCorrectFoundationMove(srcPile: Int): Boolean {
+        if (isComplete()) return false
+        val move = currentStep().requiredMove ?: return true
+        return move.sourcePile == srcPile && move.targetPile == -1
     }
 }
