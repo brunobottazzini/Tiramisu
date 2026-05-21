@@ -41,10 +41,11 @@ class TiramisuDeckSetupTest {
 
     @Test
     fun `tutorial deck stock cards index 4 and 5 share suit for same-suit step`() {
-        // After dealing initial 4: pile 0 is empty (b1 auto-moves), pile 1=s6, pile 2=c3, pile 3=d8
-        // Stock: c7, c5, d3, s4. After 1 deal: pile 0=c7 (1 card), pile 1=c5+s6, pile 2=d3+c3, pile 3=s4+d8
-        // Same-suit step: pile 0 (c7, coppe) → pile 1 (c5, coppe) — pile 0 had 1 card, becomes EMPTY
-        // Indices 4 and 5 both must be coppe
+        // After 1st deal: pile 0=EMPTY (b1 auto-moved), pile 1=s6, pile 2=c3, pile 3=d8
+        // Stock: c7, c5, d3, b2.
+        // After 2nd deal: pile 0=c7 (1 card), pile 1=c5+s6, pile 2=d3+c3, pile 3=b2+d8
+        // Same-suit step: pile 0 (c7, coppe) → pile 1 (c5, coppe) — pile 0 becomes EMPTY
+        // Indices 4 and 5 must share the same suit (coppe)
         val deck = TiramisuDeckSetup.tutorialDeck()
         val stockCard0 = deck[4] // lands on pile 0 → c7
         val stockCard1 = deck[5] // lands on pile 1 → c5

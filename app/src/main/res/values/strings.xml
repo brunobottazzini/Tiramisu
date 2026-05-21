@@ -40,8 +40,8 @@
     <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, qualsiasi valore. Il mazzetto ora è vuoto!</string>
     <string name="tut_empty_pile">Un mazzetto vuoto 🟢 accetta qualsiasi carta! Trascina la carta 🟠 sullo slot vuoto.</string>
     <string name="tut_empty_pile_confirm">✓ Perfetto! I mazzetti vuoti sono preziosi — ci puoi mettere qualsiasi carta.</string>
-    <string name="tut_foundation">Quella carta può andare alla base! Toccala per selezionarla, poi tocca la base in alto.</string>
-    <string name="tut_foundation_confirm">✓ Perfetto! Porta tutte le carte alle basi per vincere.</string>
+    <string name="tut_foundation">Il 2 di bastoni 🟠 segue l\'asso in base! Toccalo o trascinalo verso la base in alto.</string>
+    <string name="tut_foundation_confirm">✓ Eccellente! Le basi si riempiono in ordine: Asso, 2, 3… fino al 10. Vinci quando tutte e 4 le basi sono complete!</string>
     <string name="tut_redeal">Lo stock è vuoto. Tocca il pulsante Ridistribuisci per raccogliere i mazzetti e continuare!</string>
     <string name="tut_redeal_confirm">✓ Puoi ridistribuire un numero limitato di volte, in base alla difficoltà.</string>
     <string name="tut_finish">Bravo! Ora conosci le regole di Tiramisù. Buon gioco! 🎉</string>

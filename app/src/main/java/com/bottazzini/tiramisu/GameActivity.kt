@@ -488,6 +488,13 @@ class GameActivity : AppCompatActivity() {
     private fun onFoundationViewTapped(foundationIdx: Int) {
         if (isAnimating) return
         val sel = vm.selectedPileIndex ?: return
+        if (isTutorialMode) {
+            val eng = tutorialEngine ?: return
+            if (!eng.isCorrectFoundationMove(sel)) {
+                showInvalidMoveToast()
+                return
+            }
+        }
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
             renderAll()
