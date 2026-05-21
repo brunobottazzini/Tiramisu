@@ -1,11 +1,14 @@
 package com.bottazzini.tiramisu
 
+import android.content.ClipData
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.DragEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.Window
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +26,11 @@ class GameActivity : AppCompatActivity() {
         const val EXTRA_TUTORIAL_MODE = "tutorial_mode"
         /** Visible height of each non-top card in a pile (dp). Top card shows fully. */
         private const val CARD_PEEK_DP = 24
+        /** Card image native dimensions (e.g. piacentine_b1.png is 200×364). */
+        private const val CARD_ASPECT_W = 200f
+        private const val CARD_ASPECT_H = 364f
+        /** ClipData label used to identify our drag events. */
+        private const val DRAG_LABEL = "tiramisu_pile_drag"
     }
 
     // ---- ViewModel & Repos ----
@@ -42,9 +50,11 @@ class GameActivity : AppCompatActivity() {
     private lateinit var btnHint: Button
     private lateinit var btnMenu: ImageButton
     private lateinit var gameRoot: View
-    private val foundationViews = arrayOfNulls<FrameLayout>(4)
+    private val foundationViews = arrayOfNulls<ImageView>(4)
     private val pileContainers  = arrayOfNulls<LinearLayout>(4)
     private val pileScrollViews = arrayOfNulls<ScrollView>(4)
+    private var firstLayoutDone  = false
+    private var dragSourcePile: Int? = null
     private lateinit var tutorialOverlay: LinearLayout
     private lateinit var tvTutorialInstruction: TextView
     private lateinit var btnTutorialNext: Button
@@ -126,7 +136,22 @@ class GameActivity : AppCompatActivity() {
 
         for (i in 0..3) {
             foundationViews[i]?.setOnClickListener { onFoundationViewTapped(i) }
+            foundationViews[i]?.setOnDragListener(makeFoundationDropListener(i))
+            pileScrollViews[i]?.setOnDragListener(makePileDropListener(i))
         }
+
+        // Re-render once the layout has been measured so the pile column
+        // width is known and we can size cards at their native aspect ratio.
+        gameRoot.viewTreeObserver.addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (firstLayoutDone) return
+                    firstLayoutDone = true
+                    gameRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (vm.state != null) renderAll()
+                }
+            }
+        )
     }
 
     private fun startNewGame() {
@@ -239,11 +264,11 @@ class GameActivity : AppCompatActivity() {
             val view = foundationViews[i] ?: continue
             val top  = s.foundations[i]
             if (top == "zero") {
-                view.setBackgroundResource(R.drawable.zero)
+                view.setImageResource(R.drawable.zero)
                 view.contentDescription = getString(R.string.foundation_empty_desc, i + 1)
             } else {
                 val resId = resources.getIdentifier("${cardType}_$top", "drawable", packageName)
-                if (resId != 0) view.setBackgroundResource(resId)
+                if (resId != 0) view.setImageResource(resId)
                 view.contentDescription = cardDescription(top)
             }
         }
@@ -256,12 +281,20 @@ class GameActivity : AppCompatActivity() {
         val density   = resources.displayMetrics.density
         val peekPx    = (CARD_PEEK_DP * density).toInt()
 
+        // The pile column width is only known after the first layout pass.
+        // Skip rendering until then — the OnGlobalLayoutListener will retry.
+        val cardWidth = container.width - container.paddingLeft - container.paddingRight
+        if (cardWidth <= 0) return
+
+        // Each card keeps its native aspect ratio (e.g. 200×364 → height ≈ width × 1.82).
+        val cardHeightPx = (cardWidth * (CARD_ASPECT_H / CARD_ASPECT_W)).toInt()
+
         if (pile.isEmpty()) {
             val placeholder = ImageView(this)
             placeholder.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, peekPx * 3)
+                LinearLayout.LayoutParams.MATCH_PARENT, cardHeightPx)
             placeholder.setImageResource(R.drawable.zero)
-            placeholder.scaleType = ImageView.ScaleType.FIT_XY
+            placeholder.scaleType = ImageView.ScaleType.FIT_CENTER
             placeholder.contentDescription = getString(R.string.pile_empty_desc, pileIdx + 1)
             placeholder.alpha = 0.4f
             container.addView(placeholder)
@@ -271,14 +304,17 @@ class GameActivity : AppCompatActivity() {
         val isSelected  = vm.selectedPileIndex == pileIdx
         val isObbligato = vm.obbligatoTargets().contains(pileIdx)
         val isHinted    = hintedPileIdx == pileIdx
-        val cardHeightPx = (72 * density).toInt()
 
         pile.forEachIndexed { cardIdx, card ->
             val imageView = ImageView(this)
-            val height    = if (cardIdx == pile.lastIndex) cardHeightPx else peekPx
-            imageView.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, height)
-            imageView.scaleType = ImageView.ScaleType.FIT_XY
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, cardHeightPx)
+            // Overlap each non-first card with the previous so only `peekPx` of the
+            // top strip remains visible — full card image, no horizontal stretch.
+            if (cardIdx > 0) params.topMargin = peekPx - cardHeightPx
+            imageView.layoutParams = params
+            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+            imageView.adjustViewBounds = false
 
             val resId = resources.getIdentifier("${cardType}_$card", "drawable", packageName)
             if (resId != 0) imageView.setImageResource(resId)
@@ -288,6 +324,7 @@ class GameActivity : AppCompatActivity() {
                 imageView.isFocusable = true
                 imageView.isClickable = true
                 imageView.setOnClickListener { onPileCardTapped(pileIdx) }
+                imageView.setOnLongClickListener { v -> startCardDrag(v, pileIdx) }
                 when {
                     isSelected  -> imageView.alpha = 0.7f
                     isObbligato -> imageView.setColorFilter(
@@ -307,6 +344,96 @@ class GameActivity : AppCompatActivity() {
         pileScrollViews[pileIdx]?.post {
             pileScrollViews[pileIdx]?.fullScroll(View.FOCUS_DOWN)
         }
+    }
+
+    // ---- Drag & drop ----
+
+    private fun startCardDrag(v: View, pileIdx: Int): Boolean {
+        if (isTutorialMode) {
+            val eng  = tutorialEngine ?: return false
+            val card = vm.state?.topOfPile(pileIdx) ?: return false
+            if (!eng.isPileTapAllowed(pileIdx, card)) return false
+        }
+        if (vm.state?.topOfPile(pileIdx) == "zero") return false
+
+        dragSourcePile = pileIdx
+        val clip   = ClipData.newPlainText(DRAG_LABEL, pileIdx.toString())
+        val shadow = View.DragShadowBuilder(v)
+        return v.startDragAndDrop(clip, shadow, pileIdx, 0)
+    }
+
+    private fun makePileDropListener(targetPileIdx: Int) = View.OnDragListener { view, event ->
+        if (event.clipDescription?.label != DRAG_LABEL) return@OnDragListener false
+        when (event.action) {
+            DragEvent.ACTION_DRAG_STARTED -> true
+            DragEvent.ACTION_DRAG_ENTERED -> {
+                val src = dragSourcePile
+                if (src != null && vm.canMoveBetweenPiles(src, targetPileIdx)) {
+                    view.foreground = ContextCompat.getDrawable(
+                        this, R.drawable.casino_drop_zone_valid)
+                }
+                true
+            }
+            DragEvent.ACTION_DRAG_EXITED  -> { view.foreground = null; true }
+            DragEvent.ACTION_DROP         -> {
+                view.foreground = null
+                val src = dragSourcePile ?: return@OnDragListener false
+                handlePileDrop(src, targetPileIdx)
+            }
+            DragEvent.ACTION_DRAG_ENDED   -> { view.foreground = null; true }
+            else -> true
+        }
+    }
+
+    private fun makeFoundationDropListener(foundationIdx: Int) = View.OnDragListener { view, event ->
+        if (event.clipDescription?.label != DRAG_LABEL) return@OnDragListener false
+        when (event.action) {
+            DragEvent.ACTION_DRAG_STARTED -> true
+            DragEvent.ACTION_DRAG_ENTERED -> {
+                val src = dragSourcePile
+                if (src != null && vm.canMoveTopToAnyFoundation(src)) {
+                    view.foreground = ContextCompat.getDrawable(
+                        this, R.drawable.casino_drop_zone_valid)
+                }
+                true
+            }
+            DragEvent.ACTION_DRAG_EXITED  -> { view.foreground = null; true }
+            DragEvent.ACTION_DROP         -> {
+                view.foreground = null
+                val src = dragSourcePile ?: return@OnDragListener false
+                handleFoundationDrop(src)
+            }
+            DragEvent.ACTION_DRAG_ENDED   -> {
+                view.foreground = null
+                if (event.action == DragEvent.ACTION_DRAG_ENDED) dragSourcePile = null
+                true
+            }
+            else -> true
+        }
+    }
+
+    private fun handlePileDrop(srcPile: Int, dstPile: Int): Boolean {
+        if (!vm.tryMoveBetweenPiles(srcPile, dstPile)) {
+            showInvalidMoveToast()
+            return false
+        }
+        playSound(R.raw.flipcard)
+        renderAll()
+        checkWin()
+        if (isTutorialMode) advanceTutorial()
+        return true
+    }
+
+    private fun handleFoundationDrop(srcPile: Int): Boolean {
+        if (!vm.onFoundationTapped(srcPile)) {
+            showInvalidMoveToast()
+            return false
+        }
+        playSound(R.raw.flipcard)
+        renderAll()
+        checkWin()
+        if (isTutorialMode) advanceTutorial()
+        return true
     }
 
     private fun renderBottomBar(s: TiramisuGameState) {

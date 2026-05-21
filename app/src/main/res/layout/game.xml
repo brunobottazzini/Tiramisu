@@ -64,35 +64,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <FrameLayout android:id="@+id/foundation0"
+        <ImageView android:id="@+id/foundation0"
             android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="72dp" android:layout_marginHorizontal="4dp"
+            android:layout_height="96dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:scaleType="fitCenter"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
 
-        <FrameLayout android:id="@+id/foundation1"
+        <ImageView android:id="@+id/foundation1"
             android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="72dp" android:layout_marginHorizontal="4dp"
+            android:layout_height="96dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:scaleType="fitCenter"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
 
-        <FrameLayout android:id="@+id/foundation2"
+        <ImageView android:id="@+id/foundation2"
             android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="72dp" android:layout_marginHorizontal="4dp"
+            android:layout_height="96dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:scaleType="fitCenter"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
 
-        <FrameLayout android:id="@+id/foundation3"
+        <ImageView android:id="@+id/foundation3"
             android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="72dp" android:layout_marginHorizontal="4dp"
+            android:layout_height="96dp" android:layout_marginHorizontal="4dp"
             android:minWidth="48dp" android:minHeight="48dp"
-            android:background="@drawable/zero"
+            android:scaleType="fitCenter"
+            android:src="@drawable/zero"
             android:clickable="true" android:focusable="true"
             android:contentDescription="@string/foundation_empty_desc" />
     </LinearLayout>

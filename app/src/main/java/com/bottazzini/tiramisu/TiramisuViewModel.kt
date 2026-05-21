@@ -149,6 +149,36 @@ class TiramisuViewModel : ViewModel() {
 
     fun isWon(): Boolean = state?.isWon() ?: false
 
+    // ---- Drag & drop entry points (no dependency on selectedPileIndex) ----
+
+    /** True if the top card of [srcPileIdx] can legally move onto [dstPileIdx]. */
+    fun canMoveBetweenPiles(srcPileIdx: Int, dstPileIdx: Int): Boolean {
+        val s = state ?: return false
+        if (srcPileIdx == dstPileIdx) return false
+        val moving = s.topOfPile(srcPileIdx)
+        if (moving == "zero") return false
+        val dest = s.topOfPile(dstPileIdx)
+        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest)) return false
+        if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) return false
+        return true
+    }
+
+    /** True if the top card of [srcPileIdx] can legally move onto some foundation. */
+    fun canMoveTopToAnyFoundation(srcPileIdx: Int): Boolean {
+        val s = state ?: return false
+        val moving = s.topOfPile(srcPileIdx)
+        if (moving == "zero") return false
+        return s.foundations.any { TiramisuMoveValidator.canMoveToFoundation(moving, it) }
+    }
+
+    /** Drag-driven equivalent of [onPileTapped] that does not consult [selectedPileIndex]. */
+    fun tryMoveBetweenPiles(srcPileIdx: Int, dstPileIdx: Int): Boolean {
+        if (!canMoveBetweenPiles(srcPileIdx, dstPileIdx)) return false
+        val moved = movePileToPile(srcPileIdx, dstPileIdx)
+        if (moved) selectedPileIndex = null
+        return moved
+    }
+
     // ---- Private helpers ----
 
     private fun movePileToPile(srcIdx: Int, dstIdx: Int): Boolean {
