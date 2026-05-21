@@ -28,6 +28,19 @@ class TiramisuGameState(
         top != "zero" && TiramisuMoveValidator.rank(top) == 10
     }
 
+    /** Deep clone — independent copies of piles/stock/foundations. */
+    fun deepCopy(): TiramisuGameState = TiramisuGameState(
+        piles               = piles.map { it.toMutableList() },
+        stock               = stock.toMutableList(),
+        foundations         = foundations.toMutableList(),
+        redealsLeft         = redealsLeft,
+        difficulty          = difficulty,
+        gameStartTimeMillis = gameStartTimeMillis,
+        timerPausedMs       = timerPausedMs,
+        isTimerPaused       = isTimerPaused,
+        hasActiveGame       = hasActiveGame
+    )
+
     companion object {
         /** Create a fresh game state with a shuffled stock. */
         fun newGame(difficulty: Difficulty): TiramisuGameState = TiramisuGameState(

@@ -248,6 +248,17 @@
             android:textSize="13sp"
             android:layout_marginEnd="8dp" />
 
+        <!-- Undo button (single-depth) -->
+        <Button
+            android:id="@+id/btnUndo"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/undo_button"
+            android:textSize="18sp"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:layout_marginEnd="8dp" />
+
         <!-- Hint button -->
         <Button
             android:id="@+id/btnHint"

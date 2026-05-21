@@ -51,6 +51,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var stockArea: FrameLayout
     private lateinit var btnRedeal: Button
     private lateinit var btnHint: Button
+    private lateinit var btnUndo: Button
     private lateinit var btnMenu: ImageButton
     private lateinit var gameRoot: View
     private val foundationViews = arrayOfNulls<ImageView>(4)
@@ -118,6 +119,7 @@ class GameActivity : AppCompatActivity() {
         stockArea      = findViewById(R.id.stockArea)
         btnRedeal      = findViewById(R.id.btnRedeal)
         btnHint        = findViewById(R.id.btnHint)
+        btnUndo        = findViewById(R.id.btnUndo)
         btnMenu        = findViewById(R.id.btnMenu)
         tutorialOverlay       = findViewById(R.id.tutorialOverlay)
         tvTutorialInstruction = findViewById(R.id.tvTutorialInstruction)
@@ -134,6 +136,7 @@ class GameActivity : AppCompatActivity() {
         stockArea.setOnClickListener { onStockTapped() }
         btnRedeal.setOnClickListener { onRedealTapped() }
         btnHint.setOnClickListener   { onHintTapped() }
+        btnUndo.setOnClickListener   { onUndoTapped() }
         btnMenu.setOnClickListener   { showMenuDialog() }
         btnTutorialNext.setOnClickListener { advanceTutorial() }
 
@@ -250,6 +253,14 @@ class GameActivity : AppCompatActivity() {
         hintedPileIdx = hint.fromPile
         renderAll()
         timerHandler.postDelayed({ hintedPileIdx = null; renderAll() }, 1500)
+    }
+
+    private fun onUndoTapped() {
+        if (isTutorialMode) return
+        if (vm.undo()) {
+            playSound(R.raw.flipcard)
+            renderAll()
+        }
     }
 
     // ---- Rendering ----
@@ -493,6 +504,9 @@ class GameActivity : AppCompatActivity() {
 
         val canRedeal = vm.canRedeal()
         btnRedeal.isVisible = canRedeal
+
+        btnUndo.isVisible = !isTutorialMode
+        btnUndo.isEnabled = vm.canUndo()
 
         if (s.stock.isEmpty() && !canRedeal) {
             stockImage.setImageResource(R.drawable.zero)

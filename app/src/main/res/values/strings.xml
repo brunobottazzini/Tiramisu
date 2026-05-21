@@ -282,9 +282,14 @@
     <string name="stock_count">Tallone: %1$d</string>
     <string name="redeal_button">↩ Ridistribuisci</string>
     <string name="hint_button">💡</string>
+    <string name="undo_button">↶</string>
     <string name="foundation_empty_desc">Fondazione vuota %1$d</string>
     <string name="pile_empty_desc">Mazzetto vuoto %1$d</string>
     <string name="card_desc">%1$s di %2$s</string>
     <string name="redeals_left">Ridistribuzioni: %1$d</string>
     <string name="obbligato_hint">Devi prima mandare questa carta alla base!</string>
+    <string name="lost_title">Hai perso</string>
+    <string name="lost_message">Nessuna mossa disponibile.</string>
+    <string name="lost_retry">Riprova stessa partita</string>
+    <string name="lost_new">Nuova partita</string>
 </resources>
