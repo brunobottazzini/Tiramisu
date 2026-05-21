@@ -214,11 +214,16 @@ class GameActivity : AppCompatActivity() {
             maybeAnimateAutoAces()
             checkWin()
             checkLost()
+            if (isTutorialMode) advanceTutorial()
         }
     }
 
     private fun onRedealTapped() {
         if (isAnimating) return
+        if (isTutorialMode) {
+            val eng = tutorialEngine ?: return
+            if (!eng.isRedealStep()) return
+        }
         if (!vm.canRedeal()) return
         animateRedeal()
     }
@@ -294,6 +299,7 @@ class GameActivity : AppCompatActivity() {
             for (task in tasks) gameRootContainer.removeView(task.ghost)
             renderAll()
             isAnimating = false
+            if (isTutorialMode) advanceTutorial()
         }, totalDuration)
     }
 
@@ -474,6 +480,8 @@ class GameActivity : AppCompatActivity() {
         val isSelected  = vm.selectedPileIndex == pileIdx
         val isObbligato = vm.obbligatoTargets().contains(pileIdx)
         val isHinted    = hintedPileIdx == pileIdx
+        val isTutorialHighlight = isTutorialMode &&
+            (tutorialEngine?.currentStep()?.highlightPiles?.contains(pileIdx) == true)
 
         pile.forEachIndexed { cardIdx, card ->
             val imageView = ImageView(this)
@@ -496,12 +504,14 @@ class GameActivity : AppCompatActivity() {
                 imageView.setOnClickListener { onPileCardTapped(pileIdx) }
                 attachInstantDragListener(imageView, pileIdx)
                 when {
-                    isSelected  -> imageView.alpha = 0.7f
-                    isObbligato -> imageView.setColorFilter(
+                    isSelected          -> imageView.alpha = 0.7f
+                    isTutorialHighlight -> imageView.setColorFilter(
+                        0x880000FF.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
+                    isObbligato         -> imageView.setColorFilter(
                         0x88FF0000.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
-                    isHinted    -> imageView.setColorFilter(
+                    isHinted            -> imageView.setColorFilter(
                         0x8800FF00.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
-                    else        -> { imageView.alpha = 1f; imageView.clearColorFilter() }
+                    else                -> { imageView.alpha = 1f; imageView.clearColorFilter() }
                 }
             } else {
                 imageView.isFocusable = false
@@ -632,6 +642,13 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun handlePileDrop(srcPile: Int, dstPile: Int): Boolean {
+        if (isTutorialMode) {
+            val eng = tutorialEngine ?: return false
+            if (!eng.isCorrectPileMove(srcPile, dstPile)) {
+                showInvalidMoveToast()
+                return false
+            }
+        }
         if (!vm.tryMoveBetweenPiles(srcPile, dstPile)) {
             showInvalidMoveToast()
             return false
@@ -646,6 +663,13 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun handleFoundationDrop(srcPile: Int): Boolean {
+        if (isTutorialMode) {
+            val eng = tutorialEngine ?: return false
+            if (!eng.isCorrectFoundationMove(srcPile)) {
+                showInvalidMoveToast()
+                return false
+            }
+        }
         if (!vm.onFoundationTapped(srcPile)) {
             showInvalidMoveToast()
             return false
