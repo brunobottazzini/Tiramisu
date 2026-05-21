@@ -481,6 +481,10 @@ class GameActivity : AppCompatActivity() {
         // Each card keeps its native aspect ratio (e.g. 200×364 → height ≈ width × 1.82).
         val cardHeightPx = (cardWidth * (CARD_ASPECT_H / CARD_ASPECT_W)).toInt()
 
+        val tutStep          = if (isTutorialMode) tutorialEngine?.currentStep() else null
+        val isTutorialSource = tutStep?.highlightSource == pileIdx
+        val isTutorialTarget = tutStep?.highlightTarget == pileIdx
+
         if (pile.isEmpty()) {
             val placeholder = ImageView(this)
             placeholder.layoutParams = LinearLayout.LayoutParams(
@@ -488,7 +492,13 @@ class GameActivity : AppCompatActivity() {
             placeholder.setImageResource(R.drawable.zero)
             placeholder.scaleType = ImageView.ScaleType.FIT_CENTER
             placeholder.contentDescription = getString(R.string.pile_empty_desc, pileIdx + 1)
-            placeholder.alpha = 0.4f
+            // Green highlight on empty target pile so the user can see where to drop
+            if (isTutorialTarget) {
+                placeholder.alpha = 1f
+                placeholder.setColorFilter(0xCC00AA50.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
+            } else {
+                placeholder.alpha = 0.4f
+            }
             container.addView(placeholder)
             return
         }
@@ -496,8 +506,6 @@ class GameActivity : AppCompatActivity() {
         val isSelected  = vm.selectedPileIndex == pileIdx
         val isObbligato = vm.obbligatoTargets().contains(pileIdx)
         val isHinted    = hintedPileIdx == pileIdx
-        val isTutorialHighlight = isTutorialMode &&
-            (tutorialEngine?.currentStep()?.highlightPiles?.contains(pileIdx) == true)
 
         pile.forEachIndexed { cardIdx, card ->
             val imageView = ImageView(this)
@@ -520,14 +528,17 @@ class GameActivity : AppCompatActivity() {
                 imageView.setOnClickListener { onPileCardTapped(pileIdx) }
                 attachInstantDragListener(imageView, pileIdx)
                 when {
-                    isSelected          -> imageView.alpha = 0.7f
-                    isTutorialHighlight -> imageView.setColorFilter(
-                        0x880000FF.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
-                    isObbligato         -> imageView.setColorFilter(
+                    isSelected         -> imageView.alpha = 0.7f
+                    // Tutorial: orange = "drag this card", green = "drop here"
+                    isTutorialSource   -> imageView.setColorFilter(
+                        0xCCFF8C00.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
+                    isTutorialTarget   -> imageView.setColorFilter(
+                        0xCC00AA50.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
+                    isObbligato        -> imageView.setColorFilter(
                         0x88FF0000.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
-                    isHinted            -> imageView.setColorFilter(
+                    isHinted           -> imageView.setColorFilter(
                         0x8800FF00.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
-                    else                -> { imageView.alpha = 1f; imageView.clearColorFilter() }
+                    else               -> { imageView.alpha = 1f; imageView.clearColorFilter() }
                 }
             } else {
                 imageView.isFocusable = false

@@ -7,12 +7,17 @@ import com.bottazzini.tiramisu.R
  * A single scripted step in the tutorial.
  * [instructionResId] — string resource for the instruction text.
  * [requiredMove]     — if non-null, the "Next" button is hidden; the user must perform the move.
- * [highlightPiles]   — pile indices (0-3) to visually highlight in blue.
+ * [highlightSource]  — pile index (0-3) rendered in ORANGE: "drag this card".
+ * [highlightTarget]  — pile index (0-3) rendered in GREEN:  "drop here" (works on empty piles too).
+ *
+ * During info steps (requiredMove == null) ALL pile / foundation moves are blocked,
+ * so the game state cannot be accidentally corrupted before the user taps "Avanti".
  */
 data class TiramisuTutorialStep(
     val instructionResId: Int,
     val requiredMove:     TiramisuTutorialMove? = null,
-    val highlightPiles:   List<Int>             = emptyList()
+    val highlightSource:  Int?                  = null,
+    val highlightTarget:  Int?                  = null
 )
 
 /**
@@ -78,7 +83,8 @@ object TiramisuTutorialSteps {
         TiramisuTutorialStep(
             instructionResId = R.string.tut_same_suit,
             requiredMove     = TiramisuTutorialMove(sourcePile = 0, targetPile = 1),
-            highlightPiles   = listOf(0, 1)
+            highlightSource  = 0,   // orange: drag from here
+            highlightTarget  = 1    // green:  drop here
         ),
 
         // Step 4: Confirmation — user taps "Avanti"
@@ -92,7 +98,8 @@ object TiramisuTutorialSteps {
         TiramisuTutorialStep(
             instructionResId = R.string.tut_empty_pile,
             requiredMove     = TiramisuTutorialMove(sourcePile = 3, targetPile = 0),
-            highlightPiles   = listOf(0, 3)
+            highlightSource  = 3,   // orange: drag from here
+            highlightTarget  = 0    // green:  drop on empty pile
         ),
 
         // Step 6: Confirmation — user taps "Avanti"

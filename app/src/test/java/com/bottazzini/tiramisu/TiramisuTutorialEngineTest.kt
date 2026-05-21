@@ -109,10 +109,10 @@ class TiramisuTutorialEngineTest {
     }
 
     @Test
-    fun `isPileTapAllowed true for any pile on info step`() {
+    fun `isPileTapAllowed false on info step (moves blocked to prevent state corruption)`() {
         val eng = TiramisuTutorialEngine(listOf(infoStep()))
-        assertTrue(eng.isPileTapAllowed(0, "c7"))
-        assertTrue(eng.isPileTapAllowed(3, "d8"))
+        assertFalse(eng.isPileTapAllowed(0, "c7"))
+        assertFalse(eng.isPileTapAllowed(3, "d8"))
     }
 
     @Test
@@ -134,9 +134,9 @@ class TiramisuTutorialEngineTest {
     }
 
     @Test
-    fun `isCorrectPileMove true on info step (no restriction)`() {
+    fun `isCorrectPileMove false on info step (moves blocked to prevent state corruption)`() {
         val eng = TiramisuTutorialEngine(listOf(infoStep()))
-        assertTrue(eng.isCorrectPileMove(srcPile = 0, dstPile = 3))
+        assertFalse(eng.isCorrectPileMove(srcPile = 0, dstPile = 3))
     }
 
     @Test
@@ -152,8 +152,8 @@ class TiramisuTutorialEngineTest {
     }
 
     @Test
-    fun `isCorrectFoundationMove true on info step (no restriction)`() {
+    fun `isCorrectFoundationMove false on info step (moves blocked to prevent state corruption)`() {
         val eng = TiramisuTutorialEngine(listOf(infoStep()))
-        assertTrue(eng.isCorrectFoundationMove(srcPile = 0))
+        assertFalse(eng.isCorrectFoundationMove(srcPile = 0))
     }
 }

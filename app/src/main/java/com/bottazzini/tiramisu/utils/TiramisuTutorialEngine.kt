@@ -36,32 +36,32 @@ class TiramisuTutorialEngine(private val steps: List<TiramisuTutorialStep>) {
 
     /**
      * Returns true if tapping pile [pileIdx] is the expected action for the current step.
-     * If the step has no requiredMove, any tap is allowed.
+     * Info steps (requiredMove == null) block all pile interaction to prevent state corruption.
      */
     fun isPileTapAllowed(pileIdx: Int, card: String): Boolean {
         if (isComplete()) return false
-        val move = currentStep().requiredMove ?: return true   // no restriction
+        val move = currentStep().requiredMove ?: return false  // block during info/confirm steps
         if (move.sourcePile == -1) return false                // stock or redeal step
         return move.sourcePile == pileIdx
     }
 
     /**
      * True if moving [srcPile] → [dstPile] is the correct move for the current step.
-     * Returns true if the current step has no restriction (info step).
+     * Info steps block all pile moves to prevent corrupting the tutorial game state.
      */
     fun isCorrectPileMove(srcPile: Int, dstPile: Int): Boolean {
         if (isComplete()) return false
-        val move = currentStep().requiredMove ?: return true
+        val move = currentStep().requiredMove ?: return false  // block during info/confirm steps
         return move.sourcePile == srcPile && move.targetPile == dstPile
     }
 
     /**
      * True if moving [srcPile] to the foundation is the correct move for the current step.
-     * Returns true if the current step has no restriction (info step).
+     * Info steps block all foundation moves to prevent corrupting the tutorial game state.
      */
     fun isCorrectFoundationMove(srcPile: Int): Boolean {
         if (isComplete()) return false
-        val move = currentStep().requiredMove ?: return true
+        val move = currentStep().requiredMove ?: return false  // block during info/confirm steps
         return move.sourcePile == srcPile && move.targetPile == -1
     }
 }
