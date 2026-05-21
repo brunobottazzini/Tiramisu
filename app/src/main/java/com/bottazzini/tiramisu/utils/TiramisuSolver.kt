@@ -31,7 +31,11 @@ object TiramisuSolver {
             if (srcCard == "zero") continue
             for (dstIdx in 0..3) {
                 if (srcIdx == dstIdx) continue
-                if (TiramisuMoveValidator.canMoveToTableau(srcCard, state.topOfPile(dstIdx))) {
+                if (TiramisuMoveValidator.canMoveToTableau(
+                        srcCard,
+                        state.topOfPile(dstIdx),
+                        strict = state.difficulty.strictTableau
+                    )) {
                     // Skip moves that are just shuffling single card to empty pile (unhelpful)
                     if (state.topOfPile(dstIdx) == "zero" && state.piles[srcIdx].size == 1) continue
                     return Hint(fromPile = srcIdx, toPile = dstIdx, toFoundation = false)

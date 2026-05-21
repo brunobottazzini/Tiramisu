@@ -59,4 +59,16 @@ class TiramisuSolverTest {
         val hint = TiramisuSolver.findHint(s)
         assertNull(hint)
     }
+
+    @Test fun `under strict mode hint suggests same-suit move with lower rank as source`() {
+        // pile 0 top = c7, pile 1 top = c5. difficulty = NORMALE (strict).
+        // Under STRICT, only c5 -> c7 (5 < 7) is valid, NOT c7 -> c5.
+        // Solver MUST suggest pile 1 -> pile 0.
+        val s = state(piles = listOf(listOf("c7"), listOf("c5"), emptyList(), emptyList()))
+        val hint = TiramisuSolver.findHint(s)
+        assertNotNull(hint)
+        assertFalse(hint!!.toFoundation)
+        assertEquals(1, hint.fromPile)
+        assertEquals(0, hint.toPile)
+    }
 }
