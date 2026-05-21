@@ -67,4 +67,36 @@ class TiramisuMoveValidatorTest {
         assertFalse(TiramisuMoveValidator.canMoveToFoundation("zero", "c1"))
         assertFalse(TiramisuMoveValidator.canMoveToFoundation("zero", "zero"))
     }
+
+    // --- Strict mode (regola severa: same suit + strictly lower rank) ---
+
+    @Test fun `strict allows same suit with strictly lower rank`() {
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("c3", "c5", strict = true))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("b1", "b10", strict = true))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("s2", "s7", strict = true))
+    }
+
+    @Test fun `strict rejects same suit with equal rank`() {
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("c5", "c5", strict = true))
+    }
+
+    @Test fun `strict rejects same suit with higher rank`() {
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("c7", "c5", strict = true))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("b10", "b1", strict = true))
+    }
+
+    @Test fun `strict rejects different suit regardless of rank`() {
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("c3", "b5", strict = true))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("d2", "s7", strict = true))
+    }
+
+    @Test fun `strict still accepts any card on empty pile`() {
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("s10", "zero", strict = true))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("b1",  "zero", strict = true))
+    }
+
+    @Test fun `strict still rejects zero as moving card`() {
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("zero", "c5",   strict = true))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("zero", "zero", strict = true))
+    }
 }

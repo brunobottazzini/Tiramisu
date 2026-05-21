@@ -13,12 +13,24 @@ object TiramisuMoveValidator {
 
     /**
      * Can [movingCard] be placed on top of [destinationTop] in the tableau?
-     * Rule: same suit, any rank. Empty pile (zero) accepts anything.
+     *
+     * Rule (lax, [strict] = false): same suit, any rank.
+     * Rule (strict, [strict] = true): same suit AND rank(movingCard) < rank(destinationTop).
+     * Empty pile (zero) accepts anything in both modes.
      */
-    fun canMoveToTableau(movingCard: String, destinationTop: String): Boolean {
+    fun canMoveToTableau(
+        movingCard: String,
+        destinationTop: String,
+        strict: Boolean = false
+    ): Boolean {
         if (movingCard == "zero") return false
         if (destinationTop == "zero") return true  // empty pile accepts any card
-        return suit(movingCard) == suit(destinationTop)
+        if (suit(movingCard) != suit(destinationTop)) return false
+        return if (strict) {
+            rank(movingCard) < rank(destinationTop)
+        } else {
+            true
+        }
     }
 
     /**
