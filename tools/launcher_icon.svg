@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+  <defs>
+    <radialGradient id="bg" cx="54" cy="54" r="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B0000"/>
+      <stop offset="1" stop-color="#4A0000"/>
+    </radialGradient>
+  </defs>
+  <!-- Sfondo bordeaux radiale a tutto canvas -->
+  <rect x="0" y="0" width="108" height="108" fill="url(#bg)"/>
+  <!-- Cornice oro (rounded rect r=4) -->
+  <path d="M26,28 L82,28 A4,4 0 0 1 86,32 L86,76 A4,4 0 0 1 82,80 L26,80 A4,4 0 0 1 22,76 L22,32 A4,4 0 0 1 26,28 Z" fill="#D4AF37"/>
+  <!-- Strato 1 cacao -->
+  <rect x="26" y="32" width="56" height="7"  fill="#1A1A1A"/>
+  <!-- Strato 2 mascarpone -->
+  <rect x="26" y="39" width="56" height="9"  fill="#F5E6B3"/>
+  <!-- Strato 3 savoiardi -->
+  <rect x="26" y="48" width="56" height="9"  fill="#D4AF37"/>
+  <!-- Strato 4 mascarpone -->
+  <rect x="26" y="57" width="56" height="9"  fill="#F5E6B3"/>
+  <!-- Strato 5 savoiardi base -->
+  <rect x="26" y="66" width="56" height="10" fill="#8B7129"/>
+</svg>
