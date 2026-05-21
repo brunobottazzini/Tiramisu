@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Cornice oro (rounded rect r=4) -->
+    <path
+        android:pathData="M26,28 L82,28 A4,4 0 0 1 86,32 L86,76 A4,4 0 0 1 82,80 L26,80 A4,4 0 0 1 22,76 L22,32 A4,4 0 0 1 26,28 Z"
+        android:fillColor="#FFD4AF37"/>
+
+    <!-- Strato 1 cacao -->
+    <path android:pathData="M26,32 L82,32 L82,39 L26,39 Z" android:fillColor="#FF1A1A1A"/>
+    <!-- Strato 2 mascarpone -->
+    <path android:pathData="M26,39 L82,39 L82,48 L26,48 Z" android:fillColor="#FFF5E6B3"/>
+    <!-- Strato 3 savoiardi -->
+    <path android:pathData="M26,48 L82,48 L82,57 L26,57 Z" android:fillColor="#FFD4AF37"/>
+    <!-- Strato 4 mascarpone -->
+    <path android:pathData="M26,57 L82,57 L82,66 L26,66 Z" android:fillColor="#FFF5E6B3"/>
+    <!-- Strato 5 savoiardi base -->
+    <path android:pathData="M26,66 L82,66 L82,76 L26,76 Z" android:fillColor="#FF8B7129"/>
+</vector>
