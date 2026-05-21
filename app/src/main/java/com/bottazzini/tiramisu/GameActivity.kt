@@ -799,7 +799,6 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun renderBottomBar(s: TiramisuGameState) {
-        tvStockCount.text  = "${s.stock.size}"
         tvRedealsLeft.text = getString(R.string.redeals_left, s.redealsLeft)
 
         val canRedeal = vm.canRedeal()
@@ -808,10 +807,15 @@ class GameActivity : AppCompatActivity() {
         btnUndo.isVisible = !isTutorialMode
         btnUndo.isEnabled = vm.canUndo()
 
-        if (s.stock.isEmpty() && !canRedeal) {
-            stockImage.setImageResource(R.drawable.zero)
-            stockImage.alpha = 0.3f
+        if (s.stock.isEmpty()) {
+            // Hide card image and count badge — the slot frame background remains visible
+            // so the user clearly sees an empty slot rather than a misleading full card.
+            stockImage.visibility = View.INVISIBLE
+            tvStockCount.visibility = View.INVISIBLE
         } else {
+            stockImage.visibility = View.VISIBLE
+            tvStockCount.visibility = View.VISIBLE
+            tvStockCount.text = "${s.stock.size}"
             val backResId = resources.getIdentifier(cardBackKey, "drawable", packageName)
             if (backResId != 0) stockImage.setImageResource(backResId)
             stockImage.alpha = 1f

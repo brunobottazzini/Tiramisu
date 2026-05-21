@@ -231,6 +231,7 @@
             android:layout_width="46dp"
             android:layout_height="72dp"
             android:layout_marginEnd="8dp"
+            android:background="@drawable/casino_slot_frame"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Tallone — tocca per distribuire">
