@@ -34,20 +34,24 @@ object TiramisuTutorialSteps {
     /**
      * Tutorial deck state after initial deal (TiramisuDeckSetup.tutorialDeck()):
      *   pile 0 = EMPTY  (b1 auto-moved to bastoni foundation)
-     *   pile 1 = b2     (bastoni — next for foundation after b1)
+     *   pile 1 = b2     (bastoni)
      *   pile 2 = c3     (coppe)
      *   pile 3 = d8     (denari)
      *   stock  = [c7, c5, d3, s4]  (4 cards — one deal empties it)
      *
      * After step 1 (deal from stock):
-     *   pile 0 = c7  (coppe)
+     *   pile 0 = c7  (coppe)         ← only 1 card (was empty before deal)
      *   pile 1 = c5  (coppe) on b2
      *   pile 2 = d3  (denari) on c3
      *   pile 3 = s4  (spade) on d8
-     *   stock  = EMPTY → canRedeal() becomes true, button appears (but blocked until step 7)
+     *   stock  = EMPTY → canRedeal() becomes true (button appears but blocked until step 7)
      *
-     * Step 3 same-suit: pile 1 (c5, coppe) → pile 0 (c7, coppe) → b2 exposed in pile 1
-     * Step 5 foundation: pile 1 (b2) → bastoni foundation (has b1) → pile 1 empty
+     * Step 3 same-suit: pile 0 (c7, coppe) → pile 1 (c5, coppe)
+     *   → pile 0 becomes EMPTY (had only 1 card)
+     *   → pile 1 = c5, b2, c7 (c7 on top)
+     *
+     * Step 5 empty-pile: pile 3 (s4, spade) → pile 0 (empty)
+     *   → demonstrates that any card / any suit can go to an empty pile
      */
     fun steps(resources: Resources): List<TiramisuTutorialStep> = listOf(
 
@@ -69,11 +73,11 @@ object TiramisuTutorialSteps {
             requiredMove     = null
         ),
 
-        // Step 3: Same-suit move — pile 1 (c5, coppe) → pile 0 (c7, coppe)
-        // After this move: pile 0 = [c7, c5], pile 1 = b2 exposed
+        // Step 3: Same-suit move — pile 0 (c7, coppe) → pile 1 (c5, coppe)
+        // pile 0 had only 1 card → becomes EMPTY after this move
         TiramisuTutorialStep(
             instructionResId = R.string.tut_same_suit,
-            requiredMove     = TiramisuTutorialMove(sourcePile = 1, targetPile = 0),
+            requiredMove     = TiramisuTutorialMove(sourcePile = 0, targetPile = 1),
             highlightPiles   = listOf(0, 1)
         ),
 
@@ -83,21 +87,21 @@ object TiramisuTutorialSteps {
             requiredMove     = null
         ),
 
-        // Step 5: Foundation move — pile 1 (b2) → bastoni foundation
-        // b2 is exposed after step 3; bastoni foundation already has b1
+        // Step 5: Empty-pile move — pile 3 (s4, spade) → pile 0 (empty)
+        // Teaches: an empty pile accepts any card of any suit
         TiramisuTutorialStep(
-            instructionResId = R.string.tut_foundation,
-            requiredMove     = TiramisuTutorialMove(sourcePile = 1, targetPile = -1),
-            highlightPiles   = listOf(1)
+            instructionResId = R.string.tut_empty_pile,
+            requiredMove     = TiramisuTutorialMove(sourcePile = 3, targetPile = 0),
+            highlightPiles   = listOf(0, 3)
         ),
 
         // Step 6: Confirmation — user taps "Avanti"
         TiramisuTutorialStep(
-            instructionResId = R.string.tut_foundation_confirm,
+            instructionResId = R.string.tut_empty_pile_confirm,
             requiredMove     = null
         ),
 
-        // Step 7: Redeal — stock empty since step 1; button is visible but blocked until now
+        // Step 7: Redeal — stock empty since step 1; button visible but blocked until now
         // User must tap the "Ridistribuisci" button
         TiramisuTutorialStep(
             instructionResId = R.string.tut_redeal,

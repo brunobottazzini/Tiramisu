@@ -34,8 +34,10 @@
     <string name="tut_intro">Benvenuto in Tiramisù! Obiettivo: porta tutte le carte alle 4 basi, per seme dall\'Asso al 10.</string>
     <string name="tut_deal">Tocca il Tallone in basso per distribuire le carte.</string>
     <string name="tut_deal_confirm">✓ Distribuito! L\'Asso è andato automaticamente alla base bastoni.</string>
-    <string name="tut_same_suit">Carte dello stesso seme si spostano liberamente tra mazzetti. Sposta la carta evidenziata sul mazzetto vicino.</string>
-    <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, qualsiasi valore.</string>
+    <string name="tut_same_suit">Le carte dello stesso seme si spostano liberamente tra mazzetti. Sposta la carta evidenziata sul vicino.</string>
+    <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, qualsiasi valore. Il mazzetto ora è vuoto!</string>
+    <string name="tut_empty_pile">Un mazzetto vuoto accetta qualsiasi carta, di qualsiasi seme! Sposta la carta evidenziata nello slot vuoto.</string>
+    <string name="tut_empty_pile_confirm">✓ Perfetto! I mazzetti vuoti sono preziosi — ci puoi mettere qualsiasi carta.</string>
     <string name="tut_foundation">Quella carta può andare alla base! Toccala per selezionarla, poi tocca la base in alto.</string>
     <string name="tut_foundation_confirm">✓ Perfetto! Porta tutte le carte alle basi per vincere.</string>
     <string name="tut_redeal">Lo stock è vuoto. Tocca il pulsante Ridistribuisci per raccogliere i mazzetti e continuare!</string>
