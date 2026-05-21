@@ -369,9 +369,21 @@ class GameActivity : AppCompatActivity() {
     private fun onPileCardTapped(pileIdx: Int) {
         if (isAnimating) return
         if (isTutorialMode) {
-            val eng  = tutorialEngine ?: return
-            val card = vm.state?.topOfPile(pileIdx) ?: return
-            if (!eng.isPileTapAllowed(pileIdx, card)) return
+            val eng      = tutorialEngine ?: return
+            val card     = vm.state?.topOfPile(pileIdx) ?: return
+            val selected = vm.selectedPileIndex
+            if (selected == null) {
+                // First tap: selecting the source pile — must match requiredMove.sourcePile
+                if (!eng.isPileTapAllowed(pileIdx, card)) return
+            } else if (pileIdx != selected) {
+                // Second tap on a different pile: completing a pile→pile move
+                // Must be the correct destination for the current tutorial step
+                if (!eng.isCorrectPileMove(selected, pileIdx)) {
+                    showInvalidMoveToast()
+                    return
+                }
+            }
+            // pileIdx == selected → deselecting, always allowed
         }
 
         val result = vm.onPileTapped(pileIdx)
