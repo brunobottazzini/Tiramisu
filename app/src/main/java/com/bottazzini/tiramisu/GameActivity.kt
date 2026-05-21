@@ -34,6 +34,12 @@ class GameActivity : AppCompatActivity() {
         private const val CARD_ASPECT_H = 364f
         /** ClipData label used to identify our drag events. */
         private const val DRAG_LABEL = "tiramisu_pile_drag"
+        // Animation timing (ms)
+        private const val REDEAL_CARD_DURATION_MS = 200L
+        private const val REDEAL_CARD_STAGGER_MS  = 60L
+        private const val REDEAL_PILE_GAP_MS      = 150L
+        private const val ACE_DURATION_MS         = 250L
+        private const val ACE_STAGGER_MS          = 80L
     }
 
     // ---- ViewModel & Repos ----
@@ -71,6 +77,8 @@ class GameActivity : AppCompatActivity() {
     private var cardBackKey = "bg2"
     private var hintedPileIdx: Int? = null
     private var mediaPlayer: MediaPlayer? = null
+    /** True while a ghost animation (redeal or auto-ace) is in flight. Blocks all interactions except the pause/menu button. */
+    private var isAnimating = false
 
     // ---- Timer ----
     private val timerHandler  = Handler(Looper.getMainLooper())
@@ -194,6 +202,7 @@ class GameActivity : AppCompatActivity() {
     // ---- Game interactions ----
 
     private fun onStockTapped() {
+        if (isAnimating) return
         if (isTutorialMode) {
             val eng = tutorialEngine ?: return
             if (!eng.isStockDealStep()) return
@@ -207,6 +216,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun onRedealTapped() {
+        if (isAnimating) return
         if (vm.redeal()) {
             playSound(R.raw.flipcard)
             renderAll()
@@ -214,6 +224,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun onPileCardTapped(pileIdx: Int) {
+        if (isAnimating) return
         if (isTutorialMode) {
             val eng  = tutorialEngine ?: return
             val card = vm.state?.topOfPile(pileIdx) ?: return
@@ -235,6 +246,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun onFoundationViewTapped(foundationIdx: Int) {
+        if (isAnimating) return
         val sel = vm.selectedPileIndex ?: return
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
@@ -246,6 +258,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun onHintTapped() {
+        if (isAnimating) return
         val s    = vm.state ?: return
         val hint = TiramisuSolver.findHint(s)
         hintsUsedThisGame++
@@ -259,6 +272,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun onUndoTapped() {
+        if (isAnimating) return
         if (isTutorialMode) return
         if (vm.undo()) {
             playSound(R.raw.flipcard)
@@ -414,6 +428,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun startCardDrag(v: View, pileIdx: Int): Boolean {
+        if (isAnimating) return false
         if (isTutorialMode) {
             val eng  = tutorialEngine ?: return false
             val card = vm.state?.topOfPile(pileIdx) ?: return false
