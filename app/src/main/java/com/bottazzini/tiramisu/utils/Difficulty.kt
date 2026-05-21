@@ -4,11 +4,12 @@ enum class Difficulty(
     val key: String,
     val displayName: String,
     val redeals: Int,
-    val obbligato: Boolean
+    val obbligato: Boolean,
+    val strictTableau: Boolean
 ) {
-    FACILE("facile", "🟢 Facile", redeals = 2, obbligato = false),
-    NORMALE("normale", "🟡 Normale", redeals = 1, obbligato = false),
-    DIFFICILE("difficile", "🔴 Difficile", redeals = 1, obbligato = true);
+    FACILE   ("facile",    "🟢 Facile",    redeals = 1, obbligato = false, strictTableau = false),
+    NORMALE  ("normale",   "🟡 Normale",   redeals = 1, obbligato = false, strictTableau = true),
+    DIFFICILE("difficile", "🔴 Difficile", redeals = 0, obbligato = true,  strictTableau = true);
 
     companion object {
         fun fromKey(key: String): Difficulty =
