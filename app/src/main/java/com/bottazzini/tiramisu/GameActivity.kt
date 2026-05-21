@@ -572,6 +572,14 @@ class GameActivity : AppCompatActivity() {
         val isTutorialSource = tutStep?.highlightSource == pileIdx
         val isTutorialTarget = tutStep?.highlightTarget == pileIdx
 
+        // Tutorial column glow — applied once for both empty and non-empty piles so the
+        // highlight is always visible regardless of card colour (e.g. dark bastoni images).
+        container.setBackgroundColor(when {
+            isTutorialSource -> 0x66FF8C00.toInt()               // orange: "drag from here"
+            isTutorialTarget -> 0x5500AA50.toInt()               // green:  "drop here"
+            else             -> android.graphics.Color.TRANSPARENT
+        })
+
         if (pile.isEmpty()) {
             val placeholder = ImageView(this)
             placeholder.layoutParams = LinearLayout.LayoutParams(
@@ -580,16 +588,9 @@ class GameActivity : AppCompatActivity() {
             placeholder.scaleType = ImageView.ScaleType.FIT_CENTER
             placeholder.contentDescription = getString(R.string.pile_empty_desc, pileIdx + 1)
             placeholder.alpha = 0.4f
-            // Green highlight: zero.png is mostly transparent so color-filter won't show.
-            // Set a semi-transparent green background on the container instead.
-            container.setBackgroundColor(
-                if (isTutorialTarget) 0x5500AA50.toInt() else android.graphics.Color.TRANSPARENT
-            )
             container.addView(placeholder)
             return
         }
-        // Non-empty piles: always clear any tutorial background left from a previous render.
-        container.setBackgroundColor(android.graphics.Color.TRANSPARENT)
 
         val isSelected  = vm.selectedPileIndex == pileIdx
         val isObbligato = vm.obbligatoTargets().contains(pileIdx)
