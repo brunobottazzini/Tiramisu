@@ -292,4 +292,5 @@
     <string name="lost_message">Nessuna mossa disponibile.</string>
     <string name="lost_retry">Riprova stessa partita</string>
     <string name="lost_new">Nuova partita</string>
+    <string name="pause_menu_desc">Pausa / Menu</string>
 </resources>
