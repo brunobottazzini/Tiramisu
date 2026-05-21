@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/statsScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bordeaux"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/statsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:text="@string/stats_title"
+            android:textColor="@color/casino_gold"
+            android:textSize="22sp"
+            android:textStyle="italic"
+            android:letterSpacing="0.15" />
+
+        <!-- Stats card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/casino_tile_bg"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <include android:id="@+id/statRowBestTime"    layout="@layout/item_stat_row" />
+            <include android:id="@+id/statRowStreak"      layout="@layout/item_stat_row" />
+            <include android:id="@+id/statRowTotalWins"   layout="@layout/item_stat_row" />
+            <include android:id="@+id/statRowGamesPlayed" layout="@layout/item_stat_row" />
+            <include android:id="@+id/statRowWinRate"     layout="@layout/item_stat_row" />
+            <include android:id="@+id/statRowAvgTime"     layout="@layout/item_stat_row" />
+
+        </LinearLayout>
+
+        <!-- Per-difficulty stats sections -->
+        <TextView
+            android:id="@+id/statsDiffTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:text="@string/stats_section_all"
+            android:textColor="@color/casino_gold_alpha_50"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:letterSpacing="0.2" />
+
+        <LinearLayout
+            android:id="@+id/statsContainerFacile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/casino_tile_bg"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_section_facile"
+                android:textSize="15sp"
+                android:textColor="@color/casino_gold"
+                android:paddingBottom="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/statsContainerNormale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/casino_tile_bg"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_section_normale"
+                android:textSize="15sp"
+                android:textColor="@color/casino_gold"
+                android:paddingBottom="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/statsContainerDifficile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/casino_tile_bg"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_section_difficile"
+                android:textSize="15sp"
+                android:textColor="@color/casino_gold"
+                android:paddingBottom="8dp" />
+        </LinearLayout>
+
+        <!-- Chart section -->
+        <TextView
+            android:id="@+id/statsChartLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:text="@string/stats_chart_title"
+            android:textColor="@color/casino_gold_alpha_50"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:letterSpacing="0.2" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/statsChart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/statsChartEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:text="@string/stats_chart_empty"
+            android:textColor="@color/casino_gold_alpha_50"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+
+        <!-- Win / Loss donut chart -->
+        <TextView
+            android:id="@+id/statsWLChartLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:text="@string/stats_wl_chart_title"
+            android:textColor="@color/casino_gold_alpha_50"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:letterSpacing="0.2" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/statsWLChart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Trophies header -->
+        <TextView
+            android:id="@+id/statsTrophiesHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:textColor="@color/casino_gold_alpha_50"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:letterSpacing="0.2" />
+
+        <!-- Achievement grid -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/achievementsGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="32dp"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/deckPickerScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bordeaux"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="@string/deck_picker_title"
+            android:textSize="26sp"
+            style="@style/CasinoTitle" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/deck_picker_subtitle"
+            android:textSize="12sp"
+            style="@style/CasinoSubtitle" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/deckRegionTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@android:color/transparent"
+            app:tabTextColor="@color/casino_gold_alpha_50"
+            app:tabSelectedTextColor="@color/casino_gold"
+            app:tabIndicatorColor="@color/casino_gold"
+            app:tabBackground="@android:color/transparent" />
+
+        <TextView
+            android:id="@+id/deckSelectedName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            android:textStyle="italic|bold"
+            android:textColor="@color/casino_gold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/deckGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never" />
+
+        <Button
+            android:id="@+id/buttonDeckConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="32dp"
+            android:minWidth="160dp"
+            android:background="@drawable/casino_tile_bg_primary"
+            android:stateListAnimator="@null"
+            android:fontFamily="serif"
+            android:padding="14dp"
+            android:text="@string/deck_picker_button"
+            android:textColor="@color/casino_gold"
+            android:textSize="16sp"
+            android:textStyle="italic|bold"
+            android:enabled="false"
+            android:alpha="0.4" />
+
+    </LinearLayout>
+</ScrollView>

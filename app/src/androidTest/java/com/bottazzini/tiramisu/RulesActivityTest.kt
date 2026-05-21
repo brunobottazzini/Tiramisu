@@ -1,0 +1,65 @@
+package com.bottazzini.tiramisu
+
+import android.widget.LinearLayout
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bottazzini.tiramisu.util.TestHelpers
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class RulesActivityTest {
+
+    @Before
+    fun setUp() {
+        TestHelpers.resetAppData()
+        ActivityScenario.launch(MainActivity::class.java).close()
+    }
+
+    @Test
+    fun rulesActivity_displaysTitleAndButton() {
+        ActivityScenario.launch(RulesActivity::class.java).use {
+            onView(withId(R.id.textViewRulesScreenTitle)).check(matches(isDisplayed()))
+            onView(withId(R.id.linearLayoutRulesContainer)).check(matches(isDisplayed()))
+            onView(withId(R.id.buttonGotIt)).check(matches(isDisplayed()))
+        }
+    }
+
+    @Test
+    fun rulesActivity_loadsRulesIntoContainer() {
+        ActivityScenario.launch(RulesActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                val container =
+                    activity.findViewById<LinearLayout>(R.id.linearLayoutRulesContainer)
+                // Container has a static title TextView in XML + dynamically added rule TextViews
+                assertTrue(
+                    "Rules container must contain static title + dynamic rule rows (>=2 children)",
+                    container.childCount >= 2
+                )
+            }
+        }
+    }
+
+    @Test
+    fun rulesActivity_gotItButtonFinishesActivity() {
+        val scenario = ActivityScenario.launch(RulesActivity::class.java)
+        onView(withId(R.id.buttonGotIt)).perform(click())
+        // finish() is async — poll until destroyed or timeout
+        val deadline = System.currentTimeMillis() + 5_000
+        while (scenario.state != Lifecycle.State.DESTROYED &&
+            System.currentTimeMillis() < deadline
+        ) {
+            Thread.sleep(50)
+        }
+        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+    }
+}
