@@ -211,6 +211,7 @@ class GameActivity : AppCompatActivity() {
         if (vm.dealFromStock()) {
             playSound(R.raw.flipcard)
             renderAll()
+            maybeAnimateAutoAces()
             checkWin()
             checkLost()
         }
@@ -296,6 +297,69 @@ class GameActivity : AppCompatActivity() {
         }, totalDuration)
     }
 
+    /**
+     * If the ViewModel's last action queued any auto-ace moves, animate them.
+     * Idempotent: consuming the list clears it so the next render won't replay.
+     */
+    private fun maybeAnimateAutoAces() {
+        val moves = vm.consumeAutoAceMoves()
+        if (moves.isEmpty()) return
+        animateAutoAces(moves)
+    }
+
+    private fun animateAutoAces(moves: List<AceMove>) {
+        val gameRootContainer = gameRoot as ConstraintLayout
+        val gameRootPos = locationOnScreen(gameRootContainer)
+        val ghosts = mutableListOf<ImageView>()
+        val hiddenFoundations = mutableListOf<ImageView>()
+
+        for ((idx, move) in moves.withIndex()) {
+            val destView = foundationViews[move.toFoundation] ?: continue
+            val resId = resources.getIdentifier("${cardType}_${move.card}", "drawable", packageName)
+            if (resId == 0) continue
+
+            val sourceLoc = when (move.source) {
+                AceSource.STOCK -> locationOnScreen(stockArea)
+                AceSource.PILE_TOP -> {
+                    val container = pileContainers[move.fromPile]
+                    val topChild = container?.let { it.getChildAt(it.childCount - 1) }
+                    if (topChild != null) locationOnScreen(topChild) else locationOnScreen(stockArea)
+                }
+            }
+            val destLoc = locationOnScreen(destView)
+
+            destView.alpha = 0f
+            hiddenFoundations.add(destView)
+
+            val ghost = ImageView(this).apply {
+                setImageResource(resId)
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                layoutParams = ConstraintLayout.LayoutParams(destView.width, destView.height)
+                translationX = (sourceLoc[0] - gameRootPos[0]).toFloat()
+                translationY = (sourceLoc[1] - gameRootPos[1]).toFloat()
+            }
+            gameRootContainer.addView(ghost)
+            ghosts.add(ghost)
+
+            ghost.animate()
+                .translationX((destLoc[0] - gameRootPos[0]).toFloat())
+                .translationY((destLoc[1] - gameRootPos[1]).toFloat())
+                .setDuration(ACE_DURATION_MS)
+                .setStartDelay(idx * ACE_STAGGER_MS)
+                .start()
+        }
+
+        if (ghosts.isEmpty()) return
+
+        isAnimating = true
+        val totalDuration = (moves.size - 1) * ACE_STAGGER_MS + ACE_DURATION_MS
+        gameRoot.postDelayed({
+            for (ghost in ghosts) gameRootContainer.removeView(ghost)
+            for (view in hiddenFoundations) view.alpha = 1f
+            isAnimating = false
+        }, totalDuration)
+    }
+
     private fun onPileCardTapped(pileIdx: Int) {
         if (isAnimating) return
         if (isTutorialMode) {
@@ -309,6 +373,7 @@ class GameActivity : AppCompatActivity() {
             TapResult.MOVED   -> {
                 playSound(R.raw.flipcard)
                 renderAll()
+                maybeAnimateAutoAces()
                 checkWin()
                 checkLost()
                 if (isTutorialMode) advanceTutorial()
@@ -324,6 +389,7 @@ class GameActivity : AppCompatActivity() {
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
             renderAll()
+            maybeAnimateAutoAces()
             checkWin()
             checkLost()
             if (isTutorialMode) advanceTutorial()
@@ -572,6 +638,7 @@ class GameActivity : AppCompatActivity() {
         }
         playSound(R.raw.flipcard)
         renderAll()
+        maybeAnimateAutoAces()
         checkWin()
         checkLost()
         if (isTutorialMode) advanceTutorial()
@@ -585,6 +652,7 @@ class GameActivity : AppCompatActivity() {
         }
         playSound(R.raw.flipcard)
         renderAll()
+        maybeAnimateAutoAces()
         checkWin()
         checkLost()
         if (isTutorialMode) advanceTutorial()

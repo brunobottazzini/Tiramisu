@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs -I{} ls {})",
+      "Bash(./gradlew :app:compileDebugKotlin)",
+      "Bash(./gradlew :app:testDebugUnitTest)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb devices *)",
+      "Bash(~/Library/Android/sdk/emulator/emulator -list-avds)",
+      "WebFetch(domain:support.google.com)",
+      "Bash(rsvg-convert *)",
+      "Bash(git add *)",
+      "Bash(xmllint --noout tools/launcher_icon.svg)",
+      "Bash(python3 /tmp/verify_frame.py)",
+      "Bash(python3 /tmp/frame_analysis.py)",
+      "Bash(./gradlew :app:processDebugResources)",
+      "Bash(./gradlew :app:assembleDebug)",
+      "Bash(chmod +x /Users/bottazzini/Documents/misc/Tiramisu/tools/render_launcher_icons.sh)",
+      "Bash(./tools/render_launcher_icons.sh *)",
+      "Bash(./gradlew :app:assembleDebug :app:lintDebug)",
+      "Bash(git branch *)",
+      "Bash(git rebase *)",
+      "Bash(git checkout *)",
+      "Bash(./gradlew :app:compileDebugKotlin :app:testDebugUnitTest)",
+      "Bash(bash /tmp/verify.sh)",
+      "Bash(git stash *)",
+      "Bash(./gradlew :app:lintDebug)",
+      "Bash(./gradlew :app:testDebugUnitTest --no-build-cache)",
+      "Bash(./gradlew :app:testDebugUnitTest --info)",
+      "Bash(./gradlew :app:assembleDebug :app:testDebugUnitTest)",
+      "Bash(./gradlew :app:testDebugUnitTest --rerun-tasks)"
+    ]
+  }
+}
