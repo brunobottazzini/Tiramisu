@@ -2,6 +2,7 @@ package com.bottazzini.tiramisu
 
 import android.annotation.SuppressLint
 import android.content.ClipData
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -217,10 +218,82 @@ class GameActivity : AppCompatActivity() {
 
     private fun onRedealTapped() {
         if (isAnimating) return
-        if (vm.redeal()) {
-            playSound(R.raw.flipcard)
-            renderAll()
+        if (!vm.canRedeal()) return
+        animateRedeal()
+    }
+
+    /** Convenience: 2-element [x, y] screen coords. */
+    private fun locationOnScreen(view: View): IntArray =
+        IntArray(2).also { view.getLocationOnScreen(it) }
+
+    /**
+     * Animates each pile's cards sliding to the stock area, pile 3→0 sequentially.
+     * Mutates state via [vm.redeal] up-front; the visual catch-up happens after
+     * the ghost animations finish.
+     */
+    private fun animateRedeal() {
+        val gameRootContainer = gameRoot as ConstraintLayout
+        val gameRootPos = locationOnScreen(gameRootContainer)
+        val stockPos = locationOnScreen(stockArea)
+
+        data class GhostTask(val pileIdx: Int, val ghost: ImageView)
+        val tasks = mutableListOf<GhostTask>()
+
+        for (pileIdx in 3 downTo 0) {
+            val container = pileContainers[pileIdx] ?: continue
+            for (childIdx in (container.childCount - 1) downTo 0) {
+                val original = container.getChildAt(childIdx) as? ImageView ?: continue
+                val origPos = locationOnScreen(original)
+                val ghost = ImageView(this).apply {
+                    setImageDrawable(original.drawable)
+                    scaleType = original.scaleType
+                    layoutParams = ConstraintLayout.LayoutParams(original.width, original.height)
+                    translationX = (origPos[0] - gameRootPos[0]).toFloat()
+                    translationY = (origPos[1] - gameRootPos[1]).toFloat()
+                }
+                gameRootContainer.addView(ghost)
+                original.alpha = 0f
+                tasks.add(GhostTask(pileIdx, ghost))
+            }
         }
+
+        if (tasks.isEmpty()) {
+            vm.redeal()
+            renderAll()
+            return
+        }
+
+        isAnimating = true
+        playSound(R.raw.flipcard)
+        vm.redeal()
+
+        val targetX = (stockPos[0] - gameRootPos[0]).toFloat()
+        val targetY = (stockPos[1] - gameRootPos[1]).toFloat()
+
+        var delay = 0L
+        var prevPile = -1
+        var lastStartDelay = 0L
+        for (task in tasks) {
+            if (prevPile != -1 && task.pileIdx != prevPile) {
+                delay += REDEAL_PILE_GAP_MS
+            }
+            task.ghost.animate()
+                .translationX(targetX)
+                .translationY(targetY)
+                .setDuration(REDEAL_CARD_DURATION_MS)
+                .setStartDelay(delay)
+                .start()
+            lastStartDelay = delay
+            prevPile = task.pileIdx
+            delay += REDEAL_CARD_STAGGER_MS
+        }
+
+        val totalDuration = lastStartDelay + REDEAL_CARD_DURATION_MS
+        gameRoot.postDelayed({
+            for (task in tasks) gameRootContainer.removeView(task.ghost)
+            renderAll()
+            isAnimating = false
+        }, totalDuration)
     }
 
     private fun onPileCardTapped(pileIdx: Int) {
