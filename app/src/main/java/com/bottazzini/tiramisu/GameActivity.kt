@@ -1,5 +1,6 @@
 package com.bottazzini.tiramisu
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.Intent
 import android.media.MediaPlayer
@@ -7,7 +8,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.DragEvent
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import android.view.Window
 import android.widget.*
@@ -324,7 +327,7 @@ class GameActivity : AppCompatActivity() {
                 imageView.isFocusable = true
                 imageView.isClickable = true
                 imageView.setOnClickListener { onPileCardTapped(pileIdx) }
-                imageView.setOnLongClickListener { v -> startCardDrag(v, pileIdx) }
+                attachInstantDragListener(imageView, pileIdx)
                 when {
                     isSelected  -> imageView.alpha = 0.7f
                     isObbligato -> imageView.setColorFilter(
@@ -347,6 +350,54 @@ class GameActivity : AppCompatActivity() {
     }
 
     // ---- Drag & drop ----
+
+    /**
+     * Instant drag (no long-press): once the finger has moved past the system
+     * touchSlop on the top card, kick off [startCardDrag]. We also tell the
+     * parent ScrollView not to intercept the gesture so a short vertical drag
+     * doesn't get stolen as a scroll. If the gesture never crosses the slop,
+     * the touch falls through to the click listener and behaves as a tap.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun attachInstantDragListener(view: View, pileIdx: Int) {
+        val slop = ViewConfiguration.get(this).scaledTouchSlop
+        var downX = 0f
+        var downY = 0f
+        var dragStarted = false
+        view.setOnTouchListener { v, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = event.rawX
+                    downY = event.rawY
+                    dragStarted = false
+                    v.parent?.requestDisallowInterceptTouchEvent(true)
+                    false
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (dragStarted) {
+                        true
+                    } else {
+                        val dx = event.rawX - downX
+                        val dy = event.rawY - downY
+                        if (dx * dx + dy * dy > slop * slop) {
+                            if (startCardDrag(v, pileIdx)) {
+                                dragStarted = true
+                                true
+                            } else {
+                                v.parent?.requestDisallowInterceptTouchEvent(false)
+                                false
+                            }
+                        } else false
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    v.parent?.requestDisallowInterceptTouchEvent(false)
+                    false
+                }
+                else -> false
+            }
+        }
+    }
 
     private fun startCardDrag(v: View, pileIdx: Int): Boolean {
         if (isTutorialMode) {
