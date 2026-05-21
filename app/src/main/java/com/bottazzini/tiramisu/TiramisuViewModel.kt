@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.bottazzini.tiramisu.utils.Difficulty
 import com.bottazzini.tiramisu.utils.TiramisuGameState
 import com.bottazzini.tiramisu.utils.TiramisuMoveValidator
+import com.bottazzini.tiramisu.utils.TiramisuSolver
 
 class TiramisuViewModel : ViewModel() {
 
@@ -175,9 +176,29 @@ class TiramisuViewModel : ViewModel() {
     /** True if the obbligato constraint is currently blocking moves. */
     fun isObbligatoBlocking(): Boolean = obbligatoTargets().isNotEmpty()
 
-    // ---- Win check ----
+    // ---- Win / Lost check ----
 
     fun isWon(): Boolean = state?.isWon() ?: false
+
+    /**
+     * True when no progress is possible: stock empty, no redeals left,
+     * and no valid move (foundation or tableau) from any pile top.
+     */
+    fun isLost(): Boolean {
+        val s = state ?: return false
+        if (s.isWon()) return false
+        if (s.stock.isNotEmpty()) return false
+        if (canRedeal()) return false
+        return TiramisuSolver.findHint(s) == null
+    }
+
+    /** Restart the same game from scratch using the original shuffle. */
+    fun retrySameGame() {
+        val s = state ?: return
+        state = TiramisuGameState.replay(s.difficulty, s.initialDeck)
+        selectedPileIndex = null
+        previousState = null
+    }
 
     // ---- Drag & drop entry points (no dependency on selectedPileIndex) ----
 

@@ -31,6 +31,7 @@ class GameStateRepository(context: Context) {
             put("isTimerPaused",  state.isTimerPaused)
             put("stock",          listToJson(state.stock))
             put("foundations",    listToJson(state.foundations))
+            put("initialDeck",    listToJson(state.initialDeck))
             for (i in 0..3) put("pile$i", listToJson(state.piles[i]))
         }
         settingsHandler.updateSetting(KEY, json.toString())
@@ -50,6 +51,7 @@ class GameStateRepository(context: Context) {
                 foundations       = jsonToMutableList(json.getJSONArray("foundations")),
                 redealsLeft       = json.getInt("redealsLeft"),
                 difficulty        = difficulty,
+                initialDeck       = jsonToMutableList(json.getJSONArray("initialDeck")),
                 gameStartTimeMillis = json.getLong("gameStartMs"),
                 timerPausedMs     = json.getLong("timerPausedMs"),
                 isTimerPaused     = json.getBoolean("isTimerPaused"),
@@ -66,7 +68,7 @@ class GameStateRepository(context: Context) {
     companion object {
         private const val TAG              = "GameStateRepository"
         private const val KEY              = "savedTiramisuState"
-        private const val CURRENT_VERSION  = 1
+        private const val CURRENT_VERSION  = 2
         private const val SENTINEL_EMPTY   = "__empty__"
 
         private fun listToJson(list: List<String>): JSONArray {

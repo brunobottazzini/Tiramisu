@@ -17,7 +17,8 @@ class TiramisuSolverTest {
         stock       = stock.toMutableList(),
         foundations = foundations.toMutableList(),
         redealsLeft = 1,
-        difficulty  = Difficulty.NORMALE
+        difficulty  = Difficulty.NORMALE,
+        initialDeck = emptyList()
     )
 
     @Test fun `finds foundation hint when ace available`() {

@@ -202,6 +202,7 @@ class GameActivity : AppCompatActivity() {
             playSound(R.raw.flipcard)
             renderAll()
             checkWin()
+            checkLost()
         }
     }
 
@@ -225,6 +226,7 @@ class GameActivity : AppCompatActivity() {
                 playSound(R.raw.flipcard)
                 renderAll()
                 checkWin()
+                checkLost()
                 if (isTutorialMode) advanceTutorial()
             }
             TapResult.INVALID -> showInvalidMoveToast()
@@ -238,6 +240,7 @@ class GameActivity : AppCompatActivity() {
             playSound(R.raw.flipcard)
             renderAll()
             checkWin()
+            checkLost()
             if (isTutorialMode) advanceTutorial()
         }
     }
@@ -482,6 +485,7 @@ class GameActivity : AppCompatActivity() {
         playSound(R.raw.flipcard)
         renderAll()
         checkWin()
+        checkLost()
         if (isTutorialMode) advanceTutorial()
         return true
     }
@@ -494,6 +498,7 @@ class GameActivity : AppCompatActivity() {
         playSound(R.raw.flipcard)
         renderAll()
         checkWin()
+        checkLost()
         if (isTutorialMode) advanceTutorial()
         return true
     }
@@ -555,6 +560,37 @@ class GameActivity : AppCompatActivity() {
         }
         startActivity(intent)
         finish()
+    }
+
+    private fun checkLost() {
+        if (isTutorialMode) return
+        if (!vm.isLost()) return
+        stopTimer()
+        val s = vm.state ?: return
+        val durationMs = System.currentTimeMillis() - s.gameStartTimeMillis - s.timerPausedMs
+        gameLogRepo.insert(GameLog(
+            timestamp   = System.currentTimeMillis(),
+            durationMs  = durationMs,
+            won         = false,
+            hintsUsed   = hintsUsedThisGame,
+            difficulty  = s.difficulty.key,
+            redealsUsed = s.difficulty.redeals - s.redealsLeft
+        ))
+        gameStateRepo.clear()
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.lost_title))
+            .setMessage(getString(R.string.lost_message))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.lost_retry)) { _, _ -> retrySameGame() }
+            .setNegativeButton(getString(R.string.lost_new))   { _, _ -> startNewGame() }
+            .show()
+    }
+
+    private fun retrySameGame() {
+        vm.retrySameGame()
+        hintsUsedThisGame = 0
+        startTimer()
+        renderAll()
     }
 
     // ---- Tutorial ----

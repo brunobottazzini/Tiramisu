@@ -28,6 +28,7 @@ class TiramisuViewModelTest {
             foundations = foundations.toMutableList(),
             redealsLeft = redeals,
             difficulty  = difficulty,
+            initialDeck = emptyList(),
             hasActiveGame = true
         )
         vm.restoreState(gs)
