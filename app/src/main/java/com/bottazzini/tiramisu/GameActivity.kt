@@ -50,6 +50,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var settingsHandler: SettingsHandler
     private lateinit var gameStateRepo: GameStateRepository
     private lateinit var gameLogRepo: GameLogRepository
+    private lateinit var recordsHandler: com.bottazzini.tiramisu.settings.RecordsHandler
 
     // ---- UI refs ----
     private lateinit var tvTimer: TextView
@@ -101,6 +102,7 @@ class GameActivity : AppCompatActivity() {
         settingsHandler = SettingsHandler(applicationContext)
         gameStateRepo   = GameStateRepository(applicationContext)
         gameLogRepo     = GameLogRepository(applicationContext)
+        recordsHandler  = com.bottazzini.tiramisu.settings.RecordsHandler(applicationContext)
 
         isTutorialMode = intent.getBooleanExtra(EXTRA_TUTORIAL_MODE, false)
         val resume     = intent.getBooleanExtra("resume", false)
@@ -879,6 +881,7 @@ class GameActivity : AppCompatActivity() {
             redealsUsed = s.difficulty.redeals - s.redealsLeft
         ))
         gameStateRepo.clear()
+        recordsHandler.resetStreak()
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.lost_title))
             .setMessage(getString(R.string.lost_message))
@@ -980,6 +983,7 @@ class GameActivity : AppCompatActivity() {
             ))
         }
         gameStateRepo.clear()
+        recordsHandler.resetStreak()
         finish()
     }
 

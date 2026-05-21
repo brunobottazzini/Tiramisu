@@ -138,6 +138,24 @@ class RecordsHandler(context: Context) {
         update(Type.TOTAL_WINS, new, new, false)
     }
 
+    // Win streak helpers.
+    // value        = all-time best streak (record shown in Records / Stats screens)
+    // currentValue = ongoing streak (resets to 0 on loss or abandon)
+
+    /** Increments the current win streak and updates the best record if beaten. */
+    fun incrementStreak() {
+        val current = readCurrentValue(Type.CONSECUTIVE) ?: 0L
+        val newCurrent = current + 1
+        val best = readValue(Type.CONSECUTIVE) ?: 0L
+        update(Type.CONSECUTIVE, maxOf(newCurrent, best), newCurrent, newCurrent > best)
+    }
+
+    /** Resets the ongoing win streak to 0 (call on loss or abandon). */
+    fun resetStreak() {
+        val best = readValue(Type.CONSECUTIVE) ?: 0L
+        update(Type.CONSECUTIVE, best, 0L, false)
+    }
+
     fun close() {
         dbHandler.readableDatabase.close()
     }

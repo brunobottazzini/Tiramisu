@@ -55,6 +55,7 @@ class YouWonActivity : AppCompatActivity() {
 
         if (!youWonViewModel.statsRecorded) {
             recordsHandler.incrementTotalWins()
+            recordsHandler.incrementStreak()
             youWonViewModel.statsRecorded = true
         }
 

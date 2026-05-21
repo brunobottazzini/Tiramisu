@@ -91,10 +91,7 @@ class MainActivity : AppCompatActivity() {
             .setMessage(R.string.abandon_game_message)
             .setCancelable(true)
             .setNegativeButton(R.string.abandon_game_confirm) { _, _ ->
-                val consecutive = recordsHandler.readValue(Type.CONSECUTIVE)
-                if (consecutive != null) {
-                    recordsHandler.update(Type.CONSECUTIVE, consecutive, 0L, false)
-                }
+                recordsHandler.resetStreak()
                 if (!isTutorialSeen()) {
                     showTutorialPromptDialog()
                 } else {
