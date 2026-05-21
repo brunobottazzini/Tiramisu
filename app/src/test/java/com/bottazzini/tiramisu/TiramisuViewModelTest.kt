@@ -174,4 +174,22 @@ class TiramisuViewModelTest {
                   foundations = listOf("b10", "c9", "zero", "s10"))
         assertFalse(vm.isWon())
     }
+
+    @Test fun `dealFromStock auto-moves ace and records it for animation`() {
+        stateWith(
+            piles = listOf(emptyList(), emptyList(), emptyList(), emptyList()),
+            stock = listOf("b1", "c5", "d7", "s2")
+        )
+        vm.dealFromStock()
+        val moves = vm.consumeAutoAceMoves()
+        assertEquals(1, moves.size)
+        val m = moves[0]
+        assertEquals("b1", m.card)
+        assertEquals(0, m.fromPile)
+        assertEquals(AceSource.STOCK, m.source)
+        // Foundation now holds the ace
+        assertEquals("b1", vm.state!!.foundations[m.toFoundation])
+        // Consuming clears the slot
+        assertTrue(vm.consumeAutoAceMoves().isEmpty())
+    }
 }
