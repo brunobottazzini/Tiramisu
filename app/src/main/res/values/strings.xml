@@ -43,6 +43,9 @@
     <string name="tut_redeal">Lo stock è vuoto. Tocca il pulsante Ridistribuisci per raccogliere i mazzetti e continuare!</string>
     <string name="tut_redeal_confirm">✓ Puoi ridistribuire un numero limitato di volte, in base alla difficoltà.</string>
     <string name="tut_finish">Bravo! Ora conosci le regole di Tiramisù. Buon gioco! 🎉</string>
+    <string name="tutorial_complete_title">Tutorial completato! 📚</string>
+    <string name="tutorial_complete_message">Ottimo lavoro! Ora conosci le basi del gioco. Pronto per una vera partita?</string>
+    <string name="tutorial_complete_ok">Vai al menu</string>
 
     <string name="tutorial_corner_label">🎓 Tutorial</string>
     <string name="tutorial_prompt_title">First time?</string>

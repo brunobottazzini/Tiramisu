@@ -812,7 +812,26 @@ class GameActivity : AppCompatActivity() {
         tutorialOverlay.visibility = View.GONE
         tutorialEngine             = null
         isTutorialMode             = false
-        Toast.makeText(this, "Tutorial completato! Buon gioco!", Toast.LENGTH_LONG).show()
+        stopTimer()
+
+        // Unlock "tutorial_done" achievement
+        AchievementEngine.create(applicationContext)
+            .evaluate(AchievementTrigger.TUTORIAL_COMPLETED)
+
+        // Show completion dialog then navigate back to main menu
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.tutorial_complete_title))
+            .setMessage(getString(R.string.tutorial_complete_message))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.tutorial_complete_ok)) { _, _ ->
+                startActivity(
+                    Intent(this, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                )
+                finish()
+            }
+            .show()
     }
 
     private fun showInvalidMoveToast() {

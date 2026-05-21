@@ -34,21 +34,21 @@ object TiramisuTutorialSteps {
     /**
      * Tutorial deck state after initial deal (TiramisuDeckSetup.tutorialDeck()):
      *   pile 0 = EMPTY  (b1 auto-moved to bastoni foundation)
-     *   pile 1 = b2     (bastoni)
+     *   pile 1 = s6     (spade — neutral, different suit from every other pile top)
      *   pile 2 = c3     (coppe)
      *   pile 3 = d8     (denari)
      *   stock  = [c7, c5, d3, s4]  (4 cards — one deal empties it)
      *
      * After step 1 (deal from stock):
      *   pile 0 = c7  (coppe)         ← only 1 card (was empty before deal)
-     *   pile 1 = c5  (coppe) on b2
+     *   pile 1 = c5  (coppe) on s6
      *   pile 2 = d3  (denari) on c3
      *   pile 3 = s4  (spade) on d8
      *   stock  = EMPTY → canRedeal() becomes true (button appears but blocked until step 7)
      *
      * Step 3 same-suit: pile 0 (c7, coppe) → pile 1 (c5, coppe)
      *   → pile 0 becomes EMPTY (had only 1 card)
-     *   → pile 1 = c5, b2, c7 (c7 on top)
+     *   → pile 1 = [s6, c5, c7] (c7 on top)
      *
      * Step 5 empty-pile: pile 3 (s4, spade) → pile 0 (empty)
      *   → demonstrates that any card / any suit can go to an empty pile
