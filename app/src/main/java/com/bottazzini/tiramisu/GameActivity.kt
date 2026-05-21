@@ -36,6 +36,8 @@ class GameActivity : AppCompatActivity() {
         /** ClipData label used to identify our drag events. */
         private const val DRAG_LABEL = "tiramisu_pile_drag"
         // Animation timing (ms)
+        private const val DEAL_CARD_DURATION_MS   = 220L
+        private const val DEAL_CARD_STAGGER_MS    = 80L
         private const val REDEAL_CARD_DURATION_MS = 200L
         private const val REDEAL_CARD_STAGGER_MS  = 60L
         private const val REDEAL_PILE_GAP_MS      = 150L
@@ -210,13 +212,15 @@ class GameActivity : AppCompatActivity() {
             val eng = tutorialEngine ?: return
             if (!eng.isStockDealStep()) return
         }
+        val sizeBefore = vm.state?.piles?.map { it.size } ?: List(4) { 0 }
         if (vm.dealFromStock()) {
             playSound(R.raw.flipcard)
-            renderAll()
-            maybeAnimateAutoAces()
-            checkWin()
-            checkLost()
-            if (isTutorialMode) advanceTutorial()
+            animateDeal(sizeBefore) {
+                maybeAnimateAutoAces()
+                checkWin()
+                checkLost()
+                if (isTutorialMode) advanceTutorial()
+            }
         }
     }
 
@@ -303,6 +307,84 @@ class GameActivity : AppCompatActivity() {
             isAnimating = false
             if (isTutorialMode) advanceTutorial()
         }, totalDuration)
+    }
+
+    /**
+     * Animates each newly-dealt card flying from the stock area to its target pile,
+     * one card at a time with a stagger. Must be called AFTER [vm.dealFromStock] has
+     * updated game state but BEFORE [renderAll]. [sizeBefore] is the per-pile card count
+     * captured before the deal so we can diff which piles received new cards.
+     *
+     * Cards that were dealt and immediately auto-moved (aces) won't appear in the diff;
+     * their animation is handled separately by [maybeAnimateAutoAces] called from [onComplete].
+     */
+    private fun animateDeal(sizeBefore: List<Int>, onComplete: () -> Unit) {
+        val s = vm.state ?: run { renderAll(); onComplete(); return }
+        val gameRootContainer = gameRoot as ConstraintLayout
+        val gameRootPos = locationOnScreen(gameRootContainer)
+        val stockPos    = locationOnScreen(stockArea)
+        val density     = resources.displayMetrics.density
+        val peekPx      = (CARD_PEEK_DP * density).toInt()
+
+        data class DealTask(val ghost: ImageView)
+        val tasks = mutableListOf<DealTask>()
+        var delay         = 0L
+        var lastStartDelay = 0L
+
+        for (pileIdx in 0..3) {
+            val container = pileContainers[pileIdx] ?: continue
+            val oldSize   = sizeBefore.getOrElse(pileIdx) { 0 }
+            val pile      = s.piles[pileIdx]
+            // Skip piles that didn't gain a card (or whose card was an ace and auto-removed)
+            if (pile.size <= oldSize) continue
+
+            val card      = pile.last()
+            val cardWidth = container.width - container.paddingLeft - container.paddingRight
+            if (cardWidth <= 0) continue
+            val cardHeightPx = (cardWidth * (CARD_ASPECT_H / CARD_ASPECT_W)).toInt()
+
+            // Target: the position the new top card will occupy in the rendered pile.
+            // Card at position N in a pile starts at containerTop + N * peekPx.
+            val contPos = locationOnScreen(container)
+            val targetX = (contPos[0] - gameRootPos[0]).toFloat()
+            val targetY = (contPos[1] + oldSize * peekPx - gameRootPos[1]).toFloat()
+
+            val resId = resources.getIdentifier("${cardType}_$card", "drawable", packageName)
+            val ghost = ImageView(this).apply {
+                if (resId != 0) setImageResource(resId)
+                scaleType    = ImageView.ScaleType.FIT_CENTER
+                layoutParams = ConstraintLayout.LayoutParams(cardWidth, cardHeightPx)
+                // Start at stock position
+                translationX = (stockPos[0] - gameRootPos[0]).toFloat()
+                translationY = (stockPos[1] - gameRootPos[1]).toFloat()
+            }
+            gameRootContainer.addView(ghost)
+            tasks.add(DealTask(ghost))
+
+            ghost.animate()
+                .translationX(targetX)
+                .translationY(targetY)
+                .setDuration(DEAL_CARD_DURATION_MS)
+                .setStartDelay(delay)
+                .start()
+            lastStartDelay = delay
+            delay += DEAL_CARD_STAGGER_MS
+        }
+
+        if (tasks.isEmpty()) {
+            renderAll()
+            onComplete()
+            return
+        }
+
+        isAnimating = true
+        val totalMs = lastStartDelay + DEAL_CARD_DURATION_MS
+        gameRoot.postDelayed({
+            for (task in tasks) gameRootContainer.removeView(task.ghost)
+            isAnimating = false
+            renderAll()
+            onComplete()
+        }, totalMs)
     }
 
     /**
