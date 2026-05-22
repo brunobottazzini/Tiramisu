@@ -25,21 +25,21 @@ object TiramisuSolver {
             }
         }
 
-        // 2. Tableau-to-tableau moves
+        // 2. Tableau-to-tableau moves (single card OR top-anchored run)
         for (srcIdx in 0..3) {
-            val srcCard = state.topOfPile(srcIdx)
-            if (srcCard == "zero") continue
+            val srcPile = state.piles[srcIdx]
+            if (srcPile.isEmpty()) continue
             for (dstIdx in 0..3) {
                 if (srcIdx == dstIdx) continue
-                if (TiramisuMoveValidator.canMoveToTableau(
-                        srcCard,
-                        state.topOfPile(dstIdx),
-                        strict = state.difficulty.strictTableau
-                    )) {
-                    // Skip moves that are just shuffling single card to empty pile (unhelpful)
-                    if (state.topOfPile(dstIdx) == "zero" && state.piles[srcIdx].size == 1) continue
-                    return Hint(fromPile = srcIdx, toPile = dstIdx, toFoundation = false)
-                }
+                val movable = TiramisuMoveValidator.topMovableRun(
+                    srcPile,
+                    state.topOfPile(dstIdx),
+                    strict = state.difficulty.strictTableau
+                )
+                if (movable.isEmpty()) continue
+                // Skip moves that just shuffle the entire pile to an empty slot — no progress.
+                if (state.topOfPile(dstIdx) == "zero" && movable.size == srcPile.size) continue
+                return Hint(fromPile = srcIdx, toPile = dstIdx, toFoundation = false)
             }
         }
 
@@ -76,19 +76,24 @@ object TiramisuSolver {
         val out = mutableListOf<Move>()
         val strict = s.difficulty.strictTableau
         for (src in 0..3) {
-            val card = s.topOfPile(src)
-            if (card == "zero") continue
-            // Foundation moves
+            val srcPile = s.piles[src]
+            if (srcPile.isEmpty()) continue
+            val topCard = srcPile.last()
+            // Foundation moves (single-card from the top)
             for (fIdx in 0..3) {
-                if (TiramisuMoveValidator.canMoveToFoundation(card, s.foundations[fIdx])) {
+                if (TiramisuMoveValidator.canMoveToFoundation(topCard, s.foundations[fIdx])) {
                     out.add(Move(fromPile = src, toPile = -1, toFoundation = true))
                     break  // only one foundation lands the card; no need to enumerate all
                 }
             }
-            // Tableau-to-tableau moves
+            // Tableau-to-tableau moves: a single Move per (src,dst) pair that has any
+            // legal top-anchored run. applyMove() consumes the same topMovableRun().
             for (dst in 0..3) {
                 if (src == dst) continue
-                if (TiramisuMoveValidator.canMoveToTableau(card, s.topOfPile(dst), strict = strict)) {
+                val movable = TiramisuMoveValidator.topMovableRun(
+                    srcPile, s.topOfPile(dst), strict = strict
+                )
+                if (movable.isNotEmpty()) {
                     out.add(Move(fromPile = src, toPile = dst, toFoundation = false))
                 }
             }
@@ -103,15 +108,26 @@ object TiramisuSolver {
      */
     fun applyMove(s: TiramisuGameState, move: Move): TiramisuGameState {
         val next = s.deepCopy()
-        val card = next.piles[move.fromPile].removeAt(next.piles[move.fromPile].size - 1)
         if (move.toFoundation) {
+            val card = next.piles[move.fromPile].removeAt(next.piles[move.fromPile].size - 1)
             val fIdx = next.foundations.indexOfFirst { f ->
                 TiramisuMoveValidator.canMoveToFoundation(card, f)
             }
             // fIdx should always be >= 0 because the move was enumerated as legal
             next.foundations[fIdx] = card
         } else {
-            next.piles[move.toPile].add(card)
+            // Tableau move: lift the top-anchored movable run, append to destination.
+            val srcPile = next.piles[move.fromPile]
+            val movable = TiramisuMoveValidator.topMovableRun(
+                srcPile,
+                next.topOfPile(move.toPile),
+                strict = next.difficulty.strictTableau
+            )
+            // movable should always be non-empty because the move was enumerated as legal
+            val n = movable.size
+            val moving = srcPile.subList(srcPile.size - n, srcPile.size).toList()
+            repeat(n) { srcPile.removeAt(srcPile.size - 1) }
+            next.piles[move.toPile].addAll(moving)
         }
         autoPromoteAces(next)
         return next

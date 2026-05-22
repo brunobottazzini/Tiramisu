@@ -229,14 +229,22 @@ class TiramisuViewModel : ViewModel() {
 
     // ---- Drag & drop entry points (no dependency on selectedPileIndex) ----
 
-    /** True if the top card of [srcPileIdx] can legally move onto [dstPileIdx]. */
+    /**
+     * True if the top of [srcPileIdx] (or the top-anchored run that starts there)
+     * can legally move onto [dstPileIdx]. Under the PoC rules, a multi-card run
+     * may move as a unit — see [TiramisuMoveValidator.topMovableRun].
+     */
     fun canMoveBetweenPiles(srcPileIdx: Int, dstPileIdx: Int): Boolean {
         val s = state ?: return false
         if (srcPileIdx == dstPileIdx) return false
-        val moving = s.topOfPile(srcPileIdx)
-        if (moving == "zero") return false
-        val dest = s.topOfPile(dstPileIdx)
-        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest, strict = s.difficulty.strictTableau)) return false
+        val srcPile = s.piles[srcPileIdx]
+        if (srcPile.isEmpty()) return false
+        val movable = TiramisuMoveValidator.topMovableRun(
+            srcPile,
+            s.topOfPile(dstPileIdx),
+            strict = s.difficulty.strictTableau
+        )
+        if (movable.isEmpty()) return false
         if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) return false
         return true
     }
@@ -265,12 +273,21 @@ class TiramisuViewModel : ViewModel() {
 
     private fun movePileToPile(srcIdx: Int, dstIdx: Int): Boolean {
         val s = state ?: return false
-        val moving = s.topOfPile(srcIdx)
-        val dest   = s.topOfPile(dstIdx)
-        if (!TiramisuMoveValidator.canMoveToTableau(moving, dest, strict = s.difficulty.strictTableau)) return false
+        val srcPile = s.piles[srcIdx]
+        if (srcPile.isEmpty()) return false
+        val movable = TiramisuMoveValidator.topMovableRun(
+            srcPile,
+            s.topOfPile(dstIdx),
+            strict = s.difficulty.strictTableau
+        )
+        if (movable.isEmpty()) return false
         // In DIFFICILE, block non-foundation moves when obbligato targets exist
         if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) return false
-        s.piles[dstIdx].add(s.piles[srcIdx].removeAt(s.piles[srcIdx].size - 1))
+        // Detach the top `n` cards from src in order, then append to dst.
+        val n = movable.size
+        val moving = srcPile.subList(srcPile.size - n, srcPile.size).toList()
+        repeat(n) { srcPile.removeAt(srcPile.size - 1) }
+        s.piles[dstIdx].addAll(moving)
         autoMoveToFoundation(AutoFoundationSource.PILE_TOP)
         return true
     }

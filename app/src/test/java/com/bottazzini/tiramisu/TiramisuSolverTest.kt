@@ -249,26 +249,29 @@ class TiramisuSolverTest {
 
     // ===== canProgress: difficulty awareness =====
 
-    @Test fun `canProgress under FACILE finds progress that strict NORMALE blocks`() {
+    @Test fun `canProgress under FACILE reaches the ace in one move where strict needs more`() {
         // pile 0 = [c1, c7], pile 1 = c5, pile 2 = b3, pile 3 = d4.
-        // No empty piles; the only coppe sequence is c7 and c5.
         //
-        // Under strict NORMALE:
-        //   c7 → c5: invalid (7 > 5 same-suit strict).
-        //   c5 → c7: valid (5 < 7). Result: pile0=[c1,c7,c5], pile1=[], pile2=[b3], pile3=[d4].
-        //   Then top of pile0 = c5. c5 → b3? different suit. c5 → d4? different suit.
-        //   c5 → empty pile1: back to pile0=[c1,c7], pile1=[c5] — visited, skipped.
-        //   b3 / d4 have nowhere to go (different suits only). Cycle only; c1 never exposed.
+        // Under FACILE (lax): c7 -> c5 is legal in one move; c1 then auto-promotes.
+        //   canProgress(s, 1) must already be true.
         //
-        // Under FACILE (lax):
-        //   c7 → c5: valid (same suit, lax). pile0=[c1] → c1 auto-promotes. Progress!
+        // Under strict NORMALE with run-moves enabled: c7 -> c5 is illegal (7 > 5), but
+        // c5 -> c7 builds the run [c7, c5] which can then be shoveled onto pile 1 (empty),
+        // exposing c1. That takes 2 moves, so canProgress(s, 1) is false and canProgress(s, 30)
+        // is true.
         val sStrict = state(
             piles       = listOf(listOf("c1", "c7"), listOf("c5"), listOf("b3"), listOf("d4")),
             foundations = listOf("zero", "zero", "zero", "zero")
         )
-        assertFalse(TiramisuSolver.canProgress(sStrict, 30))
+        assertFalse(
+            "strict should not find progress in a single move",
+            TiramisuSolver.canProgress(sStrict, 1)
+        )
+        assertTrue(
+            "strict should still eventually progress via run move",
+            TiramisuSolver.canProgress(sStrict, 30)
+        )
 
-        // Same layout but FACILE — c7 -> c5 ok (lax), c1 exposed, c1 promotes.
         val sLax = TiramisuGameState(
             piles       = listOf(
                 mutableListOf("c1", "c7"),
@@ -282,7 +285,72 @@ class TiramisuSolverTest {
             difficulty  = Difficulty.FACILE,
             initialDeck = emptyList()
         )
-        assertTrue(TiramisuSolver.canProgress(sLax, 30))
+        assertTrue(
+            "lax should progress in one move",
+            TiramisuSolver.canProgress(sLax, 1)
+        )
+    }
+
+    // ===== Run-move support =====
+
+    @Test fun `findHint suggests run move when single-card move is impossible (strict)`() {
+        // pile 0 = [d8], pile 1 = [d7, d5, d3]. Strict: d3 alone can't go on d8 (foundation only),
+        // and d3 onto d8 is invalid as a single card (3 < 8 but only the BASE of the run matters).
+        // Actually d3 alone IS strict-valid onto d8 (same suit, 3 < 8). But topMovableRun returns
+        // the full [d7, d5, d3] which also fits (7 < 8). Hint should fire on pile 1 -> pile 0.
+        val s = state(
+            piles = listOf(listOf("d8"), listOf("d7", "d5", "d3"), emptyList(), emptyList())
+        )
+        val hint = TiramisuSolver.findHint(s)
+        assertNotNull(hint)
+        assertFalse(hint!!.toFoundation)
+        assertEquals(1, hint.fromPile)
+        assertEquals(0, hint.toPile)
+    }
+
+    @Test fun `enumerateLegalMoves yields one move per src-dst pair when a run fits`() {
+        // pile 0 = [d8], pile 1 = [d7, d5, d3]. (d5, d3 alone can also fit onto d8 in strict,
+        // but enumerateLegalMoves returns ONE Move per (src,dst) — applyMove picks the longest.)
+        val s = state(
+            piles = listOf(listOf("d8"), listOf("d7", "d5", "d3"), emptyList(), emptyList())
+        )
+        val tableauMoves = TiramisuSolver.enumerateLegalMoves(s)
+            .filter { !it.toFoundation && it.fromPile == 1 && it.toPile == 0 }
+        assertEquals(1, tableauMoves.size)
+    }
+
+    @Test fun `applyMove tableau move transfers the entire movable run`() {
+        // pile 0 = [d8], pile 1 = [d7, d5, d3]. Move (1 -> 0) should lift [d7, d5, d3].
+        val s = state(
+            piles = listOf(listOf("d8"), listOf("d7", "d5", "d3"), emptyList(), emptyList())
+        )
+        val move = TiramisuSolver.Move(fromPile = 1, toPile = 0, toFoundation = false)
+        val next = TiramisuSolver.applyMove(s, move)
+        assertEquals(listOf("d8", "d7", "d5", "d3"), next.piles[0])
+        assertEquals(emptyList<String>(), next.piles[1])
+    }
+
+    @Test fun `applyMove tableau move transfers only the largest fitting sub-run (strict)`() {
+        // pile 0 = [d4], pile 1 = [d7, d5, d3]. Strict: full run base d7 > d4 so doesn't fit;
+        // sub-run [d3] fits (3 < 4). Move should lift just d3.
+        val s = state(
+            piles = listOf(listOf("d4"), listOf("d7", "d5", "d3"), emptyList(), emptyList())
+        )
+        val move = TiramisuSolver.Move(fromPile = 1, toPile = 0, toFoundation = false)
+        val next = TiramisuSolver.applyMove(s, move)
+        assertEquals(listOf("d4", "d3"), next.piles[0])
+        assertEquals(listOf("d7", "d5"), next.piles[1])
+    }
+
+    @Test fun `canProgress under strict exposes buried ace via run move`() {
+        // pile 0 = [c1, c5, c3], pile 1 = c8, pile 2 = b2, pile 3 = d4.
+        // topRun(pile 0) = [c5, c3] (5 > 3, same suit).
+        // Strict: src=0 -> dst=1 (c8) — topMovableRun([c1,c5,c3], c8, strict) = [c5, c3] (5 < 8).
+        //         Result: pile 0 = [c1] → c1 auto-promotes. Progress in one move.
+        val s = state(
+            piles = listOf(listOf("c1", "c5", "c3"), listOf("c8"), listOf("b2"), listOf("d4"))
+        )
+        assertTrue(TiramisuSolver.canProgress(s, 1))
     }
 
     // ===== canProgress: boundary & performance =====

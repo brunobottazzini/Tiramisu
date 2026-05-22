@@ -248,4 +248,104 @@ class TiramisuViewModelTest {
         assertEquals("b3", s.foundations[0])
         assertEquals("zero", s.topOfPile(0))
     }
+
+    // --- PoC: run-based pile-to-pile moves -----------------------------------
+
+    @Test fun `NORMALE moves the full top run when base fits destination`() {
+        // pile 0 = [d8] ; pile 1 = [s9, d7, d5, d3] (top = d3, top run = d7→d5→d3)
+        // Tap pile 1 then pile 0 → all three denari should slide onto d8.
+        stateWith(
+            piles = listOf(
+                listOf("d8"),
+                listOf("s9", "d7", "d5", "d3"),
+                emptyList(),
+                emptyList()
+            ),
+            difficulty = Difficulty.NORMALE
+        )
+        vm.onPileTapped(1)
+        val result = vm.onPileTapped(0)
+        assertEquals(TapResult.MOVED, result)
+        val s = vm.state!!
+        assertEquals(listOf("d8", "d7", "d5", "d3"), s.piles[0])
+        assertEquals(listOf("s9"), s.piles[1])
+    }
+
+    @Test fun `NORMALE moves only the sub-run that fits the destination`() {
+        // pile 0 = [d4] ; pile 1 = [d7, d5, d3]
+        // Strict: full run base d7 does not fit d4 (7 > 4) but [d3] does (3 < 4).
+        stateWith(
+            piles = listOf(
+                listOf("d4"),
+                listOf("d7", "d5", "d3"),
+                emptyList(),
+                emptyList()
+            ),
+            difficulty = Difficulty.NORMALE
+        )
+        vm.onPileTapped(1)
+        val result = vm.onPileTapped(0)
+        assertEquals(TapResult.MOVED, result)
+        val s = vm.state!!
+        assertEquals(listOf("d4", "d3"), s.piles[0])
+        assertEquals(listOf("d7", "d5"), s.piles[1])
+    }
+
+    @Test fun `NORMALE rejects the move when no sub-run fits`() {
+        // pile 0 = [d2] ; pile 1 = [d7, d5, d3]. Nothing under d2 in denari.
+        stateWith(
+            piles = listOf(
+                listOf("d2"),
+                listOf("d7", "d5", "d3"),
+                emptyList(),
+                emptyList()
+            ),
+            difficulty = Difficulty.NORMALE
+        )
+        vm.onPileTapped(1)
+        val result = vm.onPileTapped(0)
+        assertEquals(TapResult.INVALID, result)
+        val s = vm.state!!
+        assertEquals(listOf("d2"), s.piles[0])
+        assertEquals(listOf("d7", "d5", "d3"), s.piles[1])
+    }
+
+    @Test fun `NORMALE moving run onto empty pile leaves the pre-run base behind`() {
+        // pile 0 = empty ; pile 1 = [s9, d7, d5, d3]
+        // Top run = [d7, d5, d3]; s9 is NOT part of the run and must stay in pile 1.
+        stateWith(
+            piles = listOf(
+                emptyList(),
+                listOf("s9", "d7", "d5", "d3"),
+                emptyList(),
+                emptyList()
+            ),
+            difficulty = Difficulty.NORMALE
+        )
+        vm.onPileTapped(1)
+        val result = vm.onPileTapped(0)
+        assertEquals(TapResult.MOVED, result)
+        val s = vm.state!!
+        assertEquals(listOf("d7", "d5", "d3"), s.piles[0])
+        assertEquals(listOf("s9"), s.piles[1])
+    }
+
+    @Test fun `FACILE lax rule accepts run whose base is higher than destination`() {
+        // pile 0 = [d4] ; pile 1 = [d7, d5, d3]. Lax: same suit any rank → run base d7 onto d4 OK.
+        stateWith(
+            piles = listOf(
+                listOf("d4"),
+                listOf("d7", "d5", "d3"),
+                emptyList(),
+                emptyList()
+            ),
+            difficulty = Difficulty.FACILE
+        )
+        vm.onPileTapped(1)
+        val result = vm.onPileTapped(0)
+        assertEquals(TapResult.MOVED, result)
+        val s = vm.state!!
+        assertEquals(listOf("d4", "d7", "d5", "d3"), s.piles[0])
+        assertEquals(emptyList<String>(), s.piles[1])
+    }
 }
