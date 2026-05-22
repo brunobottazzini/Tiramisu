@@ -514,6 +514,13 @@ class GameActivity : AppCompatActivity() {
                 setImageResource(resId)
                 scaleType = ImageView.ScaleType.FIT_CENTER
                 layoutParams = ConstraintLayout.LayoutParams(destView.width, destView.height)
+                // Match the foundation's padding so the card image renders at the
+                // exact same size — otherwise the ghost looks slightly bigger and
+                // visibly "shrinks" the moment it swaps for the foundation drawable.
+                setPadding(
+                    destView.paddingLeft, destView.paddingTop,
+                    destView.paddingRight, destView.paddingBottom
+                )
                 translationX = (sourceLoc[0] - gameRootPos[0]).toFloat()
                 translationY = (sourceLoc[1] - gameRootPos[1]).toFloat()
             }
