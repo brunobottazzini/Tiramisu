@@ -234,6 +234,7 @@ class GameActivity : AppCompatActivity() {
             if (!eng.isStockDealStep()) return
         }
         val sizeBefore = vm.state?.piles?.map { it.size } ?: List(4) { 0 }
+        capturePileTopSnapshots()
         if (vm.dealFromStock()) {
             playSound(R.raw.flipcard)
             animateDeal(sizeBefore) {
@@ -243,6 +244,8 @@ class GameActivity : AppCompatActivity() {
                     if (isTutorialMode) advanceTutorial()
                 }
             }
+        } else {
+            clearPileTopSnapshots()
         }
     }
 
