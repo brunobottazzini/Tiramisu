@@ -41,10 +41,10 @@ class GameActivity : AppCompatActivity() {
         private const val REDEAL_CARD_DURATION_MS = 200L
         private const val REDEAL_CARD_STAGGER_MS  = 60L
         private const val REDEAL_PILE_GAP_MS      = 150L
-        private const val ACE_DURATION_MS         = 250L
-        private const val ACE_STAGGER_MS          = 80L
+        private const val ACE_DURATION_MS         = 400L
+        private const val ACE_STAGGER_MS          = 200L
         /** Gap between fast-deal waves so the player perceives discrete ondate. */
-        private const val FAST_DEAL_WAVE_GAP_MS = 120L
+        private const val FAST_DEAL_WAVE_GAP_MS = 150L
     }
 
     // ---- ViewModel & Repos ----
@@ -555,8 +555,18 @@ class GameActivity : AppCompatActivity() {
     private fun animateAutoFoundation(moves: List<AutoFoundationMove>) {
         val gameRootContainer = gameRoot as ConstraintLayout
         val gameRootPos = locationOnScreen(gameRootContainer)
+        val density = resources.displayMetrics.density
+        val peekPx = (CARD_PEEK_DP * density).toInt()
         val ghosts = mutableListOf<ImageView>()
         val hiddenFoundations = mutableListOf<ImageView>()
+
+        // renderAll has already run; pile containers reflect the POST-chain state.
+        // For PILE_TOP-source moves we reconstruct each card's original row:
+        // preSize[P] = current childCount + (moves from P), and the k-th move from
+        // P sat at row (preSize[P] - 1 - k) in pile-removal order.
+        val perPileTotal = IntArray(4)
+        val perPileProcessed = IntArray(4)
+        for (m in moves) perPileTotal[m.fromPile]++
 
         for ((idx, move) in moves.withIndex()) {
             val destView = foundationViews[move.toFoundation] ?: continue
@@ -567,10 +577,17 @@ class GameActivity : AppCompatActivity() {
                 AutoFoundationSource.STOCK -> locationOnScreen(stockArea)
                 AutoFoundationSource.PILE_TOP -> {
                     val container = pileContainers[move.fromPile]
-                    val topChild = container?.let { it.getChildAt(it.childCount - 1) }
-                    if (topChild != null) locationOnScreen(topChild) else locationOnScreen(stockArea)
+                    if (container != null) {
+                        val k = perPileProcessed[move.fromPile]
+                        val preSize = container.childCount + perPileTotal[move.fromPile]
+                        val rowIdx = (preSize - 1 - k).coerceAtLeast(0)
+                        val contPos = locationOnScreen(container)
+                        intArrayOf(contPos[0], contPos[1] + rowIdx * peekPx)
+                    } else locationOnScreen(stockArea)
                 }
             }
+            perPileProcessed[move.fromPile]++
+
             val destLoc = locationOnScreen(destView)
 
             destView.alpha = 0f
