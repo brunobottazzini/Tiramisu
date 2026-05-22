@@ -282,9 +282,9 @@
 
     <!-- Difficulty -->
     <string name="settings_label_difficulty">Difficulty</string>
-    <string name="difficulty_facile">🟢 Facile (2 redeals)</string>
-    <string name="difficulty_normale">🟡 Normale (1 redeal)</string>
-    <string name="difficulty_difficile">🔴 Difficile (obbligato)</string>
+    <string name="difficulty_facile">🟢 Facile (1 redeal, stesso seme qualsiasi valore)</string>
+    <string name="difficulty_normale">🟡 Normale (1 redeal, stesso seme + valore minore)</string>
+    <string name="difficulty_difficile">🔴 Difficile (0 redeals, obbligato, stesso seme + valore minore)</string>
 
     <!-- Game screen -->
     <string name="stock_count">Tallone: %1$d</string>
