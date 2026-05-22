@@ -87,6 +87,13 @@ class GameActivity : AppCompatActivity() {
     // animateAutoFoundation overwrites each foundation drawable just as the
     // corresponding ghost lands. Cleared at the end of the cascade.
     private val foundationSnapshotTop = arrayOfNulls<String>(4)
+
+    // Visible pile contents during an auto-foundation cascade. Holds the cards
+    // that the user should still see in each pile at this instant of the
+    // animation: starts at "post-main-move, pre-auto-foundation" and the top
+    // card pops off whenever a ghost departs. renderPile prefers this when set
+    // so the pile doesn't empty itself the moment renderAll runs. null = use vm.
+    private val intermediatePileCards = arrayOfNulls<MutableList<String>>(4)
     private lateinit var tutorialOverlay: LinearLayout
     private lateinit var tvTutorialInstruction: TextView
     private lateinit var btnTutorialNext: Button
@@ -443,6 +450,42 @@ class GameActivity : AppCompatActivity() {
         for (i in 0..3) {
             pileSnapshots[i] = null
             foundationSnapshotTop[i] = null
+            intermediatePileCards[i] = null
+        }
+    }
+
+    /**
+     * Build the "still-visible" pile contents for each pile based on the queued
+     * auto-foundation moves. Must be called AFTER the vm action and BEFORE
+     * renderAll(). The result is the post-main-move state plus the cards that
+     * autoMoveToFoundation removed, in the original pile order — i.e. what the
+     * user should still see while the ghost flight is in progress.
+     */
+    /** Remove the top card from the intermediate-state pile and re-render it. */
+    private fun popIntermediatePileTop(pileIdx: Int) {
+        val list = intermediatePileCards[pileIdx] ?: return
+        if (list.isEmpty()) return
+        list.removeAt(list.size - 1)
+        val s = vm.state ?: return
+        renderPile(pileIdx, s)
+    }
+
+    private fun primeIntermediatePiles() {
+        val s = vm.state ?: return
+        val pending = vm.peekAutoFoundationMoves()
+        for (i in 0..3) {
+            val movesFromHere = pending.filter {
+                it.fromPile == i && it.source == AutoFoundationSource.PILE_TOP
+            }
+            if (movesFromHere.isEmpty()) {
+                intermediatePileCards[i] = null
+                continue
+            }
+            // autoMoveToFoundation rimuove la cima ad ogni iterazione, quindi le
+            // carte in movesFromHere sono in ordine "dalla cima verso il basso".
+            // Per ricostruire la pila visiva mettiamo i top "sopra": reverse + append.
+            intermediatePileCards[i] =
+                (s.piles[i] + movesFromHere.map { it.card }.reversed()).toMutableList()
         }
     }
 
@@ -534,6 +577,18 @@ class GameActivity : AppCompatActivity() {
                 .setStartDelay(startDelay)
                 .start()
 
+            // The moment this ghost departs, drop the card from the visible
+            // source pile so the user doesn't see the pile empty all at once
+            // before the first ghost even lands.
+            if (move.source == AutoFoundationSource.PILE_TOP) {
+                val srcIdx = move.fromPile
+                if (startDelay == 0L) {
+                    popIntermediatePileTop(srcIdx)
+                } else {
+                    gameRoot.postDelayed({ popIntermediatePileTop(srcIdx) }, startDelay)
+                }
+            }
+
             // When this ghost lands, atomically swap the foundation drawable to the
             // card it delivered AND remove the ghost in the same frame, so the user
             // never sees both the ghost and the updated foundation drawable at once.
@@ -583,6 +638,7 @@ class GameActivity : AppCompatActivity() {
         when (result) {
             TapResult.MOVED   -> {
                 playSound(R.raw.flipcard)
+                primeIntermediatePiles()
                 renderAll()
                 maybeAnimateAutoFoundation {
                     checkWin()
@@ -608,6 +664,7 @@ class GameActivity : AppCompatActivity() {
         capturePileTopSnapshots()
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
+            primeIntermediatePiles()
             renderAll()
             maybeAnimateAutoFoundation {
                 checkWin()
@@ -694,7 +751,10 @@ class GameActivity : AppCompatActivity() {
     private fun renderPile(pileIdx: Int, s: TiramisuGameState) {
         val container = pileContainers[pileIdx] ?: return
         container.removeAllViews()
-        val pile      = s.piles[pileIdx]
+        // During an auto-foundation cascade the visible pile is "post-main-move
+        // but pre-auto-foundation" — animateAutoFoundation pops cards off as
+        // each ghost departs. Fallback to the vm state when no cascade is active.
+        val pile: List<String> = intermediatePileCards[pileIdx] ?: s.piles[pileIdx]
         val density   = resources.displayMetrics.density
         val peekPx    = (CARD_PEEK_DP * density).toInt()
 
@@ -910,6 +970,7 @@ class GameActivity : AppCompatActivity() {
             return false
         }
         playSound(R.raw.flipcard)
+        primeIntermediatePiles()
         renderAll()
         maybeAnimateAutoFoundation {
             checkWin()
@@ -934,6 +995,7 @@ class GameActivity : AppCompatActivity() {
             return false
         }
         playSound(R.raw.flipcard)
+        primeIntermediatePiles()
         renderAll()
         maybeAnimateAutoFoundation {
             checkWin()

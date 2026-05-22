@@ -43,6 +43,9 @@ class TiramisuViewModel : ViewModel() {
         return moves
     }
 
+    /** Read-only view of the queued auto-foundation moves (does not clear them). */
+    fun peekAutoFoundationMoves(): List<AutoFoundationMove> = _lastAutoFoundationMoves
+
     // ---- Game lifecycle ----
 
     fun newGame(difficulty: Difficulty) {
