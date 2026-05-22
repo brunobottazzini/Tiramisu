@@ -21,7 +21,7 @@ object TiramisuMoveValidator {
     fun canMoveToTableau(
         movingCard: String,
         destinationTop: String,
-        strict: Boolean = false
+        strict: Boolean
     ): Boolean {
         if (movingCard == "zero") return false
         if (destinationTop == "zero") return true  // empty pile accepts any card

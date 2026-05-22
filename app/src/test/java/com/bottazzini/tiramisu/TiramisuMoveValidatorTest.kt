@@ -17,24 +17,24 @@ class TiramisuMoveValidatorTest {
     }
 
     @Test fun `same suit any rank allows tableau move`() {
-        assertTrue(TiramisuMoveValidator.canMoveToTableau("c5", "c3"))
-        assertTrue(TiramisuMoveValidator.canMoveToTableau("b1", "b10"))
-        assertTrue(TiramisuMoveValidator.canMoveToTableau("s7", "s2"))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("c5", "c3", strict = false))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("b1", "b10", strict = false))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("s7", "s2", strict = false))
     }
 
     @Test fun `different suit blocks tableau move`() {
-        assertFalse(TiramisuMoveValidator.canMoveToTableau("c5", "b3"))
-        assertFalse(TiramisuMoveValidator.canMoveToTableau("d1", "s1"))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("c5", "b3", strict = false))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("d1", "s1", strict = false))
     }
 
     @Test fun `empty pile (zero) accepts any card`() {
-        assertTrue(TiramisuMoveValidator.canMoveToTableau("s7", "zero"))
-        assertTrue(TiramisuMoveValidator.canMoveToTableau("b1", "zero"))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("s7", "zero", strict = false))
+        assertTrue(TiramisuMoveValidator.canMoveToTableau("b1", "zero", strict = false))
     }
 
     @Test fun `zero as moving card is rejected`() {
-        assertFalse(TiramisuMoveValidator.canMoveToTableau("zero", "c5"))
-        assertFalse(TiramisuMoveValidator.canMoveToTableau("zero", "zero"))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("zero", "c5", strict = false))
+        assertFalse(TiramisuMoveValidator.canMoveToTableau("zero", "zero", strict = false))
     }
 
     @Test fun `ace goes to empty foundation`() {
