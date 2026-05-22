@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Перенести всю колоду</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Подсказки</string>
-    <string name="settings_label_auto_move">Автоматический перенос в финальную колоду</string>
+    <string name="settings_label_auto_move">Автозавершение</string>
     <string name="hint_no_moves">Ходов нет</string>
     <string name="game_paused">ПАУЗА</string>
     <string name="tap_to_resume">Нажмите, чтобы продолжить</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Пауза/Продолжить</string>
     <string name="cd_hint">Подсказка</string>
     <string name="hint_with_icon">💡 Подсказки</string>
-    <string name="auto_move_with_icon">🎯 Автоматический перенос в финальную колоду</string>
+    <string name="auto_move_with_icon">🎯 Автозавершение</string>
     <string name="settings_label_sound">Звуки</string>
     <string name="sound_with_icon">🔊 Звуки</string>
     <string name="win_title">Победа!</string>

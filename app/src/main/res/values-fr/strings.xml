@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Transférer tout le jeu</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Indices</string>
-    <string name="settings_label_auto_move">Déplacement automatique vers la pile finale</string>
+    <string name="settings_label_auto_move">Auto-complétion</string>
     <string name="hint_no_moves">Aucun mouvement disponible</string>
     <string name="game_paused">PAUSE</string>
     <string name="tap_to_resume">Appuyez pour reprendre</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Pause/Reprendre</string>
     <string name="cd_hint">Indice</string>
     <string name="hint_with_icon">💡 Indices</string>
-    <string name="auto_move_with_icon">🎯 Déplacement automatique vers la pile finale</string>
+    <string name="auto_move_with_icon">🎯 Auto-complétion</string>
     <string name="settings_label_sound">Sons</string>
     <string name="sound_with_icon">🔊 Sons</string>
     <string name="win_title">Victoire !</string>

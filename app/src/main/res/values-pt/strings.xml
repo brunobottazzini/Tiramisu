@@ -91,7 +91,7 @@
     <string name="fast_deal_with_icon">⚡ Transferir a pilha inteira</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Dicas</string>
-    <string name="settings_label_auto_move">Mover automaticamente para pilha final</string>
+    <string name="settings_label_auto_move">Auto-completar</string>
     <string name="hint_no_moves">Nenhuma jogada disponível</string>
     <string name="game_paused">PAUSADO</string>
     <string name="tap_to_resume">Toque para continuar</string>
@@ -99,7 +99,7 @@
     <string name="cd_pause">Pausar/Continuar</string>
     <string name="cd_hint">Dica</string>
     <string name="hint_with_icon">💡 Dicas</string>
-    <string name="auto_move_with_icon">🎯 Mover automaticamente para pilha final</string>
+    <string name="auto_move_with_icon">🎯 Auto-completar</string>
     <string name="settings_label_sound">Sons</string>
     <string name="sound_with_icon">🔊 Sons</string>
     <string name="win_title">Vitória!</string>

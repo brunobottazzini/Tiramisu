@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ ส่งต่อสำรับไพ่ทั้งหมด</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">คำใบ้</string>
-    <string name="settings_label_auto_move">ย้ายอัตโนมัติไปยังสำรับสุดท้าย</string>
+    <string name="settings_label_auto_move">เติมอัตโนมัติ</string>
     <string name="hint_no_moves">ไม่มีการเคลื่อนไหวที่พร้อม</string>
     <string name="game_paused">หยุดชั่วคราว</string>
     <string name="tap_to_resume">แตะเพื่อทำต่อ</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">หยุดชั่วคราว/ทำต่อ</string>
     <string name="cd_hint">คำใบ้</string>
     <string name="hint_with_icon">💡 คำใบ้</string>
-    <string name="auto_move_with_icon">🎯 ย้ายอัตโนมัติไปยังสำรับสุดท้าย</string>
+    <string name="auto_move_with_icon">🎯 เติมอัตโนมัติ</string>
     <string name="settings_label_sound">เสียง</string>
     <string name="sound_with_icon">🔊 เสียง</string>
     <string name="win_title">ชนะแล้ว!</string>

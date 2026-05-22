@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ 移动整副牌</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">提示</string>
-    <string name="settings_label_auto_move">自动移到最后的牌堆</string>
+    <string name="settings_label_auto_move">自动完成</string>
     <string name="hint_no_moves">没有可用的移动</string>
     <string name="game_paused">暂停</string>
     <string name="tap_to_resume">点击继续</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">暂停/继续</string>
     <string name="cd_hint">提示</string>
     <string name="hint_with_icon">💡 提示</string>
-    <string name="auto_move_with_icon">🎯 自动移到最后的牌堆</string>
+    <string name="auto_move_with_icon">🎯 自动完成</string>
     <string name="settings_label_sound">声音</string>
     <string name="sound_with_icon">🔊 声音</string>
     <string name="win_title">胜利！</string>

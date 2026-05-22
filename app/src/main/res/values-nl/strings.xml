@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Volledige kaartspel overbrengen</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Hints</string>
-    <string name="settings_label_auto_move">Auto-verplaats naar finaal spel</string>
+    <string name="settings_label_auto_move">Automatisch voltooien</string>
     <string name="hint_no_moves">Geen zetten beschikbaar</string>
     <string name="game_paused">GEPAUZEERD</string>
     <string name="tap_to_resume">Tik om hervatten</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Pauze/Hervatten</string>
     <string name="cd_hint">Hint</string>
     <string name="hint_with_icon">💡 Hints</string>
-    <string name="auto_move_with_icon">🎯 Auto-verplaats naar finaal spel</string>
+    <string name="auto_move_with_icon">🎯 Automatisch voltooien</string>
     <string name="settings_label_sound">Geluiden</string>
     <string name="sound_with_icon">🔊 Geluiden</string>
     <string name="win_title">Overwinning!</string>

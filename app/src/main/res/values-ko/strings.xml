@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ 전체 덱 이동</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">힌트</string>
-    <string name="settings_label_auto_move">최종 덱으로 자동 이동</string>
+    <string name="settings_label_auto_move">자동 완료</string>
     <string name="hint_no_moves">사용 가능한 이동이 없습니다</string>
     <string name="game_paused">일시 중지됨</string>
     <string name="tap_to_resume">탭하여 계속</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">일시 중지/계속</string>
     <string name="cd_hint">힌트</string>
     <string name="hint_with_icon">💡 힌트</string>
-    <string name="auto_move_with_icon">🎯 최종 덱으로 자동 이동</string>
+    <string name="auto_move_with_icon">🎯 자동 완료</string>
     <string name="settings_label_sound">사운드</string>
     <string name="sound_with_icon">🔊 사운드</string>
     <string name="win_title">승리!</string>

@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Przenieś całą talię</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Wskazówki</string>
-    <string name="settings_label_auto_move">Autoprzeniesienie do ostatniej talii</string>
+    <string name="settings_label_auto_move">Automatyczne ukończenie</string>
     <string name="hint_no_moves">Brak dostępnych ruchów</string>
     <string name="game_paused">WSTRZYMANE</string>
     <string name="tap_to_resume">Naciśnij, aby wznowić</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Wstrzymaj/Wznów</string>
     <string name="cd_hint">Wskazówka</string>
     <string name="hint_with_icon">💡 Wskazówki</string>
-    <string name="auto_move_with_icon">🎯 Autoprzeniesienie do ostatniej talii</string>
+    <string name="auto_move_with_icon">🎯 Automatyczne ukończenie</string>
     <string name="settings_label_sound">Dźwięki</string>
     <string name="sound_with_icon">🔊 Dźwięki</string>
     <string name="win_title">Zwycięstwo!</string>

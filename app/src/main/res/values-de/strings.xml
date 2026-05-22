@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Gesamtes Deck übertragen</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Hinweise</string>
-    <string name="settings_label_auto_move">Automatisch in Endstapel verschieben</string>
+    <string name="settings_label_auto_move">Automatisches Vervollständigen</string>
     <string name="hint_no_moves">Keine Züge verfügbar</string>
     <string name="game_paused">PAUSE</string>
     <string name="tap_to_resume">Zum Fortfahren tippen</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Pause/Fortfahren</string>
     <string name="cd_hint">Hinweis</string>
     <string name="hint_with_icon">💡 Hinweise</string>
-    <string name="auto_move_with_icon">🎯 Automatisch in Endstapel verschieben</string>
+    <string name="auto_move_with_icon">🎯 Automatisches Vervollständigen</string>
     <string name="settings_label_sound">Geräusche</string>
     <string name="sound_with_icon">🔊 Geräusche</string>
     <string name="win_title">Sieg!</string>

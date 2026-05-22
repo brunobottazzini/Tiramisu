@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Transferir toda la baraja</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Pistas</string>
-    <string name="settings_label_auto_move">Mover automáticamente a la baraja final</string>
+    <string name="settings_label_auto_move">Autocompletar</string>
     <string name="hint_no_moves">No hay movimientos disponibles</string>
     <string name="game_paused">EN PAUSA</string>
     <string name="tap_to_resume">Toca para reanudar</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Pausar/Reanudar</string>
     <string name="cd_hint">Pista</string>
     <string name="hint_with_icon">💡 Pistas</string>
-    <string name="auto_move_with_icon">🎯 Mover automáticamente a la baraja final</string>
+    <string name="auto_move_with_icon">🎯 Autocompletar</string>
     <string name="settings_label_sound">Sonidos</string>
     <string name="sound_with_icon">🔊 Sonidos</string>
     <string name="win_title">¡Victoria!</string>

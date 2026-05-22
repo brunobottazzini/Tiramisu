@@ -90,7 +90,7 @@
     <string name="fast_deal_with_icon">⚡ Tüm kartları aktar</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">İpuçları</string>
-    <string name="settings_label_auto_move">Son Deste\'ye Otomatik Taşıyın</string>
+    <string name="settings_label_auto_move">Otomatik tamamlama</string>
     <string name="hint_no_moves">Mümkün Hamle Yok</string>
     <string name="game_paused">DURDURULDı</string>
     <string name="tap_to_resume">Devam Etmek İçin Dokunun</string>
@@ -98,7 +98,7 @@
     <string name="cd_pause">Duraklat/Devam Et</string>
     <string name="cd_hint">İpucu</string>
     <string name="hint_with_icon">💡 İpuçları</string>
-    <string name="auto_move_with_icon">🎯 Son Deste\'ye Otomatik Taşıyın</string>
+    <string name="auto_move_with_icon">🎯 Otomatik tamamlama</string>
     <string name="settings_label_sound">Sesler</string>
     <string name="sound_with_icon">🔊 Sesler</string>
     <string name="win_title">Zafer!</string>
