@@ -43,6 +43,8 @@ class GameActivity : AppCompatActivity() {
         private const val REDEAL_PILE_GAP_MS      = 150L
         private const val ACE_DURATION_MS         = 250L
         private const val ACE_STAGGER_MS          = 80L
+        /** Gap between fast-deal waves so the player perceives discrete ondate. */
+        private const val FAST_DEAL_WAVE_GAP_MS = 120L
     }
 
     // ---- ViewModel & Repos ----
@@ -216,7 +218,18 @@ class GameActivity : AppCompatActivity() {
             val eng = tutorialEngine ?: return
             if (!eng.isStockDealStep()) return
         }
-        val sizeBefore = vm.state?.piles?.map { it.size } ?: List(4) { 0 }
+        val s = vm.state ?: return
+        if (fastDealEnabled && !isTutorialMode && s.stock.size > 4) {
+            val waves = vm.dealAllFromStock()
+            if (waves.isEmpty()) return
+            playSound(R.raw.flipcard)
+            animateFastDealChain(waves) {
+                checkWin()
+                checkLost()
+            }
+            return
+        }
+        val sizeBefore = s.piles.map { it.size }
         if (vm.dealFromStock()) {
             playSound(R.raw.flipcard)
             animateDeal(sizeBefore) {
@@ -389,6 +402,136 @@ class GameActivity : AppCompatActivity() {
             renderAll()
             onComplete()
         }, totalMs)
+    }
+
+    /**
+     * Plays a chain of [DealWave]s as sequential ghost-animation runs separated by
+     * [FAST_DEAL_WAVE_GAP_MS]. Each wave animates its dealt cards (stock → pile) and
+     * its auto-foundation moves (pile → foundation). Blocks user interaction for the
+     * entire chain via [isAnimating]. State has already been mutated by [vm.dealAllFromStock];
+     * we [renderAll] up-front so ghost positions are stable, then play overlay animations.
+     */
+    private fun animateFastDealChain(waves: List<DealWave>, onComplete: () -> Unit) {
+        isAnimating = true
+        val s = vm.state ?: run { isAnimating = false; onComplete(); return }
+
+        val gameRootContainer = gameRoot as ConstraintLayout
+        val gameRootPos = locationOnScreen(gameRootContainer)
+        val stockPos = locationOnScreen(stockArea)
+        val density = resources.displayMetrics.density
+        val peekPx = (CARD_PEEK_DP * density).toInt()
+
+        renderAll()
+
+        val finalSizes = IntArray(4) { s.piles[it].size }
+        val perPileDealt = IntArray(4).apply {
+            for (w in waves) for ((p, _) in w.cardsDealt) this[p]++
+        }
+        val perPileFoundationOut = IntArray(4).apply {
+            for (w in waves) for (m in w.autoFoundationMoves) this[m.fromPile]++
+        }
+        val pileSize = IntArray(4) { p -> finalSizes[p] - perPileDealt[p] + perPileFoundationOut[p] }
+
+        val ghosts = mutableListOf<ImageView>()
+
+        fun playWave(idx: Int) {
+            if (idx >= waves.size) {
+                ghosts.forEach { gameRootContainer.removeView(it) }
+                isAnimating = false
+                onComplete()
+                return
+            }
+            val wave = waves[idx]
+            var stagger = 0L
+            for ((pileIdx, card) in wave.cardsDealt) {
+                val container = pileContainers[pileIdx] ?: continue
+                val cardW = container.width - container.paddingLeft - container.paddingRight
+                if (cardW <= 0) continue
+                val cardH = (cardW * (CARD_ASPECT_H / CARD_ASPECT_W)).toInt()
+                val contPos = locationOnScreen(container)
+                val targetX = (contPos[0] - gameRootPos[0]).toFloat()
+                val targetY = (contPos[1] + pileSize[pileIdx] * peekPx - gameRootPos[1]).toFloat()
+
+                val resId = resources.getIdentifier("${cardType}_$card", "drawable", packageName)
+                val ghost = ImageView(this).apply {
+                    if (resId != 0) setImageResource(resId)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    layoutParams = ConstraintLayout.LayoutParams(cardW, cardH)
+                    translationX = (stockPos[0] - gameRootPos[0]).toFloat()
+                    translationY = (stockPos[1] - gameRootPos[1]).toFloat()
+                }
+                gameRootContainer.addView(ghost)
+                ghosts.add(ghost)
+                ghost.animate()
+                    .translationX(targetX)
+                    .translationY(targetY)
+                    .setDuration(DEAL_CARD_DURATION_MS)
+                    .setStartDelay(stagger)
+                    .start()
+                stagger += DEAL_CARD_STAGGER_MS
+                pileSize[pileIdx]++
+            }
+            val cardsDuration = if (wave.cardsDealt.isEmpty()) 0L
+                else (wave.cardsDealt.size - 1) * DEAL_CARD_STAGGER_MS + DEAL_CARD_DURATION_MS
+
+            val foundationDuration = if (wave.autoFoundationMoves.isEmpty()) 0L
+                else (wave.autoFoundationMoves.size - 1) * ACE_STAGGER_MS + ACE_DURATION_MS
+
+            if (wave.autoFoundationMoves.isNotEmpty()) {
+                gameRoot.postDelayed({
+                    animateFoundationGhosts(wave.autoFoundationMoves, ghosts, gameRootContainer, gameRootPos)
+                    for (m in wave.autoFoundationMoves) {
+                        pileSize[m.fromPile] = (pileSize[m.fromPile] - 1).coerceAtLeast(0)
+                    }
+                }, cardsDuration)
+            }
+
+            gameRoot.postDelayed({
+                playWave(idx + 1)
+            }, cardsDuration + foundationDuration + FAST_DEAL_WAVE_GAP_MS)
+        }
+
+        playWave(0)
+    }
+
+    /**
+     * Subset of [animateAutoFoundation] used inside the fast-deal chain. Does NOT toggle
+     * [isAnimating] (the chain owns that lifecycle) and adds ghosts to a shared accumulator
+     * for the caller to clean up at chain end. Ghost source position is the top child of
+     * the originating pile, falling back to the stock area.
+     */
+    private fun animateFoundationGhosts(
+        moves: List<AutoFoundationMove>,
+        ghostsAccumulator: MutableList<ImageView>,
+        gameRootContainer: ConstraintLayout,
+        gameRootPos: IntArray
+    ) {
+        for ((idx, move) in moves.withIndex()) {
+            val destView = foundationViews[move.toFoundation] ?: continue
+            val resId = resources.getIdentifier("${cardType}_${move.card}", "drawable", packageName)
+            if (resId == 0) continue
+            val container = pileContainers[move.fromPile]
+            val sourceLoc = container?.let {
+                val topChild = it.getChildAt(it.childCount - 1)
+                if (topChild != null) locationOnScreen(topChild) else locationOnScreen(stockArea)
+            } ?: locationOnScreen(stockArea)
+            val destLoc = locationOnScreen(destView)
+            val ghost = ImageView(this).apply {
+                setImageResource(resId)
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                layoutParams = ConstraintLayout.LayoutParams(destView.width, destView.height)
+                translationX = (sourceLoc[0] - gameRootPos[0]).toFloat()
+                translationY = (sourceLoc[1] - gameRootPos[1]).toFloat()
+            }
+            gameRootContainer.addView(ghost)
+            ghostsAccumulator.add(ghost)
+            ghost.animate()
+                .translationX((destLoc[0] - gameRootPos[0]).toFloat())
+                .translationY((destLoc[1] - gameRootPos[1]).toFloat())
+                .setDuration(ACE_DURATION_MS)
+                .setStartDelay(idx * ACE_STAGGER_MS)
+                .start()
+        }
     }
 
     /**
