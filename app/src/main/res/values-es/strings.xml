@@ -9,7 +9,6 @@
     <string name="riprova">Reintentar</string>
     <string name="start">Jugar</string>
     <string name="impostazioni">Configuración</string>
-    <string name="fast_deal">Transferir toda la baraja</string>
     <string name="sfondo">Fondo</string>
     <string name="panno">Tela</string>
     <string name="legno">Madera</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">Mesa</string>
     <string name="settings_label_preview">VISTA PREVIA</string>
     <string name="settings_title_decorated">~ Configuración ~</string>
-    <string name="fast_deal_with_icon">⚡ Transferir toda la baraja</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Pistas</string>
     <string name="settings_label_auto_move">Autocompletar</string>

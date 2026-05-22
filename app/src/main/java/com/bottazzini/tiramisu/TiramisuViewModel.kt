@@ -102,39 +102,6 @@ class TiramisuViewModel : ViewModel() {
     }
 
     /**
-     * Chain multiple deal waves until either the stock empties or — in DIFFICILE
-     * with auto-complete OFF — an Obbligato condition appears that the system
-     * cannot resolve automatically. A single [previousState] snapshot is captured
-     * before the first wave so undo restores the pre-chain state.
-     *
-     * Returns the list of waves performed (each with the cards it dealt and any
-     * auto-foundation moves it triggered) for the animation layer to consume.
-     */
-    fun dealAllFromStock(): List<DealWave> {
-        val s = state ?: return emptyList()
-        if (s.stock.isEmpty()) return emptyList()
-        val snapshot = s.deepCopy()
-        val waves = mutableListOf<DealWave>()
-        while (s.stock.isNotEmpty()) {
-            val cards = mutableListOf<Pair<Int, String>>()
-            val toDeal = minOf(4, s.stock.size)
-            for (i in 0 until toDeal) {
-                val card = s.stock.removeAt(0)
-                s.piles[i].add(card)
-                cards.add(i to card)
-            }
-            autoMoveToFoundation(AutoFoundationSource.STOCK)
-            val moves = _lastAutoFoundationMoves.toList()
-            _lastAutoFoundationMoves = emptyList()
-            waves.add(DealWave(cards, moves))
-            if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) break
-        }
-        selectedPileIndex = null
-        previousState = snapshot
-        return waves
-    }
-
-    /**
      * Redistribute: collect piles 3→2→1→0 into new stock.
      * Returns true if redeal was performed.
      */
@@ -359,9 +326,4 @@ data class AutoFoundationMove(
     val toFoundation: Int,
     val card: String,
     val source: AutoFoundationSource
-)
-
-data class DealWave(
-    val cardsDealt: List<Pair<Int, String>>,
-    val autoFoundationMoves: List<AutoFoundationMove>
 )

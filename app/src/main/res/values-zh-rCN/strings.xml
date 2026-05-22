@@ -9,7 +9,6 @@
     <string name="riprova">重试</string>
     <string name="start">开始</string>
     <string name="impostazioni">设置</string>
-    <string name="fast_deal">移动整副牌</string>
     <string name="sfondo">背景</string>
     <string name="panno">布料</string>
     <string name="legno">木头</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">桌子</string>
     <string name="settings_label_preview">预览</string>
     <string name="settings_title_decorated">~  设置  ~</string>
-    <string name="fast_deal_with_icon">⚡ 移动整副牌</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">提示</string>
     <string name="settings_label_auto_move">自动完成</string>

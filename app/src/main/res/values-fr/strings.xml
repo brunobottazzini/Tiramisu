@@ -9,7 +9,6 @@
     <string name="riprova">Réessayer</string>
     <string name="start">Jouer</string>
     <string name="impostazioni">Paramètres</string>
-    <string name="fast_deal">Transférer tout le jeu</string>
     <string name="sfondo">Arrière-plan</string>
     <string name="panno">Tissu</string>
     <string name="legno">Bois</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">Table</string>
     <string name="settings_label_preview">APERÇU</string>
     <string name="settings_title_decorated">~  Paramètres  ~</string>
-    <string name="fast_deal_with_icon">⚡ Transférer tout le jeu</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Indices</string>
     <string name="settings_label_auto_move">Auto-complétion</string>

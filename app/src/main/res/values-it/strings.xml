@@ -10,7 +10,6 @@
     <string name="riprova">Riprova</string>
     <string name="start">Gioca</string>
     <string name="impostazioni">Impostazioni</string>
-    <string name="fast_deal">Trasferisci intero mazzo</string>
     <string name="sfondo">Sfondo</string>
     <string name="panno">Panno</string>
     <string name="legno">Legno</string>
@@ -88,7 +87,6 @@
     <string name="settings_label_background">Tappeto</string>
     <string name="settings_label_preview">ANTEPRIMA</string>
     <string name="settings_title_decorated">~  Impostazioni  ~</string>
-    <string name="fast_deal_with_icon">⚡ Trasferisci intero mazzo</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Suggerimenti</string>
     <string name="settings_label_auto_move">Completamento automatico</string>

@@ -9,7 +9,6 @@
     <string name="riprova">Spróbuj ponownie</string>
     <string name="start">Graj</string>
     <string name="impostazioni">Ustawienia</string>
-    <string name="fast_deal">Przenieś całą talię</string>
     <string name="sfondo">Tło</string>
     <string name="panno">Tkanina</string>
     <string name="legno">Drewno</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">Stół</string>
     <string name="settings_label_preview">PODGLĄD</string>
     <string name="settings_title_decorated">~  Ustawienia  ~</string>
-    <string name="fast_deal_with_icon">⚡ Przenieś całą talię</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Wskazówki</string>
     <string name="settings_label_auto_move">Automatyczne ukończenie</string>

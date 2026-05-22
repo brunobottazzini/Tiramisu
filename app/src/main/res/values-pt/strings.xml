@@ -10,7 +10,6 @@
     <string name="riprova">Tentar de novo</string>
     <string name="start">Jogar</string>
     <string name="impostazioni">Configurações</string>
-    <string name="fast_deal">Transferir a pilha inteira</string>
     <string name="sfondo">Plano de fundo</string>
     <string name="panno">Feltro</string>
     <string name="legno">Madeira</string>
@@ -88,7 +87,6 @@
     <string name="settings_label_background">Tapete</string>
     <string name="settings_label_preview">PRÉVIA</string>
     <string name="settings_title_decorated">~  Configurações  ~</string>
-    <string name="fast_deal_with_icon">⚡ Transferir a pilha inteira</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Dicas</string>
     <string name="settings_label_auto_move">Auto-completar</string>

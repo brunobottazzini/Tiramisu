@@ -7,7 +7,6 @@ import com.bottazzini.tiramisu.db.columns.SettingsBaseColumns.SettingEntry
 import com.bottazzini.tiramisu.utils.Difficulty
 
 enum class Configuration(val value: String) {
-    FAST_DEAL("fastDeal"),
     CARD_BACK("cardBack"),
     BACKGROUND("background"),
     CARD_TYPE("cardType"),
@@ -22,7 +21,6 @@ class SettingsHandler(context: Context) {
     private val dbHandler = DatabaseHandler(context)
 
     fun insertDefaultSettings() {
-        setDefaultSetting(Configuration.FAST_DEAL.value, "enabled")
         setDefaultSetting(Configuration.CARD_BACK.value, "bg2")
         setDefaultSetting(Configuration.BACKGROUND.value, "bordeaux")
         setDefaultSetting(Configuration.CARD_TYPE.value, "piacentine")

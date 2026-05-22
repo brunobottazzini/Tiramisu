@@ -9,7 +9,6 @@
     <string name="riprova">재시도</string>
     <string name="start">플레이</string>
     <string name="impostazioni">설정</string>
-    <string name="fast_deal">전체 덱 이동</string>
     <string name="sfondo">배경</string>
     <string name="panno">천</string>
     <string name="legno">나무</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">테이블</string>
     <string name="settings_label_preview">미리보기</string>
     <string name="settings_title_decorated">~ 설정 ~</string>
-    <string name="fast_deal_with_icon">⚡ 전체 덱 이동</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">힌트</string>
     <string name="settings_label_auto_move">자동 완료</string>

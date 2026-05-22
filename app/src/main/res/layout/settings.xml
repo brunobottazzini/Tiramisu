@@ -339,9 +339,9 @@
             </FrameLayout>
         </LinearLayout>
 
-        <!-- Fast deal switch -->
+        <!-- Hints switch -->
         <LinearLayout
-            android:id="@+id/fastDealRow"
+            android:id="@+id/hintRow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -352,36 +352,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/backgroundRow">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/fast_deal_with_icon"
-                style="@style/CasinoBodyText" />
-
-            <Switch
-                android:id="@+id/switchFastDeal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:thumb="@drawable/casino_gold_switch_thumb"
-                android:track="@drawable/casino_gold_switch_track"
-                android:onClick="changeFastDeal" />
-        </LinearLayout>
-
-        <!-- Hints switch -->
-        <LinearLayout
-            android:id="@+id/hintRow"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:background="@drawable/casino_tile_bg"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fastDealRow">
 
             <TextView
                 android:layout_width="0dp"

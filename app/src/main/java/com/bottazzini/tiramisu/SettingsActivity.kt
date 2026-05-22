@@ -123,12 +123,6 @@ class SettingsActivity : AppCompatActivity() {
         updateHeroPreview()
     }
 
-    fun changeFastDeal(view: View) {
-        val switch = findViewById<Switch>(R.id.switchFastDeal)
-        val value = if (switch.isChecked) "enabled" else "disabled"
-        settingsHandler.updateSetting(Configuration.FAST_DEAL.value, value)
-    }
-
     fun changeHintEnabled(view: View) {
         val switch = view as Switch
         val value = if (switch.isChecked) "enabled" else "disabled"
@@ -224,9 +218,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun readConfigurations() {
-        val fastDeal = settingsHandler.readValue(Configuration.FAST_DEAL.value) ?: "disabled"
-        findViewById<Switch>(R.id.switchFastDeal).isChecked = (fastDeal == "enabled")
-
         val cardType = settingsHandler.readValue(Configuration.CARD_TYPE.value) ?: "piacentine"
         val currentDeck = CardDeckRegistry.byId(cardType)
         deckSelectedName.text = getString(currentDeck.labelRes)

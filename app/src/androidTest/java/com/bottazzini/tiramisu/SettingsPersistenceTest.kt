@@ -1,7 +1,6 @@
 package com.bottazzini.tiramisu
 
 import android.widget.RadioButton
-import android.widget.Switch
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -9,7 +8,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bottazzini.tiramisu.util.TestHelpers
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,29 +20,6 @@ class SettingsPersistenceTest {
         TestHelpers.resetAppData()
         // Settings table is populated by MainActivity on first launch
         ActivityScenario.launch(MainActivity::class.java).close()
-    }
-
-    @Test
-    fun fastDealToggle_persistsAcrossActivityRestart() {
-        var initialChecked = false
-
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                initialChecked = activity.findViewById<Switch>(R.id.switchFastDeal).isChecked
-            }
-            onView(withId(R.id.switchFastDeal)).perform(click())
-        }
-
-        ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
-            scenario.onActivity { activity ->
-                val newChecked = activity.findViewById<Switch>(R.id.switchFastDeal).isChecked
-                assertNotEquals(
-                    "Fast Deal switch should be flipped after restart",
-                    initialChecked,
-                    newChecked
-                )
-            }
-        }
     }
 
     @Test

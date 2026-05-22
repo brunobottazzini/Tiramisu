@@ -9,7 +9,6 @@
     <string name="riprova">もう一度</string>
     <string name="start">プレイ</string>
     <string name="impostazioni">設定</string>
-    <string name="fast_deal">デッキ全体を移動</string>
     <string name="sfondo">背景</string>
     <string name="panno">布</string>
     <string name="legno">木</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">テーブル</string>
     <string name="settings_label_preview">プレビュー</string>
     <string name="settings_title_decorated">~  設定  ~</string>
-    <string name="fast_deal_with_icon">⚡ デッキ全体を移動</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">ヒント</string>
     <string name="settings_label_auto_move">自動完了</string>

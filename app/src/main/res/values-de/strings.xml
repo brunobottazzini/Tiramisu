@@ -9,7 +9,6 @@
     <string name="riprova">Erneut versuchen</string>
     <string name="start">Spielen</string>
     <string name="impostazioni">Einstellungen</string>
-    <string name="fast_deal">Gesamtes Deck übertragen</string>
     <string name="sfondo">Hintergrund</string>
     <string name="panno">Tuch</string>
     <string name="legno">Holz</string>
@@ -87,7 +86,6 @@
     <string name="settings_label_background">Tisch</string>
     <string name="settings_label_preview">VORSCHAU</string>
     <string name="settings_title_decorated">~  Einstellungen  ~</string>
-    <string name="fast_deal_with_icon">⚡ Gesamtes Deck übertragen</string>
     <string name="watermark_studio" translatable="false">Bottazzini Softworks</string>
     <string name="settings_label_hint">Hinweise</string>
     <string name="settings_label_auto_move">Automatisches Vervollständigen</string>

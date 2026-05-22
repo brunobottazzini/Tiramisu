@@ -63,7 +63,7 @@ class SmokeNavigationTest {
     fun settingsActivity_displaysControls() {
         ActivityScenario.launch(MainActivity::class.java).close() // populate defaults
         ActivityScenario.launch(SettingsActivity::class.java).use {
-            onView(withId(R.id.switchFastDeal)).check(matches(isDisplayed()))
+            onView(withId(R.id.switchHint)).check(matches(isDisplayed()))
             onView(withId(R.id.radioGroupCardBack)).check(matches(isDisplayed()))
             onView(withId(R.id.radioGroupBackgroundRow1)).check(matches(isDisplayed()))
         }
