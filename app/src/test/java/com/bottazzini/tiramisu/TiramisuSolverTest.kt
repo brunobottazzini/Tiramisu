@@ -173,4 +173,155 @@ class TiramisuSolverTest {
         assertEquals(listOf("c5"), s.piles[0])
         assertEquals(listOf("c7"), s.piles[1])
     }
+
+    // ===== canProgress: progress detected =====
+
+    @Test fun `canProgress true when foundation move available immediately`() {
+        val s = state(
+            piles       = listOf(listOf("b2"), emptyList(), emptyList(), emptyList()),
+            foundations = listOf("b1", "zero", "zero", "zero")
+        )
+        assertTrue(TiramisuSolver.canProgress(s, 30))
+    }
+
+    @Test fun `canProgress true when ace is reachable in 2 moves`() {
+        // pile 0 = [c1, c5], pile 1 = c7. Move c5 -> c7 (5<7 strict ok), c1 auto-promotes.
+        val s = state(piles = listOf(listOf("c1", "c5"), listOf("c7"), emptyList(), emptyList()))
+        assertTrue(TiramisuSolver.canProgress(s, 2))
+        assertTrue(TiramisuSolver.canProgress(s, 30))
+    }
+
+    @Test fun `canProgress true when single card to empty pile unblocks foundation`() {
+        // pile 0 = s5, pile 1 = [s1, s3], pile 2 = empty, pile 3 = empty.
+        // Move s3 -> pile 2 (single -> empty), then s1 exposed -> foundation.
+        val s = state(
+            piles = listOf(listOf("s5"), listOf("s1", "s3"), emptyList(), emptyList())
+        )
+        assertTrue(TiramisuSolver.canProgress(s, 30))
+    }
+
+    @Test fun `canProgress true when foundation at 9 and 10 reachable`() {
+        val s = state(
+            piles       = listOf(listOf("b10"), emptyList(), emptyList(), emptyList()),
+            foundations = listOf("b9", "zero", "zero", "zero")
+        )
+        assertTrue(TiramisuSolver.canProgress(s, 30))
+    }
+
+    @Test fun `canProgress true on freshly dealt state (sanity)`() {
+        // Sanity: b1 already in foundation, b2 is on a pile → immediate foundation move.
+        // Other piles contain unrelated cards. canProgress must find b2 → foundation.
+        val s = state(
+            piles       = listOf(listOf("b2"), listOf("s6"), listOf("c3"), listOf("d8")),
+            foundations = listOf("b1", "zero", "zero", "zero")
+        )
+        assertTrue(TiramisuSolver.canProgress(s, 30))
+    }
+
+    // ===== canProgress: stall detected =====
+
+    @Test fun `no progress in classic 2-pile cycle c3 c5 strict`() {
+        val s = state(
+            piles = listOf(listOf("c3"), listOf("c5"), emptyList(), emptyList())
+        )
+        assertFalse(TiramisuSolver.canProgress(s, 30))
+    }
+
+    @Test fun `no progress when only buried aces and high cards block them`() {
+        // Aces are at the bottom of piles, covered by cards that can't be moved off:
+        // pile 0 = [c1, c10] (under strict, c10 can't move on any pile top of same suit
+        //                     and other suits = different suit = blocked)
+        // pile 1 = [b1, b10]
+        // pile 2 = [d1, d10]
+        // pile 3 = [s1, s10]
+        // No tableau moves possible (all tops different suits, and even if same-suit,
+        // a 10 has no higher destination). No foundation moves. Stalled.
+        val s = state(
+            piles = listOf(
+                listOf("c1", "c10"),
+                listOf("b1", "b10"),
+                listOf("d1", "d10"),
+                listOf("s1", "s10")
+            )
+        )
+        assertFalse(TiramisuSolver.canProgress(s, 30))
+    }
+
+    // ===== canProgress: difficulty awareness =====
+
+    @Test fun `canProgress under FACILE finds progress that strict NORMALE blocks`() {
+        // pile 0 = [c1, c7], pile 1 = c5, pile 2 = b3, pile 3 = d4.
+        // No empty piles; the only coppe sequence is c7 and c5.
+        //
+        // Under strict NORMALE:
+        //   c7 → c5: invalid (7 > 5 same-suit strict).
+        //   c5 → c7: valid (5 < 7). Result: pile0=[c1,c7,c5], pile1=[], pile2=[b3], pile3=[d4].
+        //   Then top of pile0 = c5. c5 → b3? different suit. c5 → d4? different suit.
+        //   c5 → empty pile1: back to pile0=[c1,c7], pile1=[c5] — visited, skipped.
+        //   b3 / d4 have nowhere to go (different suits only). Cycle only; c1 never exposed.
+        //
+        // Under FACILE (lax):
+        //   c7 → c5: valid (same suit, lax). pile0=[c1] → c1 auto-promotes. Progress!
+        val sStrict = state(
+            piles       = listOf(listOf("c1", "c7"), listOf("c5"), listOf("b3"), listOf("d4")),
+            foundations = listOf("zero", "zero", "zero", "zero")
+        )
+        assertFalse(TiramisuSolver.canProgress(sStrict, 30))
+
+        // Same layout but FACILE — c7 -> c5 ok (lax), c1 exposed, c1 promotes.
+        val sLax = TiramisuGameState(
+            piles       = listOf(
+                mutableListOf("c1", "c7"),
+                mutableListOf("c5"),
+                mutableListOf("b3"),
+                mutableListOf("d4")
+            ),
+            stock       = mutableListOf(),
+            foundations = mutableListOf("zero", "zero", "zero", "zero"),
+            redealsLeft = 0,
+            difficulty  = Difficulty.FACILE,
+            initialDeck = emptyList()
+        )
+        assertTrue(TiramisuSolver.canProgress(sLax, 30))
+    }
+
+    // ===== canProgress: boundary & performance =====
+
+    @Test fun `canProgress respects maxDepth boundary`() {
+        // Construct a state where progress requires exactly 3 moves.
+        // pile 0 = [c1, c3, c5], pile 1 = c7, pile 2 = empty, pile 3 = empty.
+        // Steps: c5 -> c7 (5<7 ok, depth 1) → top c3 -> pile 2 (single -> empty, depth 2) →
+        //        c1 exposed → auto-promote in same applyMove (no separate move needed)
+        // Actually: after c3 -> pile 2, c1 is on pile 0 top → autoPromoteAces runs in applyMove,
+        // so progress is detected at depth 2.
+        val s = state(
+            piles = listOf(listOf("c1", "c3", "c5"), listOf("c7"), emptyList(), emptyList())
+        )
+        assertTrue(TiramisuSolver.canProgress(s, 2))
+        // With maxDepth = 1, BFS can only do one move (c5 -> c7), which doesn't expose c1 alone.
+        // After c5 -> c7, pile 0 = [c1, c3] (no progress yet). depth 1 nodes are not expanded
+        // further because depth >= maxDepth. So canProgress(s, 1) = false.
+        assertFalse(TiramisuSolver.canProgress(s, 1))
+    }
+
+    @Test fun `canProgress terminates within 200ms on dense state`() {
+        // Dense state: 4 piles with 7 cards each (28 cards), foundations all empty.
+        // No aces visible to short-circuit. Goal: confirm BFS doesn't blow up.
+        val s = state(
+            piles = listOf(
+                listOf("c10","c9","c8","c7","c6","c5","c4"),
+                listOf("b10","b9","b8","b7","b6","b5","b4"),
+                listOf("d10","d9","d8","d7","d6","d5","d4"),
+                listOf("s10","s9","s8","s7","s6","s5","s4")
+            )
+        )
+        val startNs = System.nanoTime()
+        val result = TiramisuSolver.canProgress(s, 30)
+        val elapsedMs = (System.nanoTime() - startNs) / 1_000_000
+        assertTrue("canProgress took ${elapsedMs}ms (expected < 200)", elapsedMs < 200)
+        // We don't assert on result — the test is purely a performance regression test.
+        // (For the record, this particular state is stalled since no aces are visible
+        // and no foundation can be started.)
+        assertFalse(result)  // sanity, since no aces are visible and no progress is possible
+    }
 }

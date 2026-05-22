@@ -136,4 +136,32 @@ object TiramisuSolver {
             }
         }
     }
+
+    /**
+     * Returns true if SOME sequence of legal moves of length <= [maxDepth] produces
+     * a state with higher [foundationCardCount] than [start]. Returns false if no such
+     * sequence exists within the lookahead — the state is considered stalled.
+     *
+     * BFS with a `visited` set keyed by [canonicalKey] to prevent cycle re-exploration.
+     */
+    fun canProgress(start: TiramisuGameState, maxDepth: Int): Boolean {
+        val initialCount = foundationCardCount(start)
+        val visited = hashSetOf(canonicalKey(start))
+        val queue = ArrayDeque<Pair<TiramisuGameState, Int>>()
+        queue.addLast(start to 0)
+
+        while (queue.isNotEmpty()) {
+            val (s, depth) = queue.removeFirst()
+            if (depth >= maxDepth) continue
+            for (move in enumerateLegalMoves(s)) {
+                val next = applyMove(s, move)
+                if (foundationCardCount(next) > initialCount) return true
+                val key = canonicalKey(next)
+                if (visited.add(key)) {
+                    queue.addLast(next to depth + 1)
+                }
+            }
+        }
+        return false
+    }
 }
