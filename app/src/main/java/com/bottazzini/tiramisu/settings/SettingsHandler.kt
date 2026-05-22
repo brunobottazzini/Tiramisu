@@ -13,7 +13,8 @@ enum class Configuration(val value: String) {
     CARD_TYPE("cardType"),
     HINT_ENABLED("hintEnabled"),
     AUTO_MOVE("autoMove"),
-    DIFFICULTY("difficulty")
+    DIFFICULTY("difficulty"),
+    SOUND_ENABLED("soundEnabled")
 }
 
 class SettingsHandler(context: Context) {
@@ -28,6 +29,7 @@ class SettingsHandler(context: Context) {
         setDefaultSetting(Configuration.HINT_ENABLED.value, "enabled")   // default ON
         setDefaultSetting(Configuration.AUTO_MOVE.value, "disabled")     // default OFF
         setDefaultSetting(Configuration.DIFFICULTY.value, Difficulty.NORMALE.key)
+        setDefaultSetting(Configuration.SOUND_ENABLED.value, "enabled")
     }
 
     fun migrateRemovedBackgrounds() {
