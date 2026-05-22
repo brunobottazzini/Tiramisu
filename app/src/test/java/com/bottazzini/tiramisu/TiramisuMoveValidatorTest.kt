@@ -257,4 +257,58 @@ class TiramisuMoveValidatorTest {
             TiramisuMoveValidator.topMovableRun(emptyList(), "c5", strict = true)
         )
     }
+
+    // --- PoC D: emptyPileSingleCardOnly ---
+
+    @Test fun `topMovableRun with emptyPileSingleCardOnly returns only the top card onto empty`() {
+        // pile = [s9, d7, d5, d3]; topRun = [d7, d5, d3]; dst = empty.
+        // With the flag ON, only d3 (the top card) is movable onto the empty pile.
+        assertEquals(
+            listOf("d3"),
+            TiramisuMoveValidator.topMovableRun(
+                listOf("s9", "d7", "d5", "d3"),
+                "zero",
+                strict = true,
+                emptyPileSingleCardOnly = true
+            )
+        )
+    }
+
+    @Test fun `topMovableRun with emptyPileSingleCardOnly does not affect non-empty destinations`() {
+        // dst is non-empty: the flag has no effect — full run still moves.
+        assertEquals(
+            listOf("d7", "d5", "d3"),
+            TiramisuMoveValidator.topMovableRun(
+                listOf("s9", "d7", "d5", "d3"),
+                "d8",
+                strict = true,
+                emptyPileSingleCardOnly = true
+            )
+        )
+    }
+
+    @Test fun `topMovableRun with emptyPileSingleCardOnly returns empty for empty source`() {
+        assertEquals(
+            emptyList<String>(),
+            TiramisuMoveValidator.topMovableRun(
+                emptyList(),
+                "zero",
+                strict = true,
+                emptyPileSingleCardOnly = true
+            )
+        )
+    }
+
+    @Test fun `topMovableRun without the flag still moves the full run onto empty`() {
+        // Sanity: default behaviour (flag off) is unchanged.
+        assertEquals(
+            listOf("d7", "d5", "d3"),
+            TiramisuMoveValidator.topMovableRun(
+                listOf("s9", "d7", "d5", "d3"),
+                "zero",
+                strict = true,
+                emptyPileSingleCardOnly = false
+            )
+        )
+    }
 }

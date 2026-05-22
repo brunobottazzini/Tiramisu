@@ -115,12 +115,23 @@ object TiramisuMoveValidator {
      * drops the lowest card progressively, returning the first sub-run that
      * fits. Empty result means no legal multi- or single-card move exists
      * between this pile and that destination.
+     *
+     * PoC D: when [emptyPileSingleCardOnly] is true AND the destination is an
+     * empty pile, only the single top card is transferred. This keeps empty
+     * piles useful as one-card staging slots without making them free
+     * "unloading bays" for whole runs.
      */
     fun topMovableRun(
         pile: List<String>,
         destinationTop: String,
-        strict: Boolean
+        strict: Boolean,
+        emptyPileSingleCardOnly: Boolean = false
     ): List<String> {
+        if (pile.isEmpty()) return emptyList()
+        if (destinationTop == "zero" && emptyPileSingleCardOnly) {
+            // Any single non-"zero" card lands on an empty pile under any rule.
+            return listOf(pile.last())
+        }
         val run = topRun(pile)
         if (run.isEmpty()) return emptyList()
         for (start in run.indices) {

@@ -34,7 +34,8 @@ object TiramisuSolver {
                 val movable = TiramisuMoveValidator.topMovableRun(
                     srcPile,
                     state.topOfPile(dstIdx),
-                    strict = state.difficulty.strictTableau
+                    strict = state.difficulty.strictTableau,
+                    emptyPileSingleCardOnly = state.difficulty.emptyPileSingleCard
                 )
                 if (movable.isEmpty()) continue
                 // Skip moves that just shuffle the entire pile to an empty slot — no progress.
@@ -75,6 +76,7 @@ object TiramisuSolver {
     fun enumerateLegalMoves(s: TiramisuGameState): List<Move> {
         val out = mutableListOf<Move>()
         val strict = s.difficulty.strictTableau
+        val emptySingle = s.difficulty.emptyPileSingleCard
         for (src in 0..3) {
             val srcPile = s.piles[src]
             if (srcPile.isEmpty()) continue
@@ -91,7 +93,10 @@ object TiramisuSolver {
             for (dst in 0..3) {
                 if (src == dst) continue
                 val movable = TiramisuMoveValidator.topMovableRun(
-                    srcPile, s.topOfPile(dst), strict = strict
+                    srcPile,
+                    s.topOfPile(dst),
+                    strict = strict,
+                    emptyPileSingleCardOnly = emptySingle
                 )
                 if (movable.isNotEmpty()) {
                     out.add(Move(fromPile = src, toPile = dst, toFoundation = false))
@@ -121,7 +126,8 @@ object TiramisuSolver {
             val movable = TiramisuMoveValidator.topMovableRun(
                 srcPile,
                 next.topOfPile(move.toPile),
-                strict = next.difficulty.strictTableau
+                strict = next.difficulty.strictTableau,
+                emptyPileSingleCardOnly = next.difficulty.emptyPileSingleCard
             )
             // movable should always be non-empty because the move was enumerated as legal
             val n = movable.size

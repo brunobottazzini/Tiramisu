@@ -310,9 +310,9 @@ class TiramisuViewModelTest {
         assertEquals(listOf("d7", "d5", "d3"), s.piles[1])
     }
 
-    @Test fun `NORMALE moving run onto empty pile leaves the pre-run base behind`() {
-        // pile 0 = empty ; pile 1 = [s9, d7, d5, d3]
-        // Top run = [d7, d5, d3]; s9 is NOT part of the run and must stay in pile 1.
+    @Test fun `NORMALE drop on empty pile moves only the top card`() {
+        // pile 1 = [s9, d7, d5, d3]; pile 0 empty. Under Normale (emptyPileSingleCard=true),
+        // dragging from pile 1 onto pile 0 should move ONLY d3, leaving the run base behind.
         stateWith(
             piles = listOf(
                 emptyList(),
@@ -321,6 +321,25 @@ class TiramisuViewModelTest {
                 emptyList()
             ),
             difficulty = Difficulty.NORMALE
+        )
+        vm.onPileTapped(1)
+        val result = vm.onPileTapped(0)
+        assertEquals(TapResult.MOVED, result)
+        val s = vm.state!!
+        assertEquals(listOf("d3"), s.piles[0])
+        assertEquals(listOf("s9", "d7", "d5"), s.piles[1])
+    }
+
+    @Test fun `FACILE drop on empty pile moves the full run`() {
+        // Same layout, Difficulty.FACILE — the full top run d7,d5,d3 should land on the empty pile.
+        stateWith(
+            piles = listOf(
+                emptyList(),
+                listOf("s9", "d7", "d5", "d3"),
+                emptyList(),
+                emptyList()
+            ),
+            difficulty = Difficulty.FACILE
         )
         vm.onPileTapped(1)
         val result = vm.onPileTapped(0)

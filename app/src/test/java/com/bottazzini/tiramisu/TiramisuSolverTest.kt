@@ -249,26 +249,21 @@ class TiramisuSolverTest {
 
     // ===== canProgress: difficulty awareness =====
 
-    @Test fun `canProgress under FACILE reaches the ace in one move where strict needs more`() {
+    @Test fun `canProgress under FACILE finds progress that strict NORMALE blocks (PoC D)`() {
         // pile 0 = [c1, c7], pile 1 = c5, pile 2 = b3, pile 3 = d4.
         //
         // Under FACILE (lax): c7 -> c5 is legal in one move; c1 then auto-promotes.
-        //   canProgress(s, 1) must already be true.
         //
-        // Under strict NORMALE with run-moves enabled: c7 -> c5 is illegal (7 > 5), but
-        // c5 -> c7 builds the run [c7, c5] which can then be shoveled onto pile 1 (empty),
-        // exposing c1. That takes 2 moves, so canProgress(s, 1) is false and canProgress(s, 30)
-        // is true.
+        // Under strict NORMALE + PoC D (emptyPileSingleCard = true):
+        //   c5 -> c7 builds the run [c7, c5] on pile 0, leaving pile 1 empty.
+        //   The run cannot be dumped onto pile 1 as a unit — only c5 alone, which
+        //   reverts the layout. Cycle, no foundation progress possible.
         val sStrict = state(
             piles       = listOf(listOf("c1", "c7"), listOf("c5"), listOf("b3"), listOf("d4")),
             foundations = listOf("zero", "zero", "zero", "zero")
         )
         assertFalse(
-            "strict should not find progress in a single move",
-            TiramisuSolver.canProgress(sStrict, 1)
-        )
-        assertTrue(
-            "strict should still eventually progress via run move",
+            "strict + PoC D: empty pile takes single card only, so the c1 ace stays buried",
             TiramisuSolver.canProgress(sStrict, 30)
         )
 
