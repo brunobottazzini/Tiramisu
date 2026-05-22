@@ -248,4 +248,46 @@ class TiramisuViewModelTest {
         assertEquals("b3", s.foundations[0])
         assertEquals("zero", s.topOfPile(0))
     }
+
+    @Test fun `dealAllFromStock drains stock in waves when no Obbligato block`() {
+        stateWith(
+            piles = listOf(emptyList(), emptyList(), emptyList(), emptyList()),
+            stock = listOf("b3", "c5", "d7", "s2", "b4", "c6", "d8", "s3"),
+            difficulty = Difficulty.NORMALE
+        )
+        val waves = vm.dealAllFromStock()
+        assertEquals(2, waves.size)
+        val s = vm.state!!
+        assertTrue(s.stock.isEmpty())
+        val firstWaveCards = waves[0].cardsDealt.map { it.second }
+        assertEquals(listOf("b3", "c5", "d7", "s2"), firstWaveCards)
+    }
+
+    @Test fun `dealAllFromStock stops at Obbligato when auto-complete is off`() {
+        stateWith(
+            piles = listOf(emptyList(), emptyList(), emptyList(), emptyList()),
+            stock = listOf("b1", "c5", "d7", "s2", "b2", "c6", "d8", "s3", "b3", "c7", "d9", "s4"),
+            difficulty = Difficulty.DIFFICILE
+        )
+        vm.autoCompleteEnabled = false
+        val waves = vm.dealAllFromStock()
+        assertEquals(2, waves.size)
+        val s = vm.state!!
+        assertEquals(4, s.stock.size)
+        assertEquals("b2", s.topOfPile(0))
+    }
+
+    @Test fun `dealAllFromStock drains fully when auto-complete is on despite Obbligato`() {
+        stateWith(
+            piles = listOf(emptyList(), emptyList(), emptyList(), emptyList()),
+            stock = listOf("b1", "c5", "d7", "s2", "b2", "c6", "d8", "s3"),
+            difficulty = Difficulty.DIFFICILE
+        )
+        vm.autoCompleteEnabled = true
+        val waves = vm.dealAllFromStock()
+        assertEquals(2, waves.size)
+        val s = vm.state!!
+        assertTrue(s.stock.isEmpty())
+        assertTrue(s.foundations.any { it == "b2" })
+    }
 }
