@@ -69,6 +69,17 @@ class GameActivity : AppCompatActivity() {
     private val pileScrollViews = arrayOfNulls<ScrollView>(4)
     private var firstLayoutDone  = false
     private var dragSourcePile: Int? = null
+
+    // Snapshot of each pile's pre-move card layout, captured BEFORE the action
+    // mutates vm.state. animateAutoFoundation reads from this so ghost cards
+    // start from the on-screen position the card actually had, not from the
+    // shrunk container left after renderAll. null = no snapshot for that pile.
+    private data class PileSnapshot(
+        val cards: List<String>,
+        val xAbs: Int,
+        val yAbsPerCard: IntArray
+    )
+    private val pileSnapshots = arrayOfNulls<PileSnapshot>(4)
     private lateinit var tutorialOverlay: LinearLayout
     private lateinit var tvTutorialInstruction: TextView
     private lateinit var btnTutorialNext: Button
@@ -394,6 +405,34 @@ class GameActivity : AppCompatActivity() {
     }
 
     /**
+     * Capture the absolute screen position of every card in every pile BEFORE
+     * a state-changing action runs. Call this immediately before the vm action
+     * that may trigger an auto-foundation cascade with PILE_TOP source moves.
+     * Reading vm.state.piles and the live container positions guarantees we
+     * record the cards in the order they were rendered.
+     */
+    private fun capturePileTopSnapshots() {
+        val s = vm.state ?: run { clearPileTopSnapshots(); return }
+        val density = resources.displayMetrics.density
+        val peekPx = (CARD_PEEK_DP * density).toInt()
+        for (i in 0..3) {
+            val container = pileContainers[i]
+            val cards = s.piles[i]
+            if (container == null || cards.isEmpty()) {
+                pileSnapshots[i] = null
+                continue
+            }
+            val contPos = locationOnScreen(container)
+            val ys = IntArray(cards.size) { idx -> contPos[1] + idx * peekPx }
+            pileSnapshots[i] = PileSnapshot(cards.toList(), contPos[0], ys)
+        }
+    }
+
+    private fun clearPileTopSnapshots() {
+        for (i in 0..3) pileSnapshots[i] = null
+    }
+
+    /**
      * If the ViewModel's last action queued any auto-ace moves, animate them.
      * Idempotent: consuming the list clears it so the next render won't replay.
      * Invokes [onComplete] once any animation has finished — or immediately if
@@ -403,7 +442,7 @@ class GameActivity : AppCompatActivity() {
      */
     private fun maybeAnimateAutoFoundation(onComplete: () -> Unit = {}) {
         val moves = vm.consumeAutoFoundationMoves()
-        if (moves.isEmpty()) { onComplete(); return }
+        if (moves.isEmpty()) { clearPileTopSnapshots(); onComplete(); return }
         animateAutoFoundation(moves, onComplete)
     }
 
@@ -434,14 +473,22 @@ class GameActivity : AppCompatActivity() {
             val sourceLoc = when (move.source) {
                 AutoFoundationSource.STOCK -> locationOnScreen(stockArea)
                 AutoFoundationSource.PILE_TOP -> {
-                    val container = pileContainers[move.fromPile]
-                    if (container != null) {
+                    val snap = pileSnapshots[move.fromPile]
+                    val cardIdx = snap?.cards?.indexOf(move.card) ?: -1
+                    if (snap != null && cardIdx >= 0) {
+                        // Lookup the actual on-screen position the card had pre-action.
+                        intArrayOf(snap.xAbs, snap.yAbsPerCard[cardIdx])
+                    } else {
+                        // Fallback: best-effort reconstruction from the post-render container.
                         val k = perPileProcessed[move.fromPile]
-                        val preSize = container.childCount + perPileTotal[move.fromPile]
-                        val rowIdx = (preSize - 1 - k).coerceAtLeast(0)
-                        val contPos = locationOnScreen(container)
-                        intArrayOf(contPos[0], contPos[1] + rowIdx * peekPx)
-                    } else locationOnScreen(stockArea)
+                        val container = pileContainers[move.fromPile]
+                        if (container != null) {
+                            val preSize = container.childCount + perPileTotal[move.fromPile]
+                            val rowIdx = (preSize - 1 - k).coerceAtLeast(0)
+                            val contPos = locationOnScreen(container)
+                            intArrayOf(contPos[0], contPos[1] + rowIdx * peekPx)
+                        } else locationOnScreen(stockArea)
+                    }
                 }
             }
             perPileProcessed[move.fromPile]++
@@ -478,7 +525,7 @@ class GameActivity : AppCompatActivity() {
                 .start()
         }
 
-        if (ghosts.isEmpty()) { onComplete(); return }
+        if (ghosts.isEmpty()) { clearPileTopSnapshots(); onComplete(); return }
 
         isAnimating = true
         val totalDuration = (moves.size - 1) * ACE_STAGGER_MS + ACE_DURATION_MS
@@ -486,6 +533,7 @@ class GameActivity : AppCompatActivity() {
             for (ghost in ghosts) gameRootContainer.removeView(ghost)
             for (view in hiddenFoundations) view.alpha = 1f
             isAnimating = false
+            clearPileTopSnapshots()
             onComplete()
         }, totalDuration)
     }
@@ -510,6 +558,7 @@ class GameActivity : AppCompatActivity() {
             // pileIdx == selected → deselecting, always allowed
         }
 
+        capturePileTopSnapshots()
         val result = vm.onPileTapped(pileIdx)
         when (result) {
             TapResult.MOVED   -> {
@@ -521,8 +570,8 @@ class GameActivity : AppCompatActivity() {
                     if (isTutorialMode) advanceTutorial()
                 }
             }
-            TapResult.INVALID -> showInvalidMoveToast()
-            else               -> renderAll()
+            TapResult.INVALID -> { clearPileTopSnapshots(); showInvalidMoveToast() }
+            else               -> { clearPileTopSnapshots(); renderAll() }
         }
     }
 
@@ -536,6 +585,7 @@ class GameActivity : AppCompatActivity() {
                 return
             }
         }
+        capturePileTopSnapshots()
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
             renderAll()
@@ -544,6 +594,8 @@ class GameActivity : AppCompatActivity() {
                 checkLost()
                 if (isTutorialMode) advanceTutorial()
             }
+        } else {
+            clearPileTopSnapshots()
         }
     }
 
@@ -828,7 +880,9 @@ class GameActivity : AppCompatActivity() {
                 return false
             }
         }
+        capturePileTopSnapshots()
         if (!vm.tryMoveBetweenPiles(srcPile, dstPile)) {
+            clearPileTopSnapshots()
             showInvalidMoveToast()
             return false
         }
@@ -850,7 +904,9 @@ class GameActivity : AppCompatActivity() {
                 return false
             }
         }
+        capturePileTopSnapshots()
         if (!vm.onFoundationTapped(srcPile)) {
+            clearPileTopSnapshots()
             showInvalidMoveToast()
             return false
         }
