@@ -527,13 +527,15 @@ class GameActivity : AppCompatActivity() {
                 .setStartDelay(startDelay)
                 .start()
 
-            // When this ghost lands, swap the foundation drawable to the card it
-            // delivered. The ghost is removed in bulk at the end of the cascade —
-            // until then it visually sits on top of the now-correct foundation.
+            // When this ghost lands, atomically swap the foundation drawable to the
+            // card it delivered AND remove the ghost in the same frame, so the user
+            // never sees both the ghost and the updated foundation drawable at once.
             val landDelay = startDelay + ACE_DURATION_MS
             gameRoot.postDelayed({
                 destView.setImageResource(resId)
                 destView.contentDescription = cardDescription(move.card)
+                gameRootContainer.removeView(ghost)
+                ghosts.remove(ghost)
             }, landDelay)
         }
 
