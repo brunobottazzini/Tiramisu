@@ -448,8 +448,17 @@ class GameActivity : AppCompatActivity() {
 
             val destLoc = locationOnScreen(destView)
 
-            destView.alpha = 0f
+            // Hide each destination only when its own ghost actually starts moving.
+            // Hiding all of them up-front leaves the still-waiting foundations as
+            // empty rectangles during the first ghost's flight, which reads as the
+            // foundation background "disappearing" during an auto-complete cascade.
+            val startDelay = idx * ACE_STAGGER_MS
             hiddenFoundations.add(destView)
+            if (startDelay == 0L) {
+                destView.alpha = 0f
+            } else {
+                gameRoot.postDelayed({ destView.alpha = 0f }, startDelay)
+            }
 
             val ghost = ImageView(this).apply {
                 setImageResource(resId)
@@ -465,7 +474,7 @@ class GameActivity : AppCompatActivity() {
                 .translationX((destLoc[0] - gameRootPos[0]).toFloat())
                 .translationY((destLoc[1] - gameRootPos[1]).toFloat())
                 .setDuration(ACE_DURATION_MS)
-                .setStartDelay(idx * ACE_STAGGER_MS)
+                .setStartDelay(startDelay)
                 .start()
         }
 
