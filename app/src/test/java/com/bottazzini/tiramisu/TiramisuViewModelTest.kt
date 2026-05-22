@@ -184,16 +184,16 @@ class TiramisuViewModelTest {
             stock = listOf("b1", "c5", "d7", "s2")
         )
         vm.dealFromStock()
-        val moves = vm.consumeAutoAceMoves()
+        val moves = vm.consumeAutoFoundationMoves()
         assertEquals(1, moves.size)
         val m = moves[0]
         assertEquals("b1", m.card)
         assertEquals(0, m.fromPile)
-        assertEquals(AceSource.STOCK, m.source)
+        assertEquals(AutoFoundationSource.STOCK, m.source)
         // Foundation now holds the ace
         assertEquals("b1", vm.state!!.foundations[m.toFoundation])
         // Consuming clears the slot
-        assertTrue(vm.consumeAutoAceMoves().isEmpty())
+        assertTrue(vm.consumeAutoFoundationMoves().isEmpty())
     }
 
     @Test fun `isLost true in classic c3 c5 cycle stall under NORMALE`() {

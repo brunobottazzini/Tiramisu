@@ -25,14 +25,14 @@ class TiramisuViewModel : ViewModel() {
 
     /**
      * Auto-ace moves performed by the last action. Callers (GameActivity) read
-     * this with [consumeAutoAceMoves] right after the action to play the
+     * this with [consumeAutoFoundationMoves] right after the action to play the
      * ace-to-foundation animation, which also clears the slot.
      */
-    private var _lastAutoAceMoves: List<AceMove> = emptyList()
+    private var _lastAutoFoundationMoves: List<AutoFoundationMove> = emptyList()
 
-    fun consumeAutoAceMoves(): List<AceMove> {
-        val moves = _lastAutoAceMoves
-        _lastAutoAceMoves = emptyList()
+    fun consumeAutoFoundationMoves(): List<AutoFoundationMove> {
+        val moves = _lastAutoFoundationMoves
+        _lastAutoFoundationMoves = emptyList()
         return moves
     }
 
@@ -42,21 +42,21 @@ class TiramisuViewModel : ViewModel() {
         state = TiramisuGameState.newGame(difficulty)
         selectedPileIndex = null
         previousState = null
-        _lastAutoAceMoves = emptyList()
+        _lastAutoFoundationMoves = emptyList()
     }
 
     fun newTutorialGame(difficulty: Difficulty = Difficulty.NORMALE) {
         state = TiramisuGameState.tutorialGame(difficulty)
         selectedPileIndex = null
         previousState = null
-        _lastAutoAceMoves = emptyList()
+        _lastAutoFoundationMoves = emptyList()
     }
 
     fun restoreState(restored: TiramisuGameState) {
         state = restored
         selectedPileIndex = null
         previousState = null
-        _lastAutoAceMoves = emptyList()
+        _lastAutoFoundationMoves = emptyList()
     }
 
     // ---- Undo (1-depth) ----
@@ -69,7 +69,7 @@ class TiramisuViewModel : ViewModel() {
         state = prev
         previousState = null
         selectedPileIndex = null
-        _lastAutoAceMoves = emptyList()
+        _lastAutoFoundationMoves = emptyList()
         return true
     }
 
@@ -88,7 +88,7 @@ class TiramisuViewModel : ViewModel() {
         for (i in 0 until toDeal) {
             s.piles[i].add(s.stock.removeAt(0))
         }
-        autoMoveAces(AceSource.STOCK)
+        autoMoveToFoundation(AutoFoundationSource.STOCK)
         selectedPileIndex = null
         previousState = snapshot
         return true
@@ -166,7 +166,7 @@ class TiramisuViewModel : ViewModel() {
                 s.piles[pileIdx].removeAt(s.piles[pileIdx].size - 1)
                 s.foundations[fIdx] = moving
                 selectedPileIndex = null
-                autoMoveAces(AceSource.PILE_TOP)
+                autoMoveToFoundation(AutoFoundationSource.PILE_TOP)
                 previousState = snapshot
                 return true
             }
@@ -217,7 +217,7 @@ class TiramisuViewModel : ViewModel() {
         state = TiramisuGameState.replay(s.difficulty, s.initialDeck)
         selectedPileIndex = null
         previousState = null
-        _lastAutoAceMoves = emptyList()
+        _lastAutoFoundationMoves = emptyList()
     }
 
     // ---- Drag & drop entry points (no dependency on selectedPileIndex) ----
@@ -264,7 +264,7 @@ class TiramisuViewModel : ViewModel() {
         // In DIFFICILE, block non-foundation moves when obbligato targets exist
         if (s.difficulty.obbligato && obbligatoTargets().isNotEmpty()) return false
         s.piles[dstIdx].add(s.piles[srcIdx].removeAt(s.piles[srcIdx].size - 1))
-        autoMoveAces(AceSource.PILE_TOP)
+        autoMoveToFoundation(AutoFoundationSource.PILE_TOP)
         return true
     }
 
@@ -277,14 +277,14 @@ class TiramisuViewModel : ViewModel() {
 
     /**
      * Auto-move any Aces (rank 1) from pile tops to foundations. Loops until stable.
-     * Records every move in [_lastAutoAceMoves] for the animation layer to consume.
+     * Records every move in [_lastAutoFoundationMoves] for the animation layer to consume.
      * [defaultSource] tags each move with where the ace originally came from
      * visually: STOCK for dealFromStock (the ace just exited the stock), PILE_TOP
      * for moves where the ace was already sitting on a pile and got auto-moved.
      */
-    private fun autoMoveAces(defaultSource: AceSource) {
+    private fun autoMoveToFoundation(defaultSource: AutoFoundationSource) {
         val s = state ?: return
-        val moves = mutableListOf<AceMove>()
+        val moves = mutableListOf<AutoFoundationMove>()
         var moved = true
         while (moved) {
             moved = false
@@ -295,7 +295,7 @@ class TiramisuViewModel : ViewModel() {
                         if (TiramisuMoveValidator.canMoveToFoundation(card, s.foundations[fIdx])) {
                             s.piles[pileIdx].removeAt(s.piles[pileIdx].size - 1)
                             s.foundations[fIdx] = card
-                            moves.add(AceMove(pileIdx, fIdx, card, defaultSource))
+                            moves.add(AutoFoundationMove(pileIdx, fIdx, card, defaultSource))
                             moved = true
                             break
                         }
@@ -303,17 +303,17 @@ class TiramisuViewModel : ViewModel() {
                 }
             }
         }
-        _lastAutoAceMoves = moves
+        _lastAutoFoundationMoves = moves
     }
 }
 
 enum class TapResult { SELECTED, DESELECTED, MOVED, INVALID, NOTHING }
 
-enum class AceSource { STOCK, PILE_TOP }
+enum class AutoFoundationSource { STOCK, PILE_TOP }
 
-data class AceMove(
+data class AutoFoundationMove(
     val fromPile: Int,
     val toFoundation: Int,
     val card: String,
-    val source: AceSource
+    val source: AutoFoundationSource
 )

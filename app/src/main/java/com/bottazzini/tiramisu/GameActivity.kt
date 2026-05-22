@@ -219,7 +219,7 @@ class GameActivity : AppCompatActivity() {
         if (vm.dealFromStock()) {
             playSound(R.raw.flipcard)
             animateDeal(sizeBefore) {
-                maybeAnimateAutoAces()
+                maybeAnimateAutoFoundation()
                 checkWin()
                 checkLost()
                 if (isTutorialMode) advanceTutorial()
@@ -319,7 +319,7 @@ class GameActivity : AppCompatActivity() {
      * captured before the deal so we can diff which piles received new cards.
      *
      * Cards that were dealt and immediately auto-moved (aces) won't appear in the diff;
-     * their animation is handled separately by [maybeAnimateAutoAces] called from [onComplete].
+     * their animation is handled separately by [maybeAnimateAutoFoundation] called from [onComplete].
      */
     private fun animateDeal(sizeBefore: List<Int>, onComplete: () -> Unit) {
         val s = vm.state ?: run { renderAll(); onComplete(); return }
@@ -394,13 +394,13 @@ class GameActivity : AppCompatActivity() {
      * If the ViewModel's last action queued any auto-ace moves, animate them.
      * Idempotent: consuming the list clears it so the next render won't replay.
      */
-    private fun maybeAnimateAutoAces() {
-        val moves = vm.consumeAutoAceMoves()
+    private fun maybeAnimateAutoFoundation() {
+        val moves = vm.consumeAutoFoundationMoves()
         if (moves.isEmpty()) return
-        animateAutoAces(moves)
+        animateAutoFoundation(moves)
     }
 
-    private fun animateAutoAces(moves: List<AceMove>) {
+    private fun animateAutoFoundation(moves: List<AutoFoundationMove>) {
         val gameRootContainer = gameRoot as ConstraintLayout
         val gameRootPos = locationOnScreen(gameRootContainer)
         val ghosts = mutableListOf<ImageView>()
@@ -412,8 +412,8 @@ class GameActivity : AppCompatActivity() {
             if (resId == 0) continue
 
             val sourceLoc = when (move.source) {
-                AceSource.STOCK -> locationOnScreen(stockArea)
-                AceSource.PILE_TOP -> {
+                AutoFoundationSource.STOCK -> locationOnScreen(stockArea)
+                AutoFoundationSource.PILE_TOP -> {
                     val container = pileContainers[move.fromPile]
                     val topChild = container?.let { it.getChildAt(it.childCount - 1) }
                     if (topChild != null) locationOnScreen(topChild) else locationOnScreen(stockArea)
@@ -478,7 +478,7 @@ class GameActivity : AppCompatActivity() {
             TapResult.MOVED   -> {
                 playSound(R.raw.flipcard)
                 renderAll()
-                maybeAnimateAutoAces()
+                maybeAnimateAutoFoundation()
                 checkWin()
                 checkLost()
                 if (isTutorialMode) advanceTutorial()
@@ -501,7 +501,7 @@ class GameActivity : AppCompatActivity() {
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
             renderAll()
-            maybeAnimateAutoAces()
+            maybeAnimateAutoFoundation()
             checkWin()
             checkLost()
             if (isTutorialMode) advanceTutorial()
@@ -774,7 +774,7 @@ class GameActivity : AppCompatActivity() {
         }
         playSound(R.raw.flipcard)
         renderAll()
-        maybeAnimateAutoAces()
+        maybeAnimateAutoFoundation()
         checkWin()
         checkLost()
         if (isTutorialMode) advanceTutorial()
@@ -795,7 +795,7 @@ class GameActivity : AppCompatActivity() {
         }
         playSound(R.raw.flipcard)
         renderAll()
-        maybeAnimateAutoAces()
+        maybeAnimateAutoFoundation()
         checkWin()
         checkLost()
         if (isTutorialMode) advanceTutorial()

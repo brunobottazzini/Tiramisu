@@ -99,7 +99,7 @@ object TiramisuSolver {
     /**
      * Returns a NEW state with [move] applied. Does not mutate [s].
      * After the move, any aces exposed on pile tops are auto-promoted to foundations,
-     * mirroring TiramisuViewModel.autoMoveAces().
+     * mirroring TiramisuViewModel.autoMoveToFoundation() (the Ace-only subset of it).
      */
     fun applyMove(s: TiramisuGameState, move: Move): TiramisuGameState {
         val next = s.deepCopy()
