@@ -572,6 +572,22 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun renderFoundations(s: TiramisuGameState) {
+        // Tutorial: if the current step requires a foundation move, find which
+        // foundation index will receive the card from the source pile and paint
+        // that one green ("drop here"). The mapping is dynamic because foundations
+        // are assigned by suit on first ace.
+        val tutFoundationIdx: Int? = run {
+            if (!isTutorialMode) return@run null
+            val step = tutorialEngine?.currentStep() ?: return@run null
+            val req  = step.requiredMove ?: return@run null
+            if (req.sourcePile < 0 || req.targetPile != -1) return@run null
+            val srcCard = s.topOfPile(req.sourcePile)
+            if (srcCard == "zero") return@run null
+            s.foundations.indexOfFirst { f ->
+                TiramisuMoveValidator.canMoveToFoundation(srcCard, f)
+            }.takeIf { it >= 0 }
+        }
+
         for (i in 0..3) {
             val view = foundationViews[i] ?: continue
             val top  = s.foundations[i]
@@ -582,6 +598,11 @@ class GameActivity : AppCompatActivity() {
                 val resId = resources.getIdentifier("${cardType}_$top", "drawable", packageName)
                 if (resId != 0) view.setImageResource(resId)
                 view.contentDescription = cardDescription(top)
+            }
+            if (i == tutFoundationIdx) {
+                view.setColorFilter(0xCC00AA50.toInt(), android.graphics.PorterDuff.Mode.SRC_ATOP)
+            } else {
+                view.clearColorFilter()
             }
         }
     }
@@ -1063,7 +1084,10 @@ class GameActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         soundsEnabled = settingsHandler.readValue(Configuration.SOUND_ENABLED.value) != "disabled"
-        vm.autoCompleteEnabled = settingsHandler.readValue(Configuration.AUTO_MOVE.value) == "enabled"
+        // Tutorial: autoComplete is always off — otherwise b2 would self-promote on
+        // the second deal and skip the foundation step the user is being taught.
+        vm.autoCompleteEnabled = !isTutorialMode &&
+            settingsHandler.readValue(Configuration.AUTO_MOVE.value) == "enabled"
         if (vm.state?.hasActiveGame == true) startTimer()
     }
 
