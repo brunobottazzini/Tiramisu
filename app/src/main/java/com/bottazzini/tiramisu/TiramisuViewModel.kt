@@ -45,7 +45,7 @@ class TiramisuViewModel : ViewModel() {
         _lastAutoAceMoves = emptyList()
     }
 
-    fun newTutorialGame(difficulty: Difficulty = Difficulty.FACILE) {
+    fun newTutorialGame(difficulty: Difficulty = Difficulty.NORMALE) {
         state = TiramisuGameState.tutorialGame(difficulty)
         selectedPileIndex = null
         previousState = null

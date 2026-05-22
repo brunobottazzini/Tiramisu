@@ -30,10 +30,14 @@ class TiramisuSolverTest {
     }
 
     @Test fun `finds pile-to-pile hint for same suit`() {
+        // Under default NORMALE (strict), c5 -> c3 is invalid (5 > 3) but c3 -> c5 is valid.
+        // Solver must suggest pile 1 -> pile 0.
         val s = state(piles = listOf(listOf("c5"), listOf("c3"), emptyList(), emptyList()))
         val hint = TiramisuSolver.findHint(s)
         assertNotNull(hint)
         assertFalse(hint!!.toFoundation)
+        assertEquals(1, hint.fromPile)
+        assertEquals(0, hint.toPile)
     }
 
     @Test fun `returns null when no moves available`() {

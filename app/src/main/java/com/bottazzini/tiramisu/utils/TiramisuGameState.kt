@@ -61,7 +61,7 @@ class TiramisuGameState(
         }
 
         /** Create a fresh game state with the tutorial deck. */
-        fun tutorialGame(difficulty: Difficulty = Difficulty.FACILE): TiramisuGameState {
+        fun tutorialGame(difficulty: Difficulty = Difficulty.NORMALE): TiramisuGameState {
             val deck = TiramisuDeckSetup.tutorialDeck()
             return TiramisuGameState(
                 piles       = List(4) { mutableListOf() },

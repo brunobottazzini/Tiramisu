@@ -52,7 +52,14 @@
       "Bash(git commit -m 'fix\\(tutorial\\): show ace animation + fix empty-pile green highlight *)",
       "Bash(git commit -m 'feat\\(animations\\): deal cards fly from stock to piles one by one *)",
       "Bash(git commit -m 'feat\\(tutorial\\): add foundation move step \\(b2 → bastoni base\\) *)",
-      "Bash(git commit -m 'fix\\(tutorial\\): orange/green column glow now visible on all card colours *)"
+      "Bash(git commit -m 'fix\\(tutorial\\): orange/green column glow now visible on all card colours *)",
+      "Bash(./gradlew :app:testDebugUnitTest --tests \"com.bottazzini.tiramisu.TiramisuMoveValidatorTest\")",
+      "Bash(./gradlew :app:testDebugUnitTest --tests \"com.bottazzini.tiramisu.TiramisuSolverTest\")",
+      "Bash(./gradlew :app:testDebugUnitTest --tests \"com.bottazzini.tiramisu.TiramisuViewModelTest\")",
+      "Bash(grep *)",
+      "Bash(./gradlew :app:testDebugUnitTest *)",
+      "Bash(git show *)",
+      "Bash(bc)"
     ]
   }
 }
