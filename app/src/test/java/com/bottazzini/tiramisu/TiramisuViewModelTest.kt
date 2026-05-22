@@ -195,4 +195,29 @@ class TiramisuViewModelTest {
         // Consuming clears the slot
         assertTrue(vm.consumeAutoAceMoves().isEmpty())
     }
+
+    @Test fun `isLost true in classic c3 c5 cycle stall under NORMALE`() {
+        // Stock empty, no redeal, piles only have a cyclic c3 <-> c5 layout.
+        stateWith(
+            piles       = listOf(listOf("c3"), listOf("c5"), emptyList(), emptyList()),
+            foundations = listOf("zero","zero","zero","zero"),
+            stock       = emptyList(),
+            redeals     = 0,
+            difficulty  = Difficulty.NORMALE
+        )
+        assertTrue(vm.isLost())
+    }
+
+    @Test fun `isLost false when foundation move available despite cycle alternative`() {
+        // pile 0 = b2 (can go to foundation since b1 is in foundation slot 0).
+        // pile 1 / pile 2 form a c3 <-> c5 cyclic pair as a distractor.
+        stateWith(
+            piles       = listOf(listOf("b2"), listOf("c3"), listOf("c5"), emptyList()),
+            foundations = listOf("b1", "zero", "zero", "zero"),
+            stock       = emptyList(),
+            redeals     = 0,
+            difficulty  = Difficulty.NORMALE
+        )
+        assertFalse(vm.isLost())
+    }
 }

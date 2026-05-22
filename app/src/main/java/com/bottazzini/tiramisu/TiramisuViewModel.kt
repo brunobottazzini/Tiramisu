@@ -206,7 +206,7 @@ class TiramisuViewModel : ViewModel() {
         if (s.isWon()) return false
         if (s.stock.isNotEmpty()) return false
         if (canRedeal()) return false
-        return TiramisuSolver.findHint(s) == null
+        return !TiramisuSolver.canProgress(s, TiramisuSolver.MAX_LOOKAHEAD)
     }
 
     /** Restart the same game from scratch using the original shuffle. */
