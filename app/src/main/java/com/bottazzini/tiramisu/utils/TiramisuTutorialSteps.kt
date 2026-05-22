@@ -157,7 +157,14 @@ object TiramisuTutorialSteps {
             requiredMove     = null
         ),
 
-        // Step 13: Finish — user taps "Avanti" → endTutorial()
+        // Step 13 (new): Easy-mode note — user taps "Avanti"
+        // Explains that Facile is more permissive than the rule just taught.
+        TiramisuTutorialStep(
+            instructionResId = R.string.tut_easy_mode,
+            requiredMove     = null
+        ),
+
+        // Step 14: Finish — user taps "Avanti" → endTutorial()
         TiramisuTutorialStep(
             instructionResId = R.string.tut_finish,
             requiredMove     = null
