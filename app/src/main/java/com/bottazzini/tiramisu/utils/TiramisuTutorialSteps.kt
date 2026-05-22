@@ -86,7 +86,7 @@ object TiramisuTutorialSteps {
             requiredMove     = null
         ),
 
-        // Step 3: Second deal from stock — c7, c5, d3, b2 go to piles 0-3
+        // Step 3: Second deal from stock — c5, c7, d3, b2 go to piles 0-3
         // After this, stock is empty → canRedeal() becomes true (blocked until step 11)
         TiramisuTutorialStep(
             instructionResId = R.string.tut_deal2,
