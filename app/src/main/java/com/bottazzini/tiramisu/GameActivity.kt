@@ -433,10 +433,12 @@ class GameActivity : AppCompatActivity() {
         val pileSize = IntArray(4) { p -> finalSizes[p] - perPileDealt[p] + perPileFoundationOut[p] }
 
         val ghosts = mutableListOf<ImageView>()
+        val hiddenFoundations = mutableListOf<ImageView>()
 
         fun playWave(idx: Int) {
             if (idx >= waves.size) {
                 ghosts.forEach { gameRootContainer.removeView(it) }
+                hiddenFoundations.forEach { it.alpha = 1f }
                 isAnimating = false
                 onComplete()
                 return
@@ -479,7 +481,7 @@ class GameActivity : AppCompatActivity() {
 
             if (wave.autoFoundationMoves.isNotEmpty()) {
                 gameRoot.postDelayed({
-                    animateFoundationGhosts(wave.autoFoundationMoves, ghosts, gameRootContainer, gameRootPos)
+                    animateFoundationGhosts(wave.autoFoundationMoves, ghosts, hiddenFoundations, gameRootContainer, gameRootPos)
                     for (m in wave.autoFoundationMoves) {
                         pileSize[m.fromPile] = (pileSize[m.fromPile] - 1).coerceAtLeast(0)
                     }
@@ -503,6 +505,7 @@ class GameActivity : AppCompatActivity() {
     private fun animateFoundationGhosts(
         moves: List<AutoFoundationMove>,
         ghostsAccumulator: MutableList<ImageView>,
+        hiddenFoundationsAccumulator: MutableList<ImageView>,
         gameRootContainer: ConstraintLayout,
         gameRootPos: IntArray
     ) {
@@ -510,12 +513,17 @@ class GameActivity : AppCompatActivity() {
             val destView = foundationViews[move.toFoundation] ?: continue
             val resId = resources.getIdentifier("${cardType}_${move.card}", "drawable", packageName)
             if (resId == 0) continue
-            val container = pileContainers[move.fromPile]
-            val sourceLoc = container?.let {
-                val topChild = it.getChildAt(it.childCount - 1)
-                if (topChild != null) locationOnScreen(topChild) else locationOnScreen(stockArea)
-            } ?: locationOnScreen(stockArea)
+            val sourceLoc = when (move.source) {
+                AutoFoundationSource.STOCK -> locationOnScreen(stockArea)
+                AutoFoundationSource.PILE_TOP -> {
+                    val container = pileContainers[move.fromPile]
+                    val topChild = container?.let { it.getChildAt(it.childCount - 1) }
+                    if (topChild != null) locationOnScreen(topChild) else locationOnScreen(stockArea)
+                }
+            }
             val destLoc = locationOnScreen(destView)
+            destView.alpha = 0f
+            hiddenFoundationsAccumulator.add(destView)
             val ghost = ImageView(this).apply {
                 setImageResource(resId)
                 scaleType = ImageView.ScaleType.FIT_CENTER
