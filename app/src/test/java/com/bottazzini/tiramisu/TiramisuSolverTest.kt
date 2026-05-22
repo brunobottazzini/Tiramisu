@@ -337,6 +337,56 @@ class TiramisuSolverTest {
         assertEquals(listOf("d7", "d5"), next.piles[1])
     }
 
+    @Test fun `canProgress false under D when ace is buried and run-dump is blocked`() {
+        // pile 0 = [c1, c10, c7] : ace coppe buried under c10, with c7 on top.
+        // pile 1 = empty.
+        // pile 2 = [b5] (bastoni, different suit from coppe).
+        // pile 3 = [d8] (denari, different suit).
+        //
+        // Pre-D the solver could dump the [c10, c7] run onto pile 1 (empty) and
+        // expose c1 -> ace promotes -> progress. Under PoC D the empty pile only
+        // accepts a single card, so only c7 leaves pile 0 and c10 still buries c1.
+        // No other tableau moves work (different suits between piles 2/3 and 0/1).
+        // No redeals, no stock. Stalled.
+        val s = state(
+            piles       = listOf(
+                listOf("c1", "c10", "c7"),
+                emptyList(),
+                listOf("b5"),
+                listOf("d8")
+            ),
+            foundations = listOf("zero", "zero", "zero", "zero")
+        )
+        assertFalse(
+            "PoC D: empty pile only takes a single card, so c1 stays buried",
+            TiramisuSolver.canProgress(s, 30)
+        )
+    }
+
+    @Test fun `canProgress false when no aces remain and only same-suit shuffles cycle`() {
+        // Foundations: b1, c1, d1, s1 already promoted (rank 1 each). foundationCount = 4.
+        // Piles hold mixed cards with no foundation-eligible top (none is rank 2 of a matching suit).
+        // pile 0 = empty
+        // pile 1 = empty
+        // pile 2 = [c5, c3]  (coppe run [c5,c3])
+        // pile 3 = [c10, c7] (coppe run [c10,c7])
+        // The only legal moves are run-shuffles and single-card moves into empty piles
+        // (under D). No card is c2 (the next coppe in foundation), so nothing can advance.
+        val s = state(
+            piles       = listOf(
+                emptyList(),
+                emptyList(),
+                listOf("c5", "c3"),
+                listOf("c10", "c7")
+            ),
+            foundations = listOf("b1", "c1", "d1", "s1")
+        )
+        assertFalse(
+            "no foundation-eligible top, no aces — must report stall",
+            TiramisuSolver.canProgress(s, 30)
+        )
+    }
+
     @Test fun `canProgress under strict exposes buried ace via run move`() {
         // pile 0 = [c1, c5, c3], pile 1 = c8, pile 2 = b2, pile 3 = d4.
         // topRun(pile 0) = [c5, c3] (5 > 3, same suit).

@@ -330,6 +330,27 @@ class TiramisuViewModelTest {
         assertEquals(listOf("s9", "d7", "d5"), s.piles[1])
     }
 
+    @Test fun `isLost true under PoC D when ace is buried and run-dump is blocked`() {
+        // pile 0 = [c1, c10, c7]: ace coppe buried under c10, c7 on top.
+        // Other piles hold cards of suits that don't match (no tableau moves available).
+        // Under PoC D the empty piles only take single cards, so dumping the c10/c7 run
+        // onto an empty pile peels off only c7 and c1 stays buried. Stock empty,
+        // redealsLeft = 0 → genuinely lost.
+        stateWith(
+            piles = listOf(
+                listOf("c1", "c10", "c7"),
+                emptyList(),
+                listOf("b5"),
+                listOf("d8")
+            ),
+            foundations = listOf("zero", "zero", "zero", "zero"),
+            stock = emptyList(),
+            redeals = 0,
+            difficulty = Difficulty.NORMALE
+        )
+        assertTrue(vm.isLost())
+    }
+
     @Test fun `FACILE drop on empty pile moves the full run`() {
         // Same layout, Difficulty.FACILE — the full top run d7,d5,d3 should land on the empty pile.
         stateWith(

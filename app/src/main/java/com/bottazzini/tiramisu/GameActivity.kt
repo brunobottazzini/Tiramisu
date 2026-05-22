@@ -276,6 +276,7 @@ class GameActivity : AppCompatActivity() {
         if (tasks.isEmpty()) {
             vm.redeal()
             renderAll()
+            checkLost()
             return
         }
 
@@ -309,6 +310,7 @@ class GameActivity : AppCompatActivity() {
             for (task in tasks) gameRootContainer.removeView(task.ghost)
             renderAll()
             isAnimating = false
+            checkLost()
             if (isTutorialMode) advanceTutorial()
         }, totalDuration)
     }
