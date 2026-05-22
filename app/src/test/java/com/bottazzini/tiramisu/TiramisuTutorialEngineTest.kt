@@ -99,7 +99,7 @@ class TiramisuTutorialEngineTest {
     @Test
     fun `isPileTapAllowed true for correct source pile`() {
         val eng = TiramisuTutorialEngine(listOf(pileStep(src = 1, dst = 0)))
-        assertTrue(eng.isPileTapAllowed(1, "c5"))
+        assertTrue(eng.isPileTapAllowed(1, "c7"))
     }
 
     @Test

@@ -39,25 +39,25 @@ object TiramisuTutorialSteps {
     /**
      * Tutorial deck initial state (TiramisuDeckSetup.tutorialDeck()) — NO pre-deal:
      *   pile 0-3 = EMPTY
-     *   stock    = [b1, s6, c3, d8, c7, c5, d3, b2]  (8 cards)
+     *   stock    = [b1, s6, c3, d8, c5, c7, d3, b2]  (8 cards)
      *
      * After step 1 (first deal — user taps tallone):
      *   pile 0 = EMPTY  (b1 auto-moved to bastoni foundation with animation)
      *   pile 1 = s6     (spade — neutral, different suit from every other pile top)
      *   pile 2 = c3     (coppe)
      *   pile 3 = d8     (denari)
-     *   stock  = [c7, c5, d3, b2]  (4 cards remaining)
+     *   stock  = [c5, c7, d3, b2]  (4 cards remaining)
      *
      * After step 3 (second deal — user taps tallone again):
-     *   pile 0 = c7  (coppe)          ← only 1 card (was empty)
-     *   pile 1 = c5  (coppe) on s6
+     *   pile 0 = c5  (coppe)          ← only 1 card (was empty)
+     *   pile 1 = c7  (coppe) on s6
      *   pile 2 = d3  (denari) on c3
      *   pile 3 = b2  (bastoni) on d8  ← b2 reserved for the foundation step
      *   stock  = EMPTY → canRedeal() becomes true (blocked until step 11)
      *
-     * Step 5 same-suit: pile 0 (c7, coppe) → pile 1 top (c5, coppe)
+     * Step 5 same-suit: pile 0 (c5, coppe) → pile 1 top (c7, coppe)  ← valid under STRICT (5 < 7)
      *   → pile 0 becomes EMPTY (had only 1 card)
-     *   → pile 1 = [s6, c5, c7]
+     *   → pile 1 = [s6, c7, c5]
      *
      * Step 7 empty-pile: pile 2 top (d3, denari) → pile 0 (empty)
      *   → pile 0 = [d3]   ← pile 2 chosen so b2 stays on pile 3
@@ -99,7 +99,7 @@ object TiramisuTutorialSteps {
             requiredMove     = null
         ),
 
-        // Step 5: Same-suit move — pile 0 (c7, coppe) → pile 1 top (c5, coppe)
+        // Step 5: Same-suit move — pile 0 (c5, coppe) → pile 1 top (c7, coppe)  ← valid under STRICT (5 < 7)
         // pile 0 had only 1 card → becomes EMPTY after this move
         TiramisuTutorialStep(
             instructionResId = R.string.tut_same_suit,
