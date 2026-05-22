@@ -154,10 +154,13 @@ class TiramisuViewModelTest {
 
     @Test fun `obbligato not active in NORMALE mode`() {
         stateWith(
-            piles = listOf(listOf("b2"), listOf("b3"), emptyList(), emptyList()),
+            piles = listOf(listOf("b3"), listOf("b2"), emptyList(), emptyList()),
             foundations = listOf("b1", "zero", "zero", "zero"),
-            difficulty = Difficulty.FACILE
+            difficulty = Difficulty.NORMALE
         )
+        // Select pile 1 (b2), then tap pile 0 → b2 moves onto b3 (strict-valid: 2 < 3).
+        // b2 could also go to the bastoni foundation (b1 → b2), but obbligato is OFF in NORMALE
+        // so the user is free to move it to pile 0 instead.
         vm.onPileTapped(1)
         val result = vm.onPileTapped(0)
         assertEquals(TapResult.MOVED, result)
