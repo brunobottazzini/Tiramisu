@@ -80,6 +80,13 @@ class GameActivity : AppCompatActivity() {
         val yAbsPerCard: IntArray
     )
     private val pileSnapshots = arrayOfNulls<PileSnapshot>(4)
+
+    // Foundation top BEFORE the current action ran. While the auto-foundation
+    // cascade is animating, renderFoundations shows this snapshot so the user
+    // doesn't see the new card "pop" onto the base before the ghost arrives.
+    // animateAutoFoundation overwrites each foundation drawable just as the
+    // corresponding ghost lands. Cleared at the end of the cascade.
+    private val foundationSnapshotTop = arrayOfNulls<String>(4)
     private lateinit var tutorialOverlay: LinearLayout
     private lateinit var tvTutorialInstruction: TextView
     private lateinit var btnTutorialNext: Button
@@ -418,6 +425,7 @@ class GameActivity : AppCompatActivity() {
         for (i in 0..3) {
             val container = pileContainers[i]
             val cards = s.piles[i]
+            foundationSnapshotTop[i] = s.foundations[i]
             if (container == null || cards.isEmpty()) {
                 pileSnapshots[i] = null
                 continue
@@ -429,7 +437,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun clearPileTopSnapshots() {
-        for (i in 0..3) pileSnapshots[i] = null
+        for (i in 0..3) {
+            pileSnapshots[i] = null
+            foundationSnapshotTop[i] = null
+        }
     }
 
     /**
@@ -455,7 +466,6 @@ class GameActivity : AppCompatActivity() {
         val density = resources.displayMetrics.density
         val peekPx = (CARD_PEEK_DP * density).toInt()
         val ghosts = mutableListOf<ImageView>()
-        val hiddenFoundations = mutableListOf<ImageView>()
 
         // renderAll has already run; pile containers reflect the POST-chain state.
         // For PILE_TOP-source moves we reconstruct each card's original row:
@@ -495,17 +505,7 @@ class GameActivity : AppCompatActivity() {
 
             val destLoc = locationOnScreen(destView)
 
-            // Hide each destination only when its own ghost actually starts moving.
-            // Hiding all of them up-front leaves the still-waiting foundations as
-            // empty rectangles during the first ghost's flight, which reads as the
-            // foundation background "disappearing" during an auto-complete cascade.
             val startDelay = idx * ACE_STAGGER_MS
-            hiddenFoundations.add(destView)
-            if (startDelay == 0L) {
-                destView.alpha = 0f
-            } else {
-                gameRoot.postDelayed({ destView.alpha = 0f }, startDelay)
-            }
 
             val ghost = ImageView(this).apply {
                 setImageResource(resId)
@@ -523,6 +523,15 @@ class GameActivity : AppCompatActivity() {
                 .setDuration(ACE_DURATION_MS)
                 .setStartDelay(startDelay)
                 .start()
+
+            // When this ghost lands, swap the foundation drawable to the card it
+            // delivered. The ghost is removed in bulk at the end of the cascade —
+            // until then it visually sits on top of the now-correct foundation.
+            val landDelay = startDelay + ACE_DURATION_MS
+            gameRoot.postDelayed({
+                destView.setImageResource(resId)
+                destView.contentDescription = cardDescription(move.card)
+            }, landDelay)
         }
 
         if (ghosts.isEmpty()) { clearPileTopSnapshots(); onComplete(); return }
@@ -531,7 +540,6 @@ class GameActivity : AppCompatActivity() {
         val totalDuration = (moves.size - 1) * ACE_STAGGER_MS + ACE_DURATION_MS
         gameRoot.postDelayed({
             for (ghost in ghosts) gameRootContainer.removeView(ghost)
-            for (view in hiddenFoundations) view.alpha = 1f
             isAnimating = false
             clearPileTopSnapshots()
             onComplete()
@@ -651,7 +659,10 @@ class GameActivity : AppCompatActivity() {
 
         for (i in 0..3) {
             val view = foundationViews[i] ?: continue
-            val top  = s.foundations[i]
+            // While an auto-foundation cascade is animating, keep showing the pre-action
+            // top so the destination doesn't pop the new card before the ghost arrives.
+            // animateAutoFoundation overwrites the drawable as each ghost lands.
+            val top  = foundationSnapshotTop[i] ?: s.foundations[i]
             if (top == "zero") {
                 view.setImageResource(R.drawable.zero)
                 view.contentDescription = getString(R.string.foundation_empty_desc, i + 1)
