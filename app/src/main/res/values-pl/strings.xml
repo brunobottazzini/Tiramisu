@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Purystą</string>
     <string name="achievement_hint_free_desc">Wygraj grę bez używania wskazówek</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Wygraj bez wskazówek i autoprzeniesienia</string>
+    <string name="achievement_no_assist_desc">Wygraj bez wskazówek i ponownego rozdania</string>
     <string name="achievement_resilient_name">Odporny</string>
     <string name="achievement_resilient_desc">Wygraj po 3 kolejnych porażkach</string>
     <string name="achievement_morning_name">Wczesna ptak</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Uzależniony od wskazówek</string>
     <string name="achievement_hint_addict_desc">Używaj wskazówek w ostatnich 5 grach z rzędu</string>
     <string name="achievement_perfectionist_name">Perfekcjonista</string>
-    <string name="achievement_perfectionist_desc">Wygraj 3 gry z rzędu bez wskazówek i autoprzeniesień</string>
+    <string name="achievement_perfectionist_desc">Wygraj 3 gry z rzędu bez wskazówek i ponownych rozdań</string>
     <string name="achievement_speed_freak_name">Szybki i rozrabiaka</string>
     <string name="achievement_speed_freak_desc">Wygraj 3 kolejne gry w mniej niż 2 minuty</string>
     <string name="achievement_lunch_win_name">Produktywna przerwa na lunch</string>

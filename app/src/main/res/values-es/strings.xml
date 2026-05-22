@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Purista</string>
     <string name="achievement_hint_free_desc">Gana una partida sin usar pistas</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Gana sin pistas ni movimiento automático</string>
+    <string name="achievement_no_assist_desc">Gana sin pistas ni redistribuciones</string>
     <string name="achievement_resilient_name">Resiliente</string>
     <string name="achievement_resilient_desc">Gana después de 3 pérdidas consecutivas</string>
     <string name="achievement_morning_name">Madrugador</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Dependiente de Pistas</string>
     <string name="achievement_hint_addict_desc">Usa pistas en los últimos 5 juegos seguidos</string>
     <string name="achievement_perfectionist_name">Perfeccionista</string>
-    <string name="achievement_perfectionist_desc">Gana 3 partidas seguidas sin pistas ni movimiento automático</string>
+    <string name="achievement_perfectionist_desc">Gana 3 partidas seguidas sin pistas ni redistribuciones</string>
     <string name="achievement_speed_freak_name">Rápido y Furioso</string>
     <string name="achievement_speed_freak_desc">Gana 3 partidas consecutivas en menos de 2 minutos</string>
     <string name="achievement_lunch_win_name">Pausa para Almuerzo Productiva</string>

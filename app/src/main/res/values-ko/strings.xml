@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">순수주의자</string>
     <string name="achievement_hint_free_desc">힌트 없이 게임 승리</string>
     <string name="achievement_no_assist_name">선(禪)</string>
-    <string name="achievement_no_assist_desc">힌트나 자동 이동 없이 승리</string>
+    <string name="achievement_no_assist_desc">힌트나 재배포 없이 승리</string>
     <string name="achievement_resilient_name">탄력 있는</string>
     <string name="achievement_resilient_desc">3연패 후 승리</string>
     <string name="achievement_morning_name">아침형 인간</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">힌트 중독</string>
     <string name="achievement_hint_addict_desc">지난 5게임 연속에서 힌트 사용</string>
     <string name="achievement_perfectionist_name">완벽주의자</string>
-    <string name="achievement_perfectionist_desc">힌트나 자동 이동 없이 3연승</string>
+    <string name="achievement_perfectionist_desc">힌트나 재배포 없이 3연승</string>
     <string name="achievement_speed_freak_name">빠르고 맹렬한</string>
     <string name="achievement_speed_freak_desc">2분 이내 연속 3게임 승리</string>
     <string name="achievement_lunch_win_name">생산적인 점심 시간</string>

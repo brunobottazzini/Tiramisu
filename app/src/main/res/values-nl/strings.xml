@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Puriste</string>
     <string name="achievement_hint_free_desc">Win een spel zonder hints te gebruiken</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Win zonder hints of auto-verplaats</string>
+    <string name="achievement_no_assist_desc">Win zonder hints of herverdelingen</string>
     <string name="achievement_resilient_name">Veerkrachtig</string>
     <string name="achievement_resilient_desc">Win na 3 opeenvolgende verlies</string>
     <string name="achievement_morning_name">Vroegvogel</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Hintafhankelijk</string>
     <string name="achievement_hint_addict_desc">Hints gebruiken in de laatste 5 spellen op rij</string>
     <string name="achievement_perfectionist_name">Perfectionist</string>
-    <string name="achievement_perfectionist_desc">Win 3 spellen op rij zonder hints of auto-verplaats</string>
+    <string name="achievement_perfectionist_desc">Win 3 spellen op rij zonder hints of herverdelingen</string>
     <string name="achievement_speed_freak_name">Snel en woest</string>
     <string name="achievement_speed_freak_desc">Win 3 opeenvolgende spellen in minder dan 2 minuten</string>
     <string name="achievement_lunch_win_name">Productieve lunchpauze</string>

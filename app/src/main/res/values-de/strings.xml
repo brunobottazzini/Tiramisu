@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Purist</string>
     <string name="achievement_hint_free_desc">Gewinne ein Spiel ohne Hinweise zu nutzen</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Gewinne ohne Hinweise oder Automatikverschiebung</string>
+    <string name="achievement_no_assist_desc">Gewinne ohne Hinweise oder Neumischen</string>
     <string name="achievement_resilient_name">Widerstandsfähig</string>
     <string name="achievement_resilient_desc">Gewinne nach 3 aufeinanderfolgenden Niederlagen</string>
     <string name="achievement_morning_name">Frühaufsteher</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Hinweis-abhängig</string>
     <string name="achievement_hint_addict_desc">Nutze Hinweise in den letzten 5 Spielen hintereinander</string>
     <string name="achievement_perfectionist_name">Perfektionist</string>
-    <string name="achievement_perfectionist_desc">Gewinne 3 Spiele hintereinander ohne Hinweise oder Automatikverschiebungen</string>
+    <string name="achievement_perfectionist_desc">Gewinne 3 Spiele hintereinander ohne Hinweise oder Neumischen</string>
     <string name="achievement_speed_freak_name">Schnell und Wütend</string>
     <string name="achievement_speed_freak_desc">Gewinne 3 aufeinanderfolgende Spiele in weniger als 2 Minuten</string>
     <string name="achievement_lunch_win_name">Produktive Mittagspause</string>

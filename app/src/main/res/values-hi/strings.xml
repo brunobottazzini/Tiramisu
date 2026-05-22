@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">शुद्धतावादी</string>
     <string name="achievement_hint_free_desc">संकेतों का उपयोग किए बिना गेम जीतें</string>
     <string name="achievement_no_assist_name">ध्यान</string>
-    <string name="achievement_no_assist_desc">संकेतों या स्वचालित-चाल के बिना जीतें</string>
+    <string name="achievement_no_assist_desc">संकेतों या पुनर्वितरण के बिना जीतें</string>
     <string name="achievement_resilient_name">लचीला</string>
     <string name="achievement_resilient_desc">3 लगातार हार के बाद जीतें</string>
     <string name="achievement_morning_name">सुबह जल्दी उठने वाला</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">संकेत-आश्रित</string>
     <string name="achievement_hint_addict_desc">अंतिम 5 गेम में लगातार संकेत का उपयोग करें</string>
     <string name="achievement_perfectionist_name">पूर्णतावादी</string>
-    <string name="achievement_perfectionist_desc">संकेतों या स्वचालित-चाल के बिना लगातार 3 गेम जीतें</string>
+    <string name="achievement_perfectionist_desc">संकेतों या पुनर्वितरण के बिना लगातार 3 गेम जीतें</string>
     <string name="achievement_speed_freak_name">तेज़ और क्रोधित</string>
     <string name="achievement_speed_freak_desc">2 मिनट से कम में लगातार 3 गेम जीतें</string>
     <string name="achievement_lunch_win_name">उत्पादक दोपहर का भोजन ब्रेक</string>

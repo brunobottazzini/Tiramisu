@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Пурист</string>
     <string name="achievement_hint_free_desc">Выигрышь без подсказок</string>
     <string name="achievement_no_assist_name">Дзен</string>
-    <string name="achievement_no_assist_desc">Выигрышь без подсказок и автоматического переноса</string>
+    <string name="achievement_no_assist_desc">Выигрышь без подсказок и переразданий</string>
     <string name="achievement_resilient_name">Стойкий</string>
     <string name="achievement_resilient_desc">Победа после 3 поражений подряд</string>
     <string name="achievement_morning_name">Жаворонок</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Зависимость от подсказок</string>
     <string name="achievement_hint_addict_desc">Используйте подсказки в последних 5 играх подряд</string>
     <string name="achievement_perfectionist_name">Перфекционист</string>
-    <string name="achievement_perfectionist_desc">3 победы подряд без подсказок или автоматических ходов</string>
+    <string name="achievement_perfectionist_desc">3 победы подряд без подсказок или переразданий</string>
     <string name="achievement_speed_freak_name">Быстро и бешено</string>
     <string name="achievement_speed_freak_desc">3 победы подряд менее чем за 2 минуты</string>
     <string name="achievement_lunch_win_name">Продуктивный обеденный перерыв</string>

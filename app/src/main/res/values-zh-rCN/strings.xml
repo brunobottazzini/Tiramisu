@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">纯粹主义者</string>
     <string name="achievement_hint_free_desc">不使用提示赢得游戏</string>
     <string name="achievement_no_assist_name">禅意</string>
-    <string name="achievement_no_assist_desc">不使用提示或自动移动赢得游戏</string>
+    <string name="achievement_no_assist_desc">不使用提示或重新洗牌赢得游戏</string>
     <string name="achievement_resilient_name">韧性十足</string>
     <string name="achievement_resilient_desc">连输3场后赢得游戏</string>
     <string name="achievement_morning_name">早起者</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">提示成瘾</string>
     <string name="achievement_hint_addict_desc">连续5场游戏中使用提示</string>
     <string name="achievement_perfectionist_name">完美主义者</string>
-    <string name="achievement_perfectionist_desc">连赢3场游戏，不使用提示或自动移动</string>
+    <string name="achievement_perfectionist_desc">连赢3场游戏，不使用提示或重新洗牌</string>
     <string name="achievement_speed_freak_name">速度与激情</string>
     <string name="achievement_speed_freak_desc">连赢3场游戏，每场在2分钟内</string>
     <string name="achievement_lunch_win_name">高效的午休</string>

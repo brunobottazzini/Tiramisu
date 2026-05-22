@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">คนบริสุทธิ์</string>
     <string name="achievement_hint_free_desc">ชนะเกมโดยไม่ใช้คำใบ้</string>
     <string name="achievement_no_assist_name">ธรรมชาติ</string>
-    <string name="achievement_no_assist_desc">ชนะโดยไม่ใช้คำใบ้หรือการย้ายอัตโนมัติ</string>
+    <string name="achievement_no_assist_desc">ชนะโดยไม่ใช้คำใบ้หรือการแจกใหม่</string>
     <string name="achievement_resilient_name">ยืดหยุ่น</string>
     <string name="achievement_resilient_desc">ชนะหลังแพ้ติดกัน 3 ครั้ง</string>
     <string name="achievement_morning_name">นกเอินเช้า</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">ติดใจคำใบ้</string>
     <string name="achievement_hint_addict_desc">ใช้คำใบ้ใน 5 เกมติดกัน</string>
     <string name="achievement_perfectionist_name">นักสมบูรณ์นิยม</string>
-    <string name="achievement_perfectionist_desc">ชนะ 3 เกมติดกันโดยไม่ใช้คำใบ้หรือการย้ายอัตโนมัติ</string>
+    <string name="achievement_perfectionist_desc">ชนะ 3 เกมติดกันโดยไม่ใช้คำใบ้หรือการแจกใหม่</string>
     <string name="achievement_speed_freak_name">เร็วและดุ</string>
     <string name="achievement_speed_freak_desc">ชนะ 3 เกมติดกันใน 2 นาทีหรือน้อยกว่า</string>
     <string name="achievement_lunch_win_name">พักเที่ยงที่มีประสิทธิผล</string>

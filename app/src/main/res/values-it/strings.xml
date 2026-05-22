@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Purista</string>
     <string name="achievement_hint_free_desc">Vinci una partita senza usare i suggerimenti</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Vinci senza suggerimenti né auto-mossa</string>
+    <string name="achievement_no_assist_desc">Vinci senza suggerimenti né ridistribuzioni</string>
     <string name="achievement_resilient_name">Resiliente</string>
     <string name="achievement_resilient_desc">Vinci dopo 3 sconfitte consecutive</string>
     <string name="achievement_morning_name">Mattiniero</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Suggerimento-dipendente</string>
     <string name="achievement_hint_addict_desc">Usa suggerimenti nelle ultime 5 partite di fila</string>
     <string name="achievement_perfectionist_name">Perfezionista</string>
-    <string name="achievement_perfectionist_desc">Vinci 3 partite di fila senza hint né auto-mosse</string>
+    <string name="achievement_perfectionist_desc">Vinci 3 partite di fila senza suggerimenti né ridistribuzioni</string>
     <string name="achievement_speed_freak_name">Veloce e furioso</string>
     <string name="achievement_speed_freak_desc">Vinci 3 partite consecutive in meno di 2 minuti</string>
     <string name="achievement_lunch_win_name">Pausa pranzo produttiva</string>

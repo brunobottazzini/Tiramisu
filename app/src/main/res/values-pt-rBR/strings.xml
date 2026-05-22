@@ -170,7 +170,7 @@
     <string name="achievement_hint_free_name">Purista</string>
     <string name="achievement_hint_free_desc">Vença uma partida sem usar dicas</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Vença sem dicas nem movimento automático</string>
+    <string name="achievement_no_assist_desc">Vença sem dicas nem redistribuições</string>
     <string name="achievement_resilient_name">Resiliente</string>
     <string name="achievement_resilient_desc">Vença após 3 derrotas consecutivas</string>
     <string name="achievement_morning_name">Madrugador</string>
@@ -204,7 +204,7 @@
     <string name="achievement_hint_addict_name">Dependente de Dicas</string>
     <string name="achievement_hint_addict_desc">Use dicas nas últimas 5 partidas seguidas</string>
     <string name="achievement_perfectionist_name">Perfeccionista</string>
-    <string name="achievement_perfectionist_desc">Vença 3 partidas seguidas sem dicas nem movimentos automáticos</string>
+    <string name="achievement_perfectionist_desc">Vença 3 partidas seguidas sem dicas nem redistribuições</string>
     <string name="achievement_speed_freak_name">Rápido e Furioso</string>
     <string name="achievement_speed_freak_desc">Vença 3 partidas consecutivas em menos de 2 minutos</string>
     <string name="achievement_lunch_win_name">Almoço Produtivo</string>

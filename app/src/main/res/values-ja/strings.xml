@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">純粋主義者</string>
     <string name="achievement_hint_free_desc">ヒントを使わずにゲームに勝つ</string>
     <string name="achievement_no_assist_name">禅</string>
-    <string name="achievement_no_assist_desc">ヒントまたは自動移動なしで勝つ</string>
+    <string name="achievement_no_assist_desc">ヒントまたは再配布なしで勝つ</string>
     <string name="achievement_resilient_name">回復力</string>
     <string name="achievement_resilient_desc">3連敗後に勝つ</string>
     <string name="achievement_morning_name">早起き</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">ヒント依存</string>
     <string name="achievement_hint_addict_desc">連続5ゲームでヒントを使用</string>
     <string name="achievement_perfectionist_name">完璧主義者</string>
-    <string name="achievement_perfectionist_desc">ヒントまたは自動移動なしで3連勝</string>
+    <string name="achievement_perfectionist_desc">ヒントまたは再配布なしで3連勝</string>
     <string name="achievement_speed_freak_name">速い＆危険</string>
     <string name="achievement_speed_freak_desc">2分以内に3連続ゲームに勝つ</string>
     <string name="achievement_lunch_win_name">生産性の高い昼休み</string>

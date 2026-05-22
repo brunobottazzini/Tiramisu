@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Puriste</string>
     <string name="achievement_hint_free_desc">Remporter une partie sans utiliser d\'indices</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Gagner sans indices ni déplacement automatique</string>
+    <string name="achievement_no_assist_desc">Gagner sans indices ni redistributions</string>
     <string name="achievement_resilient_name">Résilient</string>
     <string name="achievement_resilient_desc">Gagner après 3 défaites consécutives</string>
     <string name="achievement_morning_name">Lève-tôt</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">Dépendant aux indices</string>
     <string name="achievement_hint_addict_desc">Utiliser des indices dans les 5 dernières parties d\'affilée</string>
     <string name="achievement_perfectionist_name">Perfectionniste</string>
-    <string name="achievement_perfectionist_desc">Gagner 3 parties d\'affilée sans indices ni déplacements automatiques</string>
+    <string name="achievement_perfectionist_desc">Gagner 3 parties d\'affilée sans indices ni redistributions</string>
     <string name="achievement_speed_freak_name">Rapide et furieux</string>
     <string name="achievement_speed_freak_desc">Remporter 3 parties consécutives en moins de 2 minutes</string>
     <string name="achievement_lunch_win_name">Pause-déjeuner productive</string>

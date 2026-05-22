@@ -171,7 +171,7 @@
     <string name="achievement_hint_free_name">Purist</string>
     <string name="achievement_hint_free_desc">İpucu kullanmadan bir oyunu kazanın</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">İpucu veya otomatik taşıma olmadan kazanın</string>
+    <string name="achievement_no_assist_desc">İpucu veya yeniden dağıtım olmadan kazanın</string>
     <string name="achievement_resilient_name">Esnek</string>
     <string name="achievement_resilient_desc">3 ardışık yenilginin ardından kazanın</string>
     <string name="achievement_morning_name">Erken Kalkan Kuş</string>
@@ -205,7 +205,7 @@
     <string name="achievement_hint_addict_name">İpucu Bağımlısı</string>
     <string name="achievement_hint_addict_desc">Son 5 oyunda arka arkaya ipucu kullanın</string>
     <string name="achievement_perfectionist_name">Mükemmelliyetçi</string>
-    <string name="achievement_perfectionist_desc">İpucu veya otomatik hamle olmadan 3 oyunu arka arkaya kazanın</string>
+    <string name="achievement_perfectionist_desc">İpucu veya yeniden dağıtım olmadan 3 oyunu arka arkaya kazanın</string>
     <string name="achievement_speed_freak_name">Hızlı ve Öfkeli</string>
     <string name="achievement_speed_freak_desc">2 dakikadan kısa sürede 3 ard arda oyunu kazanın</string>
     <string name="achievement_lunch_win_name">Üretken Öğle Arası</string>

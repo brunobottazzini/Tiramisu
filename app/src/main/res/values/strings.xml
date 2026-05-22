@@ -191,7 +191,7 @@
     <string name="achievement_hint_free_name">Purist</string>
     <string name="achievement_hint_free_desc">Win a game without using hints</string>
     <string name="achievement_no_assist_name">Zen</string>
-    <string name="achievement_no_assist_desc">Win without hints or auto-move</string>
+    <string name="achievement_no_assist_desc">Win without hints or redeals</string>
     <string name="achievement_resilient_name">Resilient</string>
     <string name="achievement_resilient_desc">Win after 3 consecutive losses</string>
     <string name="achievement_morning_name">Early Bird</string>
@@ -225,7 +225,7 @@
     <string name="achievement_hint_addict_name">Hint-Dependent</string>
     <string name="achievement_hint_addict_desc">Use hints in the last 5 games in a row</string>
     <string name="achievement_perfectionist_name">Perfectionist</string>
-    <string name="achievement_perfectionist_desc">Win 3 games in a row without hints or auto-moves</string>
+    <string name="achievement_perfectionist_desc">Win 3 games in a row without hints or redeals</string>
     <string name="achievement_speed_freak_name">Fast and Furious</string>
     <string name="achievement_speed_freak_desc">Win 3 consecutive games in under 2 minutes</string>
     <string name="achievement_lunch_win_name">Productive Lunch Break</string>
