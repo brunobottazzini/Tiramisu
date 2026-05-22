@@ -220,4 +220,32 @@ class TiramisuViewModelTest {
         )
         assertFalse(vm.isLost())
     }
+
+    @Test fun `auto-complete disabled keeps only aces auto-moving`() {
+        stateWith(
+            piles = listOf(listOf("b2"), emptyList(), emptyList(), emptyList()),
+            foundations = listOf("b1", "zero", "zero", "zero"),
+            stock = listOf("c1", "d5", "s7", "b8")
+        )
+        vm.autoCompleteEnabled = false
+        vm.dealFromStock()
+        val s = vm.state!!
+        assertTrue("ace c1 must auto-move", s.foundations.any { it == "c1" })
+        assertEquals("b2", s.topOfPile(0))
+    }
+
+    @Test fun `auto-complete enabled moves any foundation-eligible top to foundation`() {
+        stateWith(
+            piles = listOf(listOf("b3", "b2"), emptyList(), emptyList(), emptyList()),
+            foundations = listOf("b1", "zero", "zero", "zero")
+        )
+        vm.autoCompleteEnabled = true
+        val moved = vm.onFoundationTapped(0)
+        assertTrue("b2 went to foundation", moved)
+        val s = vm.state!!
+        // b2 was sent up by onFoundationTapped, then auto-move chained b3 on top of it,
+        // overwriting foundations[0]. Final state shows b3 (the chain endpoint).
+        assertEquals("b3", s.foundations[0])
+        assertEquals("zero", s.topOfPile(0))
+    }
 }

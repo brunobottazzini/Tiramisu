@@ -17,6 +17,13 @@ class TiramisuViewModel : ViewModel() {
         private set
 
     /**
+     * When true, [autoMoveToFoundation] will auto-move ANY top-pile card that can
+     * go to a foundation, not just Aces. Set by [GameActivity] in onResume from the
+     * AUTO_MOVE setting. Default false preserves the pre-feature behavior.
+     */
+    var autoCompleteEnabled: Boolean = false
+
+    /**
      * Snapshot of [state] taken right before the most recent state-changing
      * action (move, deal, redeal). One slot only — single-depth undo.
      * `null` means no undo is available (start of game or just after an undo).
@@ -276,11 +283,13 @@ class TiramisuViewModel : ViewModel() {
     }
 
     /**
-     * Auto-move any Aces (rank 1) from pile tops to foundations. Loops until stable.
-     * Records every move in [_lastAutoFoundationMoves] for the animation layer to consume.
-     * [defaultSource] tags each move with where the ace originally came from
-     * visually: STOCK for dealFromStock (the ace just exited the stock), PILE_TOP
-     * for moves where the ace was already sitting on a pile and got auto-moved.
+     * Auto-move top-pile cards to foundations. When [autoCompleteEnabled] is false, only
+     * Aces (rank 1) move; when true, any card whose rank matches a foundation's expected
+     * next card is sent up. Loops until stable. Records every move in
+     * [_lastAutoFoundationMoves] for the animation layer to consume.
+     *
+     * [defaultSource] tags each move visually: STOCK if the card just exited the stock
+     * (e.g. after [dealFromStock]); PILE_TOP otherwise.
      */
     private fun autoMoveToFoundation(defaultSource: AutoFoundationSource) {
         val s = state ?: return
@@ -290,15 +299,16 @@ class TiramisuViewModel : ViewModel() {
             moved = false
             for (pileIdx in 0..3) {
                 val card = s.topOfPile(pileIdx)
-                if (card != "zero" && TiramisuMoveValidator.rank(card) == 1) {
-                    for (fIdx in 0..3) {
-                        if (TiramisuMoveValidator.canMoveToFoundation(card, s.foundations[fIdx])) {
-                            s.piles[pileIdx].removeAt(s.piles[pileIdx].size - 1)
-                            s.foundations[fIdx] = card
-                            moves.add(AutoFoundationMove(pileIdx, fIdx, card, defaultSource))
-                            moved = true
-                            break
-                        }
+                if (card == "zero") continue
+                val isAce = TiramisuMoveValidator.rank(card) == 1
+                if (!autoCompleteEnabled && !isAce) continue
+                for (fIdx in 0..3) {
+                    if (TiramisuMoveValidator.canMoveToFoundation(card, s.foundations[fIdx])) {
+                        s.piles[pileIdx].removeAt(s.piles[pileIdx].size - 1)
+                        s.foundations[fIdx] = card
+                        moves.add(AutoFoundationMove(pileIdx, fIdx, card, defaultSource))
+                        moved = true
+                        break
                     }
                 }
             }
