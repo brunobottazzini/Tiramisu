@@ -198,8 +198,10 @@ class TiramisuViewModel : ViewModel() {
     fun isWon(): Boolean = state?.isWon() ?: false
 
     /**
-     * True when no progress is possible: stock empty, no redeals left,
-     * and no valid move (foundation or tableau) from any pile top.
+     * True when the game is stuck: stock empty, no redeals left, and no sequence
+     * of legal moves up to [TiramisuSolver.MAX_LOOKAHEAD] depth can increase the
+     * foundation card count. Legal-but-cyclic tableau moves do NOT prevent this
+     * from returning true.
      */
     fun isLost(): Boolean {
         val s = state ?: return false

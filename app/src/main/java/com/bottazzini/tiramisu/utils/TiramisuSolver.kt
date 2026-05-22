@@ -143,6 +143,15 @@ object TiramisuSolver {
      * sequence exists within the lookahead — the state is considered stalled.
      *
      * BFS with a `visited` set keyed by [canonicalKey] to prevent cycle re-exploration.
+     *
+     * Note on obbligato: `enumerateLegalMoves` does NOT enforce the `Difficile`
+     * obbligato rule that forces a foundation move when one is available. This is
+     * intentional — `canProgress` only needs to determine whether *some* sequence
+     * makes foundation progress. If obbligato is active in the real game, then a
+     * foundation move is by definition available, and the BFS will find it on its
+     * very first step (foundation moves are enumerated first). So the BFS result
+     * is correct even though intermediate states may include moves the real engine
+     * would block.
      */
     fun canProgress(start: TiramisuGameState, maxDepth: Int): Boolean {
         val initialCount = foundationCardCount(start)
