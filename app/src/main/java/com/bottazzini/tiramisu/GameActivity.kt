@@ -219,10 +219,11 @@ class GameActivity : AppCompatActivity() {
         if (vm.dealFromStock()) {
             playSound(R.raw.flipcard)
             animateDeal(sizeBefore) {
-                maybeAnimateAutoFoundation()
-                checkWin()
-                checkLost()
-                if (isTutorialMode) advanceTutorial()
+                maybeAnimateAutoFoundation {
+                    checkWin()
+                    checkLost()
+                    if (isTutorialMode) advanceTutorial()
+                }
             }
         }
     }
@@ -393,14 +394,21 @@ class GameActivity : AppCompatActivity() {
     /**
      * If the ViewModel's last action queued any auto-ace moves, animate them.
      * Idempotent: consuming the list clears it so the next render won't replay.
+     * Invokes [onComplete] once any animation has finished — or immediately if
+     * there is nothing to animate — so that callers can sequence end-of-turn
+     * checks (checkWin, checkLost, advanceTutorial) after the cards have
+     * visibly landed instead of cutting them off mid-flight.
      */
-    private fun maybeAnimateAutoFoundation() {
+    private fun maybeAnimateAutoFoundation(onComplete: () -> Unit = {}) {
         val moves = vm.consumeAutoFoundationMoves()
-        if (moves.isEmpty()) return
-        animateAutoFoundation(moves)
+        if (moves.isEmpty()) { onComplete(); return }
+        animateAutoFoundation(moves, onComplete)
     }
 
-    private fun animateAutoFoundation(moves: List<AutoFoundationMove>) {
+    private fun animateAutoFoundation(
+        moves: List<AutoFoundationMove>,
+        onComplete: () -> Unit = {}
+    ) {
         val gameRootContainer = gameRoot as ConstraintLayout
         val gameRootPos = locationOnScreen(gameRootContainer)
         val density = resources.displayMetrics.density
@@ -459,7 +467,7 @@ class GameActivity : AppCompatActivity() {
                 .start()
         }
 
-        if (ghosts.isEmpty()) return
+        if (ghosts.isEmpty()) { onComplete(); return }
 
         isAnimating = true
         val totalDuration = (moves.size - 1) * ACE_STAGGER_MS + ACE_DURATION_MS
@@ -467,6 +475,7 @@ class GameActivity : AppCompatActivity() {
             for (ghost in ghosts) gameRootContainer.removeView(ghost)
             for (view in hiddenFoundations) view.alpha = 1f
             isAnimating = false
+            onComplete()
         }, totalDuration)
     }
 
@@ -495,10 +504,11 @@ class GameActivity : AppCompatActivity() {
             TapResult.MOVED   -> {
                 playSound(R.raw.flipcard)
                 renderAll()
-                maybeAnimateAutoFoundation()
-                checkWin()
-                checkLost()
-                if (isTutorialMode) advanceTutorial()
+                maybeAnimateAutoFoundation {
+                    checkWin()
+                    checkLost()
+                    if (isTutorialMode) advanceTutorial()
+                }
             }
             TapResult.INVALID -> showInvalidMoveToast()
             else               -> renderAll()
@@ -518,10 +528,11 @@ class GameActivity : AppCompatActivity() {
         if (vm.onFoundationTapped(sel)) {
             playSound(R.raw.flipcard)
             renderAll()
-            maybeAnimateAutoFoundation()
-            checkWin()
-            checkLost()
-            if (isTutorialMode) advanceTutorial()
+            maybeAnimateAutoFoundation {
+                checkWin()
+                checkLost()
+                if (isTutorialMode) advanceTutorial()
+            }
         }
     }
 
@@ -791,10 +802,11 @@ class GameActivity : AppCompatActivity() {
         }
         playSound(R.raw.flipcard)
         renderAll()
-        maybeAnimateAutoFoundation()
-        checkWin()
-        checkLost()
-        if (isTutorialMode) advanceTutorial()
+        maybeAnimateAutoFoundation {
+            checkWin()
+            checkLost()
+            if (isTutorialMode) advanceTutorial()
+        }
         return true
     }
 
@@ -812,10 +824,11 @@ class GameActivity : AppCompatActivity() {
         }
         playSound(R.raw.flipcard)
         renderAll()
-        maybeAnimateAutoFoundation()
-        checkWin()
-        checkLost()
-        if (isTutorialMode) advanceTutorial()
+        maybeAnimateAutoFoundation {
+            checkWin()
+            checkLost()
+            if (isTutorialMode) advanceTutorial()
+        }
         return true
     }
 
