@@ -36,14 +36,15 @@
     <string name="tut_deal_confirm">✓ L\'Asso di bastoni è andato in automatico alla base! Solo gli Assi si muovono da soli — le altre carte le gestisci tu.</string>
     <string name="tut_deal2">Il Tallone ha ancora carte. Toccalo di nuovo per distribuirle tutte!</string>
     <string name="tut_deal2_confirm">✓ Ora tutte le colonne hanno carte e il Tallone è vuoto.</string>
-    <string name="tut_same_suit">Carte dello stesso seme si spostano liberamente. Trascina la carta 🟠 sul mazzetto 🟢.</string>
-    <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, qualsiasi valore. Il mazzetto ora è vuoto!</string>
+    <string name="tut_same_suit">Sposta una carta dello stesso seme solo su una di valore maggiore. Trascina la carta 🟠 sul mazzetto 🟢.</string>
+    <string name="tut_same_suit_confirm">✓ Ottimo! Stesso seme, valore minore della carta sotto. Il mazzetto ora è vuoto!</string>
     <string name="tut_empty_pile">Un mazzetto vuoto 🟢 accetta qualsiasi carta! Trascina la carta 🟠 sullo slot vuoto.</string>
     <string name="tut_empty_pile_confirm">✓ Perfetto! I mazzetti vuoti sono preziosi — ci puoi mettere qualsiasi carta.</string>
     <string name="tut_foundation">Il 2 di bastoni 🟠 segue l\'asso in base! Toccalo o trascinalo verso la base in alto.</string>
     <string name="tut_foundation_confirm">✓ Eccellente! Le basi si riempiono in ordine: Asso, 2, 3… fino al 10. Vinci quando tutte e 4 le basi sono complete!</string>
     <string name="tut_redeal">Lo stock è vuoto. Tocca il pulsante Ridistribuisci per raccogliere i mazzetti e continuare!</string>
     <string name="tut_redeal_confirm">✓ Puoi ridistribuire un numero limitato di volte, in base alla difficoltà.</string>
+    <string name="tut_easy_mode">A 🟢 Facile la regola è più permissiva: puoi spostare carte dello stesso seme di qualsiasi valore. A 🟡 Normale e 🔴 Difficile vale la regola stretta che hai appena imparato.</string>
     <string name="tut_finish">Bravo! Ora conosci le regole di Tiramisù. Buon gioco! 🎉</string>
     <string name="tutorial_complete_title">Tutorial completato! 📚</string>
     <string name="tutorial_complete_message">Ottimo lavoro! Ora conosci le basi del gioco. Pronto per una vera partita?</string>
