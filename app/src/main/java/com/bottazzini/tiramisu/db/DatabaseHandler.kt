@@ -13,7 +13,7 @@ class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val TAG = "DatabaseHandler"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
         private const val DATABASE_NAME = "Tiramisu.db"
 
         private const val SQL_CREATE_SETTINGS =
@@ -45,6 +45,13 @@ class DatabaseHandler(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        Log.w(TAG, "onUpgrade: from $oldVersion to $newVersion")
+        Log.w(TAG, "onUpgrade: from $oldVersion to $newVersion — resetting game_log and records")
+        if (db == null) return
+        if (oldVersion < 2) {
+            db.execSQL("DROP TABLE IF EXISTS ${GameLogEntry.TABLE_NAME}")
+            db.execSQL("DROP TABLE IF EXISTS ${RecordEntry.TABLE_NAME}")
+            db.execSQL(SQL_CREATE_GAME_LOG)
+            db.execSQL(SQL_CREATE_RECORDS)
+        }
     }
 }
