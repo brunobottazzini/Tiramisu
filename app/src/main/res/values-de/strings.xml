@@ -99,6 +99,8 @@
     <string name="cd_hint">Hinweis</string>
     <string name="hint_with_icon">💡 Hinweise</string>
     <string name="auto_move_with_icon">🎯 Automatisch in Endstapel verschieben</string>
+    <string name="settings_label_sound">Geräusche</string>
+    <string name="sound_with_icon">🔊 Geräusche</string>
     <string name="win_title">Sieg!</string>
     <string name="win_stat_time">⏱ Zeit</string>
     <string name="win_stat_best">🏅 Beste Zeit</string>

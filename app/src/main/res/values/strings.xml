@@ -119,6 +119,8 @@
     <string name="cd_hint">Hint</string>
     <string name="hint_with_icon">💡 Hints</string>
     <string name="auto_move_with_icon">🎯 Auto-move to final deck</string>
+    <string name="settings_label_sound">Sounds</string>
+    <string name="sound_with_icon">🔊 Sounds</string>
     <string name="win_title">Victory!</string>
     <string name="win_stat_time">⏱ Time</string>
     <string name="win_stat_best">🏅 Best time</string>

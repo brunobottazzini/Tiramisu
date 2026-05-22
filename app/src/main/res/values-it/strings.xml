@@ -100,6 +100,8 @@
     <string name="cd_hint">Suggerimento</string>
     <string name="hint_with_icon">💡 Suggerimenti</string>
     <string name="auto_move_with_icon">🎯 Auto-muovi su end deck</string>
+    <string name="settings_label_sound">Suoni</string>
+    <string name="sound_with_icon">🔊 Suoni</string>
     <string name="win_title">Vittoria!</string>
     <string name="win_stat_time">⏱ Tempo</string>
     <string name="win_stat_best">🏅 Miglior tempo</string>

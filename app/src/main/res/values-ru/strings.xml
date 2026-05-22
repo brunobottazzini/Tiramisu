@@ -99,6 +99,8 @@
     <string name="cd_hint">Подсказка</string>
     <string name="hint_with_icon">💡 Подсказки</string>
     <string name="auto_move_with_icon">🎯 Автоматический перенос в финальную колоду</string>
+    <string name="settings_label_sound">Звуки</string>
+    <string name="sound_with_icon">🔊 Звуки</string>
     <string name="win_title">Победа!</string>
     <string name="win_stat_time">⏱ Время</string>
     <string name="win_stat_best">🏅 Лучший результат</string>
