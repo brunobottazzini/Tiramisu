@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recordsHandler: RecordsHandler
     private lateinit var gameStateRepo: com.bottazzini.tiramisu.settings.GameStateRepository
     private var mediaPlayer: MediaPlayer? = null
+    private var soundsEnabled: Boolean = true
 
     private var tapCount = 0
     private var lastTapTime: Long = 0
@@ -157,6 +158,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        soundsEnabled = settingsHandler.readValue(Configuration.SOUND_ENABLED.value) != "disabled"
         playSound(R.raw.change_activity)
         super.onResume()
         updateRiprendiTile()
@@ -247,6 +249,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playSound(soundId: Int) {
+        if (!soundsEnabled) return
         try {
             if (mediaPlayer?.isPlaying == true) {
                 return

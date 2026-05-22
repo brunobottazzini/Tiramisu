@@ -81,6 +81,7 @@ class GameActivity : AppCompatActivity() {
     private var cardBackKey = "bg2"
     private var hintedPileIdx: Int? = null
     private var mediaPlayer: MediaPlayer? = null
+    private var soundsEnabled: Boolean = true
     /** True while a ghost animation (redeal or auto-ace) is in flight. Blocks all interactions except the pause/menu button. */
     private var isAnimating = false
 
@@ -1029,6 +1030,7 @@ class GameActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        soundsEnabled = settingsHandler.readValue(Configuration.SOUND_ENABLED.value) != "disabled"
         if (vm.state?.hasActiveGame == true) startTimer()
     }
 
@@ -1043,6 +1045,7 @@ class GameActivity : AppCompatActivity() {
     // ---- Helpers ----
 
     private fun playSound(resId: Int) {
+        if (!soundsEnabled) return
         try {
             mediaPlayer?.release()
             mediaPlayer = MediaPlayer.create(this, resId)?.also {

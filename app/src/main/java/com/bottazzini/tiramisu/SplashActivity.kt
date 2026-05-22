@@ -27,6 +27,7 @@ class SplashActivity : AppCompatActivity() {
     private var skipEnabled = false
     private var hasNavigated = false
     private var mediaPlayer: MediaPlayer? = null
+    private lateinit var settingsHandler: SettingsHandler
 
     private val density by lazy { resources.displayMetrics.density }
     private fun dp(value: Float): Float = value * density
@@ -41,6 +42,7 @@ class SplashActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(R.layout.activity_splash)
 
+        settingsHandler = SettingsHandler(applicationContext)
         applyThemeFromSettings()
         startAnimation()
 
@@ -49,9 +51,8 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun applyThemeFromSettings() {
-        val settings = SettingsHandler(applicationContext)
-        val bg = settings.readValue(Configuration.BACKGROUND.value) ?: "bordeaux"
-        val cardBack = settings.readValue(Configuration.CARD_BACK.value) ?: "bg2"
+        val bg = settingsHandler.readValue(Configuration.BACKGROUND.value) ?: "bordeaux"
+        val cardBack = settingsHandler.readValue(Configuration.CARD_BACK.value) ?: "bg2"
 
         val bgDrawable = ResourceUtils.getDrawableByName(resources, packageName, bg)
         findViewById<View>(R.id.splashRoot).background = ContextCompat.getDrawable(this, bgDrawable)
@@ -77,11 +78,14 @@ class SplashActivity : AppCompatActivity() {
 
         // Card animation starts at 1200ms — schedule the existing shuffle sound + Phase 1
         handler.postDelayed({
-            try {
-                mediaPlayer = MediaPlayer.create(this, R.raw.shuffle)
-                mediaPlayer?.start()
-            } catch (e: Exception) {
-                e.printStackTrace()
+            val soundsEnabled = settingsHandler.readValue(Configuration.SOUND_ENABLED.value) != "disabled"
+            if (soundsEnabled) {
+                try {
+                    mediaPlayer = MediaPlayer.create(this, R.raw.shuffle)
+                    mediaPlayer?.start()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 
             val card1 = findViewById<ImageView>(R.id.splashCard1)
@@ -189,6 +193,7 @@ class SplashActivity : AppCompatActivity() {
         handler.removeCallbacksAndMessages(null)
         mediaPlayer?.release()
         mediaPlayer = null
+        if (::settingsHandler.isInitialized) settingsHandler.close()
         super.onDestroy()
     }
 }

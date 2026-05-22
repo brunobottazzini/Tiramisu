@@ -32,6 +32,7 @@ import java.util.Random
 class YouWonActivity : AppCompatActivity() {
 
     private lateinit var recordsHandler: RecordsHandler
+    private lateinit var settingsHandler: SettingsHandler
     private lateinit var buttonNewGame: Button
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var achievementBanner: com.bottazzini.tiramisu.utils.AchievementBanner
@@ -89,7 +90,7 @@ class YouWonActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.newRecordBadge).visibility =
             if (isNewRecord) View.VISIBLE else View.GONE
 
-        val settingsHandler = SettingsHandler(applicationContext)
+        settingsHandler = SettingsHandler(applicationContext)
         val backgroundConf = settingsHandler.readValue(Configuration.BACKGROUND.value) ?: "bordeaux"
         val drawable = ResourceUtils.getDrawableByName(resources, this.packageName, backgroundConf)
         val rootView: View = findViewById(R.id.youWonScrollView)
@@ -98,11 +99,14 @@ class YouWonActivity : AppCompatActivity() {
 
         loadRandomPartyGif()
 
-        try {
-            mediaPlayer = MediaPlayer.create(this, R.raw.youwin)
-            mediaPlayer?.start()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val soundsEnabled = settingsHandler.readValue(Configuration.SOUND_ENABLED.value) != "disabled"
+        if (soundsEnabled) {
+            try {
+                mediaPlayer = MediaPlayer.create(this, R.raw.youwin)
+                mediaPlayer?.start()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         buttonNewGame.setOnClickListener {
@@ -174,6 +178,7 @@ class YouWonActivity : AppCompatActivity() {
         releaseMediaPlayer()
         try {
             recordsHandler.close()
+            if (::settingsHandler.isInitialized) settingsHandler.close()
         } finally {
             super.onDestroy()
         }
